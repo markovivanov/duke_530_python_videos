@@ -1,0 +1,383 @@
+{
+  "provider": "ElevenLabs",
+  "model_id": "eleven_multilingual_v2",
+  "voice": {
+    "id": "21m00Tcm4TlvDq8ikWAM",
+    "name": "Rachel"
+  },
+  "audio": "week1-narration.mp3",
+  "duration_seconds": 341.519,
+  "cues": {
+    "0:0": {
+      "start": 0.0,
+      "spoken_end": 6.629,
+      "end": 7.07,
+      "caption": "Meet Sam. Sam has just finished a run: 5.4 kilometres in 32 minutes.",
+      "spoken": "Meet Sam. Sam has just finished a run: five point four kilometers in 32 minutes."
+    },
+    "0:1": {
+      "start": 7.07,
+      "spoken_end": 13.955,
+      "end": 14.28,
+      "caption": "Our fitness app needs to remember four things: who ran, how far, how long, and whether the run is complete.",
+      "spoken": "Our fitness app needs to remember four things: who ran, how far, how long, and whether the run is complete."
+    },
+    "0:2": {
+      "start": 14.28,
+      "spoken_end": 19.911,
+      "end": 20.515,
+      "caption": "This is week one of Python for a fitness app. Today, we record Sam's first run.",
+      "spoken": "This is week one of Python for a fitness app. Today, we record Sam's first run."
+    },
+    "1:0": {
+      "start": 20.515,
+      "spoken_end": 23.406,
+      "end": 23.684,
+      "caption": "Chapter one: giving Python an instruction.",
+      "spoken": "Chapter one: giving Python an instruction."
+    },
+    "1:1": {
+      "start": 23.684,
+      "spoken_end": 30.755,
+      "end": 31.266,
+      "caption": "print() displays information. Text goes inside quotation marks, and the quotes go inside the parentheses.",
+      "spoken": "print() displays information. Text goes inside quotation marks, and the quotes go inside the parentheses."
+    },
+    "1:2": {
+      "start": 31.266,
+      "spoken_end": 36.943,
+      "end": 37.454,
+      "caption": "Run the cell with Shift + Enter, and whatever is inside the parentheses is delivered to the screen.",
+      "spoken": "Run the cell with Shift plus Enter, and whatever is inside the parentheses is delivered to the screen."
+    },
+    "1:3": {
+      "start": 37.454,
+      "spoken_end": 44.037,
+      "end": 44.246,
+      "caption": "A hash sign starts a comment. It's a note for humans: Python ignores the rest of that line.",
+      "spoken": "A hash sign starts a comment. It's a note for humans: Python ignores the rest of that line."
+    },
+    "1:4": {
+      "start": 44.246,
+      "spoken_end": 51.107,
+      "end": 52.198,
+      "caption": "Change the message, run the cell again, and the output changes too. Experimenting is the point.",
+      "spoken": "Change the message, run the cell again, and the output changes too. Experimenting is the point."
+    },
+    "2:0": {
+      "start": 52.198,
+      "spoken_end": 57.075,
+      "end": 57.388,
+      "caption": "Chapter two: variables. Giving workout details names.",
+      "spoken": "Chapter two: variables. Giving workout details names."
+    },
+    "2:1": {
+      "start": 57.388,
+      "spoken_end": 65.898,
+      "end": 66.328,
+      "caption": "A variable is a name that refers to a value. Read the equals sign as: store the value on the right under the name on the left.",
+      "spoken": "A variable is a name that refers to a value. Read the equals sign as: store the value on the right under the name on the left."
+    },
+    "2:2": {
+      "start": 66.328,
+      "spoken_end": 73.735,
+      "end": 73.909,
+      "caption": "Python makes the value first, then ties the name to it, like a tag on a string. The distance, 5.4…",
+      "spoken": "Python makes the value first, then ties the name to it, like a tag on a string. The distance, five point four..."
+    },
+    "2:3": {
+      "start": 73.909,
+      "spoken_end": 79.47,
+      "end": 80.283,
+      "caption": "…the duration, 32 minutes, and whether the run is complete: True.",
+      "spoken": "...the duration, 32 minutes, and whether the run is complete: True."
+    },
+    "2:4": {
+      "start": 80.283,
+      "spoken_end": 88.387,
+      "end": 88.607,
+      "caption": "Good names carry their units, like km and minutes. Names can't contain spaces, so underscores join the words.",
+      "spoken": "Good names carry their units, like kilometers and minutes. Names can't contain spaces, so underscores join the words."
+    },
+    "2:5": {
+      "start": 88.607,
+      "spoken_end": 92.694,
+      "end": 93.913,
+      "caption": "The value is the real thing. The name is how we find it again.",
+      "spoken": "The value is the real thing. The name is how we find it again."
+    },
+    "3:0": {
+      "start": 93.913,
+      "spoken_end": 96.641,
+      "end": 97.001,
+      "caption": "Chapter three: name or text?",
+      "spoken": "Chapter three: name or text?"
+    },
+    "3:1": {
+      "start": 97.001,
+      "spoken_end": 104.745,
+      "end": 105.128,
+      "caption": "No quotes: runner_name is a name. Python follows the tag to its value and prints what it finds: Sam.",
+      "spoken": "No quotes: runner underscore name is a name. Python follows the tag to its value and prints what it finds: Sam."
+    },
+    "3:2": {
+      "start": 105.128,
+      "spoken_end": 113.069,
+      "end": 113.51,
+      "caption": "Add quotes and it isn't a name any more, it's text. Quotes are a display case: show exactly these characters.",
+      "spoken": "Add quotes and it isn't a name any more, it's text. Quotes are a display case: show exactly these characters."
+    },
+    "3:3": {
+      "start": 113.51,
+      "spoken_end": 119.57,
+      "end": 120.012,
+      "caption": "Same letters, completely different meaning. Predict the output before you run, then check.",
+      "spoken": "Same letters, completely different meaning. Predict the output before you run, then check."
+    },
+    "4:0": {
+      "start": 120.012,
+      "spoken_end": 123.808,
+      "end": 124.133,
+      "caption": "Chapter four: data types. What kind of value is it?",
+      "spoken": "Chapter four: data types. What kind of value is it?"
+    },
+    "4:1": {
+      "start": 124.133,
+      "spoken_end": 132.516,
+      "end": 132.794,
+      "caption": "A string, str, is text, written in quotes. Picture characters strung on a thread: S, a, m.",
+      "spoken": "A string, S T R, is text, written in quotes. Picture characters strung on a thread: S, a, m."
+    },
+    "4:2": {
+      "start": 132.794,
+      "spoken_end": 139.748,
+      "end": 140.131,
+      "caption": "A float is a number that can have a fractional part. Distances are measured, so 5.4 sits between the marks.",
+      "spoken": "A float is a number that can have a fractional part. Distances are measured, so five point four sits between the marks."
+    },
+    "4:3": {
+      "start": 140.131,
+      "spoken_end": 144.973,
+      "end": 145.286,
+      "caption": "An int is a whole number. 32 minutes: countable, no halves.",
+      "spoken": "An integer is a whole number. 32 minutes: countable, no halves."
+    },
+    "4:4": {
+      "start": 145.286,
+      "spoken_end": 150.093,
+      "end": 150.36,
+      "caption": "A bool is just True or False. Is the run complete? True.",
+      "spoken": "A Boolean is just True or False. Is the run complete? True."
+    },
+    "4:5": {
+      "start": 150.36,
+      "spoken_end": 158.429,
+      "end": 159.033,
+      "caption": "type() is a scanner. Hand it any value and it reports the kind: str, float, int, bool.",
+      "spoken": "type() is a scanner. Hand it any value and it reports the kind: S T R, float, integer, Boolean."
+    },
+    "4:6": {
+      "start": 159.033,
+      "spoken_end": 166.567,
+      "end": 166.951,
+      "caption": "Watch out: quotes change the meaning. 5.4 is a number. With quotes, it's just three characters.",
+      "spoken": "Watch out: quotes change the meaning. five point four is a number. With quotes, it's just three characters."
+    },
+    "4:7": {
+      "start": 166.951,
+      "spoken_end": 170.91,
+      "end": 171.293,
+      "caption": "Add two numbers and you get a longer distance: 7.5.",
+      "spoken": "Add two numbers and you get a longer distance: seven point five."
+    },
+    "4:8": {
+      "start": 171.293,
+      "spoken_end": 177.795,
+      "end": 178.236,
+      "caption": "Add two strings and they're glued end to end: 5.42.1. Not a distance at all.",
+      "spoken": "Add two strings and they're glued end to end: five point four two point one. Not a distance at all."
+    },
+    "4:9": {
+      "start": 178.236,
+      "spoken_end": 186.839,
+      "end": 187.953,
+      "caption": "Same with Booleans. True with a capital T and no quotes is a yes/no value. In quotes, it's just four letters.",
+      "spoken": "Same with Booleans. True with a capital T and no quotes is a yes or no value. In quotes, it's just four letters."
+    },
+    "5:0": {
+      "start": 187.953,
+      "spoken_end": 191.263,
+      "end": 191.959,
+      "caption": "Chapter five: calculating with workout data.",
+      "spoken": "Chapter five: calculating with workout data."
+    },
+    "5:1": {
+      "start": 191.959,
+      "spoken_end": 194.966,
+      "end": 195.082,
+      "caption": "A morning run of 5.4 km…",
+      "spoken": "A morning run of five point four kilometers..."
+    },
+    "5:2": {
+      "start": 195.082,
+      "spoken_end": 197.555,
+      "end": 198.066,
+      "caption": "…and an evening run of 2.1.",
+      "spoken": "...and an evening run of two point one."
+    },
+    "5:3": {
+      "start": 198.066,
+      "spoken_end": 208.886,
+      "end": 209.211,
+      "caption": "Python works out the right side first. It looks up both names, adds the values, then stores 7.5 under total_distance_km.",
+      "spoken": "Python works out the right side first. It looks up both names, adds the values, then stores seven point five under total underscore distance underscore kilometers."
+    },
+    "5:4": {
+      "start": 209.211,
+      "spoken_end": 213.832,
+      "end": 214.111,
+      "caption": "print() with commas shows several items, with a space between each one.",
+      "spoken": "print() with commas shows several items, with a space between each one."
+    },
+    "5:5": {
+      "start": 214.111,
+      "spoken_end": 220.821,
+      "end": 221.146,
+      "caption": "Arithmetic works on stored values too. A minute is 60 seconds, so to convert minutes to seconds, we multiply.",
+      "spoken": "Arithmetic works on stored values too. A minute is 60 seconds, so to convert minutes to seconds, we multiply."
+    },
+    "5:6": {
+      "start": 221.146,
+      "spoken_end": 225.279,
+      "end": 225.488,
+      "caption": "32 minutes, each worth 60 seconds: 1920 seconds.",
+      "spoken": "32 minutes, each worth 60 seconds: 1920 seconds."
+    },
+    "5:7": {
+      "start": 225.488,
+      "spoken_end": 230.492,
+      "end": 231.096,
+      "caption": "Plus adds, minus subtracts, star multiplies, and slash divides.",
+      "spoken": "Plus adds, minus subtracts, star multiplies, and slash divides."
+    },
+    "6:0": {
+      "start": 231.096,
+      "spoken_end": 233.778,
+      "end": 234.289,
+      "caption": "Chapter six: building a run summary.",
+      "spoken": "Chapter six: building a run summary."
+    },
+    "6:1": {
+      "start": 234.289,
+      "spoken_end": 238.027,
+      "end": 238.271,
+      "caption": "Four print lines. Each pairs a label with a stored value.",
+      "spoken": "Four print lines. Each pairs a label with a stored value."
+    },
+    "6:2": {
+      "start": 238.271,
+      "spoken_end": 242.671,
+      "end": 242.996,
+      "caption": "Run them from top to bottom and the record fills in, line by line.",
+      "spoken": "Run them from top to bottom and the record fills in, line by line."
+    },
+    "6:3": {
+      "start": 242.996,
+      "spoken_end": 249.01,
+      "end": 249.962,
+      "caption": "Four variables, four types, one readable run record. That's today's feature.",
+      "spoken": "Four variables, four types, one readable run record. That's today's feature."
+    },
+    "7:0": {
+      "start": 249.962,
+      "spoken_end": 252.853,
+      "end": 253.364,
+      "caption": "Chapter seven: notebook memory.",
+      "spoken": "Chapter seven: notebook memory."
+    },
+    "7:1": {
+      "start": 253.364,
+      "spoken_end": 259.564,
+      "end": 259.889,
+      "caption": "The kernel is the Python process that runs your code and remembers every variable. Here's what it's holding.",
+      "spoken": "The kernel is the Python process that runs your code and remembers every variable. Here's what it's holding."
+    },
+    "7:2": {
+      "start": 259.889,
+      "spoken_end": 264.847,
+      "end": 265.09,
+      "caption": "Change the evening run to 3.0, and that tag now points at a new value.",
+      "spoken": "Change the evening run to three point zero, and that tag now points at a new value."
+    },
+    "7:3": {
+      "start": 265.09,
+      "spoken_end": 276.364,
+      "end": 276.747,
+      "caption": "But print the total and… it's still 7.5. It was calculated earlier, from the old distance. Changing an input doesn't rerun old calculations.",
+      "spoken": "But print the total and... it's still seven point five. It was calculated earlier, from the old distance. Changing an input doesn't rerun old calculations."
+    },
+    "7:4": {
+      "start": 276.747,
+      "spoken_end": 282.622,
+      "end": 283.225,
+      "caption": "Run the calculation again, and the total is rebuilt from the current values: 8.4.",
+      "spoken": "Run the calculation again, and the total is rebuilt from the current values: eight point four."
+    },
+    "7:5": {
+      "start": 283.225,
+      "spoken_end": 291.167,
+      "end": 291.55,
+      "caption": "Names are case-sensitive. Runner_name with a capital R is a different name, and nothing in memory has that tag.",
+      "spoken": "Names are case-sensitive. Runner underscore name with a capital R is a different name, and nothing in memory has that tag."
+    },
+    "7:6": {
+      "start": 291.55,
+      "spoken_end": 299.526,
+      "end": 300.13,
+      "caption": "That's a NameError. Read the last line, check the spelling, and make sure the cell that creates the name has run.",
+      "spoken": "That's a NameError. Read the last line, check the spelling, and make sure the cell that creates the name has run."
+    },
+    "7:7": {
+      "start": 300.13,
+      "spoken_end": 307.293,
+      "end": 307.618,
+      "caption": "For a predictable start, use Restart Kernel and Run All. Memory is cleared, then rebuilt from top to bottom.",
+      "spoken": "For a predictable start, use Restart Kernel and Run All. Memory is cleared, then rebuilt from top to bottom."
+    },
+    "8:0": {
+      "start": 307.618,
+      "spoken_end": 309.778,
+      "end": 310.103,
+      "caption": "Let's recap, and then it's your turn.",
+      "spoken": "Let's recap, and then it's your turn."
+    },
+    "8:1": {
+      "start": 310.103,
+      "spoken_end": 319.878,
+      "end": 320.319,
+      "caption": "Variables name values. Types tell text, numbers and True/False apart. And calculations use whatever is stored when their cell runs.",
+      "spoken": "Variables name values. Types tell text, numbers and True or False apart. And calculations use whatever is stored when their cell runs."
+    },
+    "8:2": {
+      "start": 320.319,
+      "spoken_end": 330.222,
+      "end": 330.664,
+      "caption": "Exercise one: log Alex's run. 4.2 km, 28 minutes, completed. You choose the names; copy the shape of Sam's record.",
+      "spoken": "Exercise one: log Alex's run. four point two kilometers, 28 minutes, completed. You choose the names; copy the shape of Sam's record."
+    },
+    "8:3": {
+      "start": 330.664,
+      "spoken_end": 336.759,
+      "end": 337.2,
+      "caption": "Exercise two: add two runs with a plus sign, and display the total with its unit.",
+      "spoken": "Exercise two: add two runs with a plus sign, and display the total with its unit."
+    },
+    "8:4": {
+      "start": 337.2,
+      "spoken_end": 341.514,
+      "end": 341.519,
+      "caption": "Next time, we'll reuse calculations and work with several workouts.",
+      "spoken": "Next time, we'll reuse calculations and work with several workouts."
+    }
+  }
+}

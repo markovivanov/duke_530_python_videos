@@ -1,0 +1,693 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Week 4: Find your way around the command line</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+  --page:#e9edf1;--ink:#15212c;--muted:#56636f;--line:#c9d1d9;--accent:#1f7ea0;--chip:#dde3e9;--panel:#f6f8fa;}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--page:#0d1116;--ink:#e4e8ec;--muted:#8c98a4;--line:#27303a;--accent:#58C4DD;--chip:#161c23;--panel:#12171d;}}
+:root[data-theme="dark"]{--page:#0d1116;--ink:#e4e8ec;--muted:#8c98a4;--line:#27303a;--accent:#58C4DD;--chip:#161c23;--panel:#12171d;}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--page);color:var(--ink);font-family:"Newsreader",Georgia,"Times New Roman",serif;line-height:1.5}
+.wrap{max-width:1180px;margin:0 auto;padding:clamp(14px,3vw,36px)}
+header{margin:0 0 20px}
+.home{display:inline-block;margin:0 0 10px;color:var(--accent);font:700 12px "JetBrains Mono",ui-monospace,Menlo,monospace;letter-spacing:.08em;text-transform:uppercase;text-decoration:none}
+.home:hover{text-decoration:underline}
+h1{font-size:clamp(34px,5.2vw,58px);font-weight:600;line-height:1.05;margin:0 0 8px;letter-spacing:-.01em}
+.lede{margin:0;color:var(--muted);font-size:clamp(17px,1.9vw,21px);max-width:64ch}
+.player{background:#0e1116;border-radius:14px;overflow:hidden;box-shadow:0 20px 60px -30px rgba(0,0,0,.6);border:1px solid #1d232c}
+.stage{position:relative;aspect-ratio:16/9;width:100%;background:#0b0e12}
+.stage svg{display:block;width:100%;height:100%}
+.stage:fullscreen{aspect-ratio:auto;width:100vw;height:100vh;background:#000}
+.bigplay{position:absolute;left:50%;top:78%;transform:translate(-50%,-50%);display:flex;align-items:center;gap:12px;
+  padding:12px 24px 12px 18px;border-radius:999px;border:2px solid #58C4DD;background:rgba(14,17,22,.85);color:#e9eef2;
+  font:600 clamp(15px,2vw,21px) "Newsreader",Georgia,serif;cursor:pointer;white-space:nowrap}
+.bigplay svg{width:24px;height:24px}
+.bigplay:hover{background:rgba(88,196,221,.15)}
+.controls{display:flex;align-items:center;gap:10px;padding:10px 14px;background:#12161c;color:#c7cfd6;flex-wrap:wrap}
+.controls button{background:none;border:1px solid #2c343f;color:#dfe5ea;border-radius:8px;height:36px;min-width:40px;padding:0 10px;
+  font:inherit;font-size:15px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;white-space:nowrap}
+.controls button:hover{border-color:#58C4DD}
+.controls button[aria-pressed="true"]{border-color:#58C4DD;color:#bfeaf5}
+.controls button svg{width:16px;height:16px}
+button:focus-visible,summary:focus-visible,.scrub:focus-visible{outline:2px solid #58C4DD;outline-offset:2px}
+.scrub{flex:1 1 220px;position:relative;height:30px;cursor:pointer;touch-action:none}
+.track{position:absolute;left:0;right:0;top:13px;height:4px;background:#2a313b;border-radius:2px}
+.fill{position:absolute;left:0;top:0;bottom:0;background:#58C4DD;border-radius:2px}
+.tick{position:absolute;top:-4px;width:2px;height:12px;background:#4a5563}
+.knob{position:absolute;top:8px;width:14px;height:14px;margin-left:-7px;border-radius:50%;background:#e9eef2;box-shadow:0 0 0 3px rgba(88,196,221,.35)}
+.time{font:14px "JetBrains Mono",ui-monospace,Menlo,monospace;color:#9aa6b1;white-space:nowrap}
+.cues{margin-top:14px;background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:10px;padding:14px 18px}
+#cueNow{margin:4px 0 6px;font-size:clamp(18px,2vw,23px);line-height:1.4;max-width:70ch}
+#cueNext{margin:0;color:var(--muted);font-size:16px;max-width:80ch}
+#cueState{margin:6px 0 0;color:var(--accent);font-size:16px;min-height:1em}
+.chapters{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0 0}
+.chapters button{font:inherit;font-size:16px;background:var(--chip);color:var(--ink);border:1px solid var(--line);border-radius:999px;padding:6px 14px;cursor:pointer}
+.chapters button .n{color:var(--accent);margin-right:6px;font-style:italic}
+.chapters button[aria-current="true"]{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+@media (max-width:640px){.time{order:3}.scrub{flex-basis:100%;order:9}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="home" href="index.html">← DesignTech 530</a>
+    <h1>Find your way around</h1>
+    <p class="lede">Week 4 of Python for a fitness app, animated with optional narration: the macOS terminal, from pwd, ls and cd to running the workout app's Python scripts.</p>
+  </header>
+  <div class="player">
+    <div class="stage" id="stage">
+      <svg id="svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Animated lesson"></svg>
+      <button class="bigplay" id="bigplay"><svg viewBox="0 0 24 24"><path d="M7 4l13 8-13 8z" fill="#58C4DD"/></svg>Play</button>
+    </div>
+    <div class="controls">
+      <button id="play" aria-label="Play"></button>
+      <div class="scrub" id="scrub" tabindex="0" role="slider" aria-label="Seek" aria-valuemin="0"><div class="track"><div class="fill" id="fill"></div></div><div class="knob" id="knob"></div></div>
+      <span class="time" id="time">0:00</span>
+      <button id="speed" aria-label="Playback speed">0.5×</button>
+      <button id="narr" aria-label="Toggle AI-generated ElevenLabs narration" aria-pressed="true">Narration: on</button>
+      <button id="stopbeats" aria-pressed="false">Stop at each beat: off</button>
+      <button id="cuesBtn" aria-pressed="true">Cues: on</button>
+      <button id="fs" aria-label="Full screen, animation only"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
+    </div>
+  </div>
+  <section class="cues" id="cues" aria-live="polite">
+    <p id="cueNow"></p>
+    <p id="cueNext"></p>
+    <p id="cueState"></p>
+  </section>
+  <nav class="chapters" id="chapters" aria-label="Chapters"></nav>
+</div>
+<script src="assets/week4-narration/week4-narration-data.js"></script>
+<script>
+(function(){
+"use strict";
+const NS="http://www.w3.org/2000/svg";
+const W=1600,H=900;
+const C={bg:"#0e1116",blue:"#58C4DD",gold:"#F0AC5F",brown:"#8C6B4F",tan:"#D8C3A5",green:"#83C167",red:"#FC6255",teal:"#5CD0B3",purple:"#C792EA",yellow:"#FFE38A",white:"#ECE6DA",muted:"#9aa3ad"};
+const MONO="'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace";
+const SERIF="'Newsreader', Georgia, 'Times New Roman', serif";
+const SYN={kw:C.purple,fn:C.blue,num:C.gold,str:C.green,p:C.white,var:C.yellow,out:C.teal,err:C.red};
+/* ---------- tiny helpers ---------- */
+function el(tag,attrs,parent){const e=document.createElementNS(NS,tag);if(attrs)for(const k in attrs)e.setAttribute(k,attrs[k]);if(parent)parent.appendChild(e);return e;}
+function tx(parent,x,y,s,o){const t=el("text",Object.assign({x,y,fill:C.white,"font-family":SERIF,"font-size":32},o||{}),parent);t.textContent=s;return t;}
+const clamp=(v,a=0,b=1)=>Math.min(b,Math.max(a,v));
+const ease=x=>x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2;
+const lin=(t,a,b)=>clamp((t-a)/(b-a));
+const P=(t,a,b)=>ease(lin(t,a,b));
+const lerp=(a,b,p)=>a+(b-a)*p;
+function backOut(p){if(p<=0)return 0;if(p>=1)return 1;const c1=1.70158,c3=c1+1;return 1+c3*Math.pow(p-1,3)+c1*Math.pow(p-1,2);}
+function op(e,v){e.setAttribute("opacity",clamp(v).toFixed(3));}
+function tf(e,x,y,s,r){let str=`translate(${x.toFixed(1)},${y.toFixed(1)})`;if(s!==undefined&&s!==1)str+=` scale(${Math.max(0,s).toFixed(3)})`;if(r)str+=` rotate(${r.toFixed(1)})`;e.setAttribute("transform",str);}
+function overlap(t,runs){let s=0;runs.forEach(([a,b])=>{s+=clamp(t-a,0,b-a);});return s;}
+function inRuns(t,runs){return runs.some(([a,b])=>t>=a&&t<b);}
+
+/* ---------- drawing kit ---------- */
+function code(parent,x,y,lines,size){
+  size=size||36;const g=el("g",{},parent);const lh=size*1.45;const spans=[];let total=0;
+  lines.forEach((line,i)=>{
+    const t=el("text",{x,y:y+i*lh,"font-family":MONO,"font-size":size,style:"white-space:pre"},g);
+    line.forEach(([s,c])=>{const sp=el("tspan",{fill:SYN[c]||c},t);spans.push({sp,s,start:total});total+=s.length;});
+    total+=1;
+  });
+  return {g,total,reveal(n){n=Math.floor(n);spans.forEach(o=>{o.sp.textContent=o.s.slice(0,clamp(n-o.start,0,o.s.length));});}};
+}
+function codeLine(p,x,y,toks,fs,anchor){const t=el("text",{x,y,"font-family":MONO,"font-size":fs||30,"text-anchor":anchor||"start",style:"white-space:pre"},p);toks.forEach(([s,c])=>{const sp=el("tspan",{fill:SYN[c]||c},t);sp.textContent=s;});return t;}
+function token(parent,label,color,kind,r){
+  r=r||40;const g=el("g",{},parent);const fs=kind==="str"?r*.7:r*.85;
+  if(kind==="str"){const w=Math.max(r*2,label.length*fs*.62+36);el("rect",{x:-w/2,y:-r,width:w,height:r*2,rx:r,fill:color,"fill-opacity":.14,stroke:color,"stroke-width":3.5,filter:"url(#glow)"},g);g.halfW=w/2;}
+  else{el("circle",{r,fill:color,"fill-opacity":.14,stroke:color,"stroke-width":3.5,filter:"url(#glow)"},g);g.halfW=r;}
+  tx(g,0,2,label,{"text-anchor":"middle","dominant-baseline":"central","font-family":MONO,"font-size":fs,fill:color,"font-weight":700});
+  op(g,0);return g;
+}
+function nameTag(parent,name){
+  const g=el("g",{},parent);const fs=32;const w=name.length*fs*.62+44;
+  el("path",{d:`M0 -28 H${w} L${w+26} 0 L${w} 28 H0 Z`,fill:"#241c14",stroke:C.tan,"stroke-width":3,"stroke-linejoin":"round"},g);
+  el("circle",{cx:w+4,cy:0,r:6,fill:C.bg,stroke:C.tan,"stroke-width":2},g);
+  tx(g,w/2,2,name,{"text-anchor":"middle","dominant-baseline":"central","font-family":MONO,"font-size":fs,fill:C.yellow});
+  g.hole=w+4;op(g,0);return g;
+}
+function rope(parent){
+  const p=el("path",{fill:"none",stroke:C.tan,"stroke-width":3,"stroke-linecap":"round",pathLength:1,"stroke-dasharray":"1 1"},parent);
+  return {el:p,set(ax,ay,bx,by,draw,sag){sag=sag===undefined?40:sag;const dx=bx-ax;
+    p.setAttribute("d",`M${ax.toFixed(1)} ${ay.toFixed(1)} C${(ax+dx*.35).toFixed(1)} ${(ay+sag).toFixed(1)} ${(bx-dx*.35).toFixed(1)} ${(by+sag).toFixed(1)} ${bx.toFixed(1)} ${by.toFixed(1)}`);
+    p.setAttribute("stroke-dashoffset",(1-draw).toFixed(3));op(p,draw>0.001?1:0);}};
+}
+function cube(p,x,y,s,color){s=s||46;color=color||C.gold;const g=el("g",{},p);
+  el("rect",{x:0,y:0,width:s,height:s,rx:5,fill:color,"fill-opacity":.18,stroke:color,"stroke-width":3},g);
+  el("line",{x1:7,y1:8,x2:s-12,y2:8,stroke:color,"stroke-opacity":.6,"stroke-width":2,"stroke-linecap":"round"},g);
+  tf(g,x,y);return g;}
+function gearPath(r,n){const ri=r*.8,s=2*Math.PI/n;const pts=[];for(let i=0;i<n;i++){const a=i*s;pts.push([ri,a],[r,a+s*.15],[r,a+s*.45],[ri,a+s*.6]);}
+  return "M"+pts.map(([rr,a])=>`${(rr*Math.cos(a)).toFixed(1)} ${(rr*Math.sin(a)).toFixed(1)}`).join(" L")+" Z";}
+function gear(p,r,n,color){const g=el("g",{},p);el("path",{d:gearPath(r,n),fill:"#1c222c",stroke:color,"stroke-width":3,"stroke-linejoin":"round"},g);el("circle",{r:r*.28,fill:"none",stroke:color,"stroke-width":3},g);return g;}
+function belt(p,x1,x2,y){const g=el("g",{},p);
+  el("rect",{x:x1,y,width:x2-x1,height:16,rx:8,fill:"#1a1f27",stroke:"#3a424f","stroke-width":2},g);
+  const l=el("line",{x1:x1+8,x2:x2-8,y1:y+8,y2:y+8,stroke:"#4b5563","stroke-width":3,"stroke-dasharray":"14 12"},g);
+  return {g,update(t){l.setAttribute("stroke-dashoffset",(-t*50).toFixed(1));}};}
+function factory(p,name,param,color){
+  const g=el("g",{},p);
+  const smoke=[0,1,2,3].map(()=>el("circle",{fill:"#8a94a3"},g));
+  el("rect",{x:330,y:-118,width:44,height:90,fill:"#1a1f27",stroke:C.brown,"stroke-width":3},g);
+  let d="M0 0";for(let i=0;i<4;i++){const x=i*105;d+=` L${x} -45 L${x+105} 0`;}d+=" Z";
+  el("path",{d,fill:"#1a1f27",stroke:C.brown,"stroke-width":3,"stroke-linejoin":"round"},g);
+  el("path",{d:"M28 -122 L132 -122 L102 -30 L58 -30 Z",fill:"#20262f",stroke:color,"stroke-width":3,"stroke-linejoin":"round"},g);
+  tx(g,80,-82,param,{"text-anchor":"middle","dominant-baseline":"central","font-family":MONO,"font-size":param.length>2?24:30,fill:C.yellow});
+  el("rect",{x:0,y:0,width:420,height:260,rx:6,fill:"#151a21",stroke:C.brown,"stroke-width":4},g);
+  el("rect",{x:420,y:192,width:62,height:60,fill:"#151a21",stroke:C.brown,"stroke-width":4},g);
+  tx(g,451,180,"return",{"text-anchor":"middle","font-style":"italic","font-size":22,fill:C.muted});
+  el("rect",{x:36,y:24,width:348,height:92,rx:10,fill:"#07090c",stroke:color,"stroke-width":2},g);
+  const disp=tx(g,210,72,"",{"text-anchor":"middle","dominant-baseline":"central","font-family":MONO,"font-size":30,fill:color});
+  const g1=gear(g,48,12,color),g2=gear(g,36,9,C.gold),g3=gear(g,28,8,color);
+  const light=el("circle",{cx:394,cy:150,r:9},g);
+  return {g,update(t,running,ang,text,tc){
+    tf(g1,130,190,1,ang);tf(g2,206,190,1,-ang*48/36+10);tf(g3,264,190,1,ang*48/28);
+    light.setAttribute("fill",running?C.green:"#5a2a2a");
+    disp.textContent=text;disp.setAttribute("fill",tc||color);
+    smoke.forEach((c,i)=>{const ph=(t*.45+i/4)%1;c.setAttribute("cx",(352+14*Math.sin(ph*6+i)).toFixed(1));c.setAttribute("cy",(-128-ph*110).toFixed(1));
+      c.setAttribute("r",(9+18*ph).toFixed(1));op(c,(1-ph)*(running?.5:.25));});
+  }};
+}
+function feedPos(p,sx,sy,hx,hy){
+  if(p<.4){const q=ease(p/.4);return [lerp(sx,hx-200,q),sy,1,1];}
+  if(p<.8){const q=ease((p-.4)/.4);const x0=hx-200,y0=sy,cx=hx-120,cy=hy-170,ex=hx,ey=hy-30;
+    return [(1-q)*(1-q)*x0+2*(1-q)*q*cx+q*q*ex,(1-q)*(1-q)*y0+2*(1-q)*q*cy+q*q*ey,1,1];}
+  const q=ease((p-.8)/.2);return [hx,lerp(hy-30,hy+60,q),1-.6*q,1-q];
+}
+function chapter(g,num,name,sub){
+  const big=el("g",{},g);
+  tx(big,0,-100,num,{"text-anchor":"middle","font-size":38,"font-style":"italic",fill:C.blue});
+  const line=el("line",{y1:-70,y2:-70,stroke:C.blue,"stroke-width":2},big);
+  tx(big,0,20,name,{"text-anchor":"middle","font-size":116,"font-weight":600});
+  tx(big,0,88,sub,{"text-anchor":"middle","font-size":38,"font-style":"italic",fill:C.muted});
+  const small=el("g",{},g);
+  tx(small,70,92,num,{"font-size":34,"font-style":"italic",fill:C.blue});
+  tx(small,104,92,name,{"font-size":34,"font-style":"italic",fill:C.muted});
+  return t=>{const a=P(t,0,.8),b=P(t,2.2,3);op(big,a*(1-b));tf(big,800,430-b*60,1-.15*b);op(small,b);
+    line.setAttribute("x1",(-150*a).toFixed(1));line.setAttribute("x2",(150*a).toFixed(1));};
+}
+
+/* ---------- extra kit ---------- */
+function spanSet(parts,n){let k=0;parts.forEach(([sp,s])=>{sp.textContent=s.slice(0,clamp(n-k,0,s.length));k+=s.length;});}
+function hlRect(p,x0,y,fs,a,b,color){const cw=fs*.6;const r=el("rect",{x:x0+a*cw-4,y:y-fs*.9,width:(b-a)*cw+8,height:fs*1.25,rx:7,fill:color,"fill-opacity":.16,stroke:color,"stroke-opacity":.7,"stroke-width":1.5},p);op(r,0);return r;}
+function phone(p,title){const g=el("g",{},p);
+  el("rect",{x:0,y:0,width:380,height:600,rx:44,fill:"#0b0e12",stroke:"#3a424f","stroke-width":4},g);
+  el("rect",{x:150,y:18,width:80,height:10,rx:5,fill:"#2a313b"},g);
+  tx(g,32,82,title,{"font-size":30,"font-weight":600});
+  el("line",{x1:30,x2:350,y1:104,y2:104,stroke:"#262c35","stroke-width":2},g);return g;}
+function bubble(p,text,color){const g=el("g",{},p);const w=text.length*10.6+36;
+  el("rect",{x:0,y:-26,width:w,height:52,rx:14,fill:color,"fill-opacity":.12,stroke:color,"stroke-width":2},g);
+  tx(g,18,1,text,{"dominant-baseline":"central","font-size":23});g.w=w;op(g,0);return g;}
+function chip(p,x,y,text,color){const g=el("g",{},p);const w=text.length*14.4+32;
+  el("rect",{x,y:y-30,width:w,height:44,rx:22,fill:color,"fill-opacity":.12,stroke:color,"stroke-width":2},g);
+  tx(g,x+16,y,text,{"font-family":MONO,"font-size":24,fill:color});op(g,0);return g;}
+function blankTag(p,w){const g=el("g",{},p);
+  el("path",{d:`M0 -28 H${w} L${w+26} 0 L${w} 28 H0 Z`,fill:"#15191f",stroke:C.tan,"stroke-width":2.5,"stroke-dasharray":"8 7","stroke-linejoin":"round"},g);
+  tx(g,w/2,2,"?",{"text-anchor":"middle","dominant-baseline":"central","font-family":MONO,"font-size":32,fill:C.yellow});g.hole=w+4;return g;}
+function numberLine(p,x0,y,ppk,max){const g=el("g",{},p);
+  el("line",{x1:x0-10,x2:x0+ppk*max+20,y1:y,y2:y,stroke:C.muted,"stroke-width":2.5},g);
+  for(let k=0;k<=max;k++){el("line",{x1:x0+k*ppk,x2:x0+k*ppk,y1:y-9,y2:y+9,stroke:C.muted,"stroke-width":2},g);
+    tx(g,x0+k*ppk,y+38,String(k),{"text-anchor":"middle","font-family":MONO,"font-size":22,fill:C.muted});}
+  tx(g,x0+ppk*max+34,y+7,"km",{"font-family":MONO,"font-size":22,fill:C.muted});return g;}
+function shakeX(t,a){return t>a?10*Math.sin((t-a)*40)*(1-lin(t,a,a+.7)):0;}
+
+/* ---------- episode 4 kit: terminal, tree, finder ---------- */
+const TW=14.4;
+function promptSegs(dir){return [["sam@laptop ",C.green],[dir,C.blue],[" % ",C.muted]];}
+function terminal(p,o){
+  const X=o.x,Y=o.y,W=o.w,H=o.h,max=o.max||15;const g=el("g",{},p);
+  el("rect",{x:X,y:Y,width:W,height:H,rx:14,fill:"#0a0c10",stroke:"#2c333d","stroke-width":2},g);
+  el("path",{d:`M${X} ${Y+42} H${X+W}`,stroke:"#20252d","stroke-width":2},g);
+  [C.red,C.gold,C.green].forEach((c,i)=>el("circle",{cx:X+24+i*22,cy:Y+21,r:7,fill:c,"fill-opacity":.85},g));
+  tx(g,X+W/2,Y+28,o.title||"sam — zsh",{"text-anchor":"middle","font-size":20,fill:C.muted});
+  const rows=[];for(let i=0;i<max;i++)rows.push(el("text",{x:X+24,y:Y+84+i*36,"font-family":MONO,"font-size":24,style:"white-space:pre"},g));
+  const cursor=el("rect",{width:13,height:28,fill:C.white},g);
+  let last=[];
+  return {g,rowY:i=>Y+84+i*36,x0:X+24,
+    render(t,evs,dir0){
+      let lines=[],dir=dir0,typing=false,lastCmdEnter=-99;
+      for(const ev of evs){
+        if(t<ev.t)break;
+        const td=ev.td!==undefined?ev.td:Math.max(.5,ev.cmd.length*.055);
+        let n,dur;
+        if(ev.hist){n=ev.cmd.length;dur=ev.hist;}
+        else if(ev.tab){n=t<ev.t+ev.tab[1]?Math.floor(ev.tab[0]*lin(t,ev.t,ev.t+ev.tab[1])):ev.cmd.length;dur=ev.tab[1]+.5;}
+        else{n=Math.floor(ev.cmd.length*lin(t,ev.t,ev.t+td));dur=td;}
+        const te=ev.t+dur+(ev.wait||.35);
+        lines.push(promptSegs(dir).concat([[ev.cmd.slice(0,n),C.white]]));
+        if(t<te){typing=true;break;}
+        lastCmdEnter=te;
+        if(ev.wipe)lines=[];
+        (ev.out||[]).forEach(o=>lines.push(typeof o==="string"?[[o,C.white]]:o));
+        if(ev.cd)dir=ev.cd;
+      }
+      if(!typing)lines.push(promptSegs(dir));
+      const vis=lines.slice(-max);
+      rows.forEach((r,i)=>{const segs=vis[i]||[];const key=JSON.stringify(segs);if(last[i]===key)return;last[i]=key;
+        while(r.firstChild)r.removeChild(r.firstChild);segs.forEach(([s,c])=>{const sp=el("tspan",{fill:c},r);sp.textContent=s;});});
+      const lr=vis.length-1,len=(vis[lr]||[]).reduce((a,s)=>a+s[0].length,0);
+      cursor.setAttribute("x",(X+24+len*TW+1).toFixed(1));cursor.setAttribute("y",Y+84+lr*36-22);
+      op(cursor,typing||Math.floor(t*2)%2===0?.85:0);
+      return {dir,rows:vis.length,offset:lines.length-vis.length};
+    }};
+}
+function keycap(p,label){const g=el("g",{},p);const w=Math.max(70,label.length*16+36);
+  el("rect",{x:-w/2,y:-34,width:w,height:68,rx:12,fill:"#1d232c",stroke:C.white,"stroke-width":2.5},g);
+  el("rect",{x:-w/2+5,y:-29,width:w-10,height:52,rx:9,fill:"none",stroke:"#3a424f","stroke-width":1.5},g);
+  tx(g,0,2,label,{"text-anchor":"middle","dominant-baseline":"central","font-family":MONO,"font-size":26,fill:C.white});op(g,0);return g;}
+function showKey(k,t,a,x,y){const q=lin(t,a,a+.3);tf(k,x,y,backOut(q)*(1+.1*Math.sin(Math.PI*lin(t,a+.3,a+.6))));op(k,(t>a?1:0)*(1-P(t,a+1.4,a+1.8)));}
+
+const NODES={
+  root:{l:"/",x:1230,y:205},users:{l:"Users",x:1230,y:280,p:"root"},sam:{l:"sam  (~)",x:1230,y:360,p:"users"},
+  desktop:{l:"Desktop",x:1060,y:460,p:"sam"},documents:{l:"Documents",x:1230,y:460,p:"sam"},downloads:{l:"Downloads",x:1400,y:460,p:"sam"},
+  app:{l:"workout_app",x:1230,y:565,p:"documents"},
+  readme:{l:"README.md",x:970,y:670,p:"app",k:C.muted},pace:{l:"pace.py",x:1100,y:670,p:"app",k:C.green},logrun:{l:"log_run.py",x:1230,y:670,p:"app",k:C.green},
+  data:{l:"data",x:1360,y:670,p:"app"},logs:{l:"logs",x:1490,y:670,p:"app"},
+  runs:{l:"runs.csv",x:1360,y:770,p:"data",k:C.gold},runlog:{l:"run_log.txt",x:1490,y:770,p:"logs",k:C.teal}};
+function nodeW(id){const n=NODES[id];return n.k?n.l.length*9.6+26:n.l.length*10.8+34;}
+function tree(p,reveal){
+  const g=el("g",{},p);const edges=el("g",{},g);const parts={};
+  Object.keys(NODES).forEach(id=>{const n=NODES[id];const w=nodeW(id);const ng=el("g",{},g);let box;
+    if(n.p){const pn=NODES[n.p];const e=el("path",{d:`M${pn.x} ${pn.y+18} C${pn.x} ${(pn.y+n.y)/2} ${n.x} ${(pn.y+n.y)/2} ${n.x} ${n.y-18}`,fill:"none",stroke:"#3a424f","stroke-width":2,pathLength:1,"stroke-dasharray":"1 1"},edges);parts[id+"_e"]=e;}
+    if(n.k){box=el("rect",{x:-w/2,y:-16,width:w,height:32,rx:4,fill:"#12161c",stroke:n.k,"stroke-width":2},ng);
+      el("path",{d:`M${w/2-10} -16 L${w/2} -6`,stroke:n.k,"stroke-width":2},ng);
+      tx(ng,0,1,n.l,{"text-anchor":"middle","dominant-baseline":"central","font-family":MONO,"font-size":16,fill:n.k});}
+    else{el("path",{d:`M${-w/2} -18 V-24 Q${-w/2} -27 ${-w/2+4} -27 H${-w/2+30} L${-w/2+36} -18`,fill:"#15222c",stroke:C.blue,"stroke-width":2},ng);
+      box=el("rect",{x:-w/2,y:-18,width:w,height:36,rx:7,fill:"#15222c",stroke:C.blue,"stroke-width":2},ng);
+      tx(ng,0,1,n.l,{"text-anchor":"middle","dominant-baseline":"central","font-family":MONO,"font-size":18,fill:C.blue});}
+    parts[id]={g:ng,box,col:n.k||C.blue};});
+  return {g,
+    update(t){Object.keys(NODES).forEach(id=>{const r=reveal[id];const q=r===undefined?1:lin(t,r,r+.45);const pr=parts[id];
+      tf(pr.g,NODES[id].x,NODES[id].y,backOut(q));op(pr.g,q>0?1:0);
+      if(parts[id+"_e"]){const e=parts[id+"_e"];e.setAttribute("stroke-dashoffset",(1-ease(q)).toFixed(3));op(e,q>0?1:0);}});},
+    hl(id,on,c){const b=parts[id].box;b.setAttribute("stroke",on?(c||C.yellow):parts[id].col);b.setAttribute("stroke-width",on?3.5:2);b.setAttribute("filter",on?"url(#glow)":"none");},
+    edgeHl(id,on){const e=parts[id+"_e"];if(e){e.setAttribute("stroke",on?C.yellow:"#3a424f");e.setAttribute("stroke-width",on?3.5:2);}}};
+}
+function pin(p){const g=el("g",{},p);
+  const ring=el("rect",{y:-26,height:52,rx:12,fill:"none",stroke:C.yellow,"stroke-width":3,filter:"url(#glow)"},g);
+  el("rect",{x:-58,y:-52,width:116,height:24,rx:12,fill:"#0e1116","fill-opacity":.92},g);
+  const lab=tx(g,0,-35,"you are here",{"text-anchor":"middle","font-size":20,"font-style":"italic",fill:C.yellow});
+  return {g,update(t,keys){let a=keys[0],b=keys[0],q=1;
+    for(let i=1;i<keys.length;i++){if(t>=keys[i][0]){a=keys[i-1];b=keys[i];q=P(t,b[0],b[0]+(b[2]||.7));}}
+    if(keys.length>1&&t<keys[1][0]){a=b=keys[0];q=1;}
+    const A=NODES[a[1]],B=NODES[b[1]];const x=lerp(A.x,B.x,q),y=lerp(A.y,B.y,q),w=lerp(nodeW(a[1]),nodeW(b[1]),q)+24;
+    ring.setAttribute("x",(-w/2).toFixed(1));ring.setAttribute("width",w.toFixed(1));tf(g,x,y);lab.setAttribute("x",0);
+    return b[1];}};}
+function trace(tr,t,t0,ids){ids.forEach((id,i)=>{const on=t>=t0+i*.3&&t<t0+i*.3+2.2;tr.hl(id,on);if(i>0)tr.edgeHl(id,on);});}
+function folderIcon(p,cx,cy,s){const g=el("g",{},p);tf(g,cx,cy,s||1);
+  el("path",{d:"M-32 -20 V-26 Q-32 -30 -28 -30 H-8 L-2 -22 H30 Q32 -22 32 -18 V20 Q32 24 28 24 H-28 Q-32 24 -32 20 Z",fill:C.blue,"fill-opacity":.35,stroke:C.blue,"stroke-width":2},g);return g;}
+function docIcon(p,cx,cy,c){const g=el("g",{},p);tf(g,cx,cy);
+  el("path",{d:"M-22 -30 H10 L22 -18 V30 H-22 Z",fill:"#1d232c",stroke:c,"stroke-width":2},g);el("path",{d:"M10 -30 V-18 H22",fill:"none",stroke:c,"stroke-width":2},g);
+  [-6,4,14].forEach(y=>el("line",{x1:-14,x2:12,y1:y,y2:y,stroke:c,"stroke-opacity":.5,"stroke-width":2},g));return g;}
+function finder(p,x,y,w,h,title,items){const g=el("g",{},p);
+  el("rect",{x,y,width:w,height:h,rx:14,fill:"#1b1f26",stroke:"#3a424f","stroke-width":2},g);
+  el("rect",{x:x+1,y:y+44,width:150,height:h-45,fill:"#15181e"},g);
+  el("path",{d:`M${x} ${y+44} H${x+w}`,stroke:"#2c333d","stroke-width":2},g);
+  [C.red,C.gold,C.green].forEach((c,i)=>el("circle",{cx:x+24+i*22,cy:y+22,r:7,fill:c,"fill-opacity":.85},g));
+  tx(g,x+w/2,y+29,title,{"text-anchor":"middle","font-size":22,"font-weight":600});
+  tx(g,x+20,y+84,"Favourites",{"font-size":18,fill:C.muted});
+  ["Desktop","Documents","Downloads"].forEach((s,i)=>tx(g,x+28,y+120+i*34,s,{"font-size":20,fill:i===1?C.white:C.muted}));
+  items.forEach(([n,c],i)=>{const cx=x+220+(i%4)*120,cy=y+120+Math.floor(i/4)*140;
+    if(c)docIcon(g,cx,cy,c);else folderIcon(g,cx,cy);
+    tx(g,cx,cy+58,n,{"text-anchor":"middle","font-family":MONO,"font-size":16});});
+  return g;}
+const APP_ITEMS=[["README.md",C.muted],["data",null],["log_run.py",C.green],["pace.py",C.green]];
+
+/* ---------- scenes ---------- */
+const scenes=[];
+const TERM={x:60,y:150,w:800,h:680,max:15};
+
+/* 0: cold open */
+scenes.push({name:"Cold open",dur:12,beats:[
+  [0,"This is our workout app's folder, the way you usually see it: icons you click."],
+  [3.5,"Here's the very same folder in the terminal. Same files, but you type instead of click."],
+  [7.6,"Week four: finding your way around the command line."]
+],build(g){
+  const f=finder(g,100,220,620,430,"workout_app",APP_ITEMS);op(f,0);
+  const term=terminal(g,{x:840,y:220,w:660,h:430,max:9});op(term.g,0);
+  const evs=[{t:4.2,cmd:"ls",out:["README.md  data  log_run.py  pace.py"]}];
+  const eq=tx(g,780,700,"same folder, two views",{"text-anchor":"middle","font-size":34,"font-style":"italic",fill:C.yellow});
+  const ttl=el("g",{},g);op(ttl,0);
+  tx(ttl,800,330,"Week 4",{"text-anchor":"middle","font-size":40,"font-style":"italic",fill:C.blue});
+  const rule=el("line",{y1:360,y2:360,stroke:C.blue,"stroke-width":2},ttl);
+  tx(ttl,800,462,"Find your way around",{"text-anchor":"middle","font-size":104,"font-weight":600});
+  const sub=tx(ttl,800,532,"the command line",{"text-anchor":"middle","font-size":40,"font-style":"italic",fill:C.muted});
+  return t=>{const out=1-P(t,7,7.8);
+    op(f,P(t,.3,1.2)*out);op(term.g,P(t,3.5,4)*out);term.render(t,evs,"workout_app");op(eq,P(t,5.4,6)*out);
+    const q=P(t,7.8,8.8);op(ttl,q);tf(ttl,0,20*(1-q));
+    rule.setAttribute("x1",(800-170*q).toFixed(1));rule.setAttribute("x2",(800+170*q).toFixed(1));op(sub,P(t,8.6,9.4));};
+}});
+
+/* 1: the prompt + pwd */
+scenes.push({name:"The prompt",dur:22,beats:[
+  [0,"Chapter one: reading the prompt."],
+  [3,"The prompt tells you who and where you are. sam is the user, laptop is the computer…"],
+  [5.4,"…the tilde is the folder you're in right now, and the percent sign means: ready for a command."],
+  [10.5,"Type a command, press Enter, and the output appears underneath. pwd means print working directory: where am I?"],
+  [14,"We're in /Users/sam. Follow the path down the tree: the top of everything, then Users, then sam."],
+  [18,"The tilde is just a nickname for that home folder."]
+],build(g){
+  const ch=chapter(g,"1","The Prompt","where am I?");
+  const big=el("g",{},g);const fs=64,cw=fs*.6,x0=800-14*cw/2;
+  const pt=el("text",{x:x0,y:420,"font-family":MONO,"font-size":fs,style:"white-space:pre"},big);
+  [["sam",C.green],["@",C.green],["laptop",C.green],[" ",C.white],["~",C.blue],[" ",C.white],["%",C.muted]].forEach(([s,c])=>{const sp=el("tspan",{fill:c},pt);sp.textContent=s;});
+  const parts=[[0,3,"the user",C.green,3],[4,10,"the computer",C.green,4],[11,12,"current folder",C.blue,5.4],[13,14,"ready for a command",C.muted,6.4]].map(([a,b,s,c,tt],i)=>{
+    const gg=el("g",{},big);const cx=x0+(a+b)/2*cw;el("line",{x1:x0+a*cw+4,x2:x0+b*cw-4,y1:442,y2:442,stroke:c,"stroke-width":3},gg);
+    el("line",{x1:cx,x2:cx,y1:446,y2:i%2?540:490,stroke:c,"stroke-width":1.5},gg);
+    tx(gg,cx,i%2?572:522,s,{"text-anchor":"middle","font-size":30,"font-style":"italic",fill:c});op(gg,0);gg.tt=tt;return gg;});
+  const term=terminal(g,TERM);op(term.g,0);
+  const tr=tree(g,{desktop:99,documents:99,downloads:99,app:99,readme:99,pace:99,logrun:99,data:99,logs:99,runs:99,runlog:99});op(tr.g,0);
+  const pn=pin(g);op(pn.g,0);
+  const evs=[{t:10.5,cmd:"pwd",out:["/Users/sam"]}];
+  const nick=tx(g,1230,470,"~  =  /Users/sam",{"text-anchor":"middle","font-family":MONO,"font-size":30,fill:C.yellow});
+  return t=>{
+    ch(t);op(big,P(t,3,3.5)*(1-P(t,9,9.6)));parts.forEach(p=>op(p,P(t,p.tt,p.tt+.4)));
+    op(term.g,P(t,9.4,10));op(tr.g,P(t,9.4,10));op(pn.g,P(t,9.6,10.2));
+    term.render(t,evs,"~");tr.update(t);pn.update(t,[[0,"sam"]]);
+    trace(tr,t,14,["root","users","sam"]);op(nick,P(t,18,18.5));
+  };
+}});
+
+/* 2: ls */
+scenes.push({name:"Look around",dur:16,beats:[
+  [0,"Chapter two: looking around."],
+  [3,"ls lists what's in the current folder. Right now: three folders, Desktop, Documents and Downloads."],
+  [9,"Give ls a folder name to peek inside without going there. Documents holds our workout_app."]
+],build(g){
+  const ch=chapter(g,"2","Look Around","ls lists what's here");
+  const term=terminal(g,TERM);const tr=tree(g,{desktop:4,documents:4.25,downloads:4.5,app:10.3,readme:99,pace:99,logrun:99,data:99,logs:99,runs:99,runlog:99});
+  const pn=pin(g);
+  const evs=[{t:3,cmd:"ls",out:["Desktop    Documents  Downloads"]},{t:9,cmd:"ls Documents",out:["workout_app"]}];
+  const peek=el("path",{d:"M1252 388 C1335 430 1335 530 1302 548",fill:"none",stroke:C.yellow,"stroke-width":2.5,"stroke-dasharray":"7 6","marker-end":"url(#arrY)"},g);
+  const pl=tx(g,1338,490,"peek",{"font-size":26,"font-style":"italic",fill:C.yellow});
+  return t=>{ch(t);const a=P(t,2.4,3);op(term.g,a);op(tr.g,a);op(pn.g,a);
+    term.render(t,evs,"~");tr.update(t);pn.update(t,[[0,"sam"]]);
+    tr.hl("documents",t>10&&t<13);op(peek,P(t,10,10.4)*(1-P(t,14,14.4)));op(pl,P(t,10.2,10.6)*(1-P(t,14,14.4)));};
+}});
+
+/* 3: cd + tab */
+scenes.push({name:"Walk in",dur:23,beats:[
+  [0,"Chapter three: walking in."],
+  [3,"cd means change directory. It walks you through a door, and the prompt updates to show where you are."],
+  [8,"Tab completion: type the first few letters, press Tab, and the terminal finishes the name. Fewer typos."],
+  [13,"Inside workout_app, ls shows the project: a README, two Python scripts and a data folder."],
+  [17.5,"And pwd gives the full address, all the way from the top."]
+],build(g){
+  const ch=chapter(g,"3","Walk In","cd changes directory");
+  const term=terminal(g,TERM);const tr=tree(g,{readme:14.3,pace:14.45,logrun:14.6,data:14.75,logs:99,runs:99,runlog:99});
+  const pn=pin(g);const tab=keycap(g,"Tab ⇥");
+  const evs=[{t:3,cmd:"cd Documents",cd:"Documents"},{t:8,cmd:"cd workout_app",tab:[5,1],cd:"workout_app"},
+    {t:13,cmd:"ls",out:["README.md  data  log_run.py  pace.py"]},{t:17.5,cmd:"pwd",out:["/Users/sam/Documents/workout_app"]}];
+  return t=>{ch(t);const a=P(t,2.4,3);op(term.g,a);op(tr.g,a);op(pn.g,a);
+    term.render(t,evs,"~");tr.update(t);pn.update(t,[[0,"sam"],[4.2,"documents"],[10,"app"]]);
+    showKey(tab,t,9,640,760);trace(tr,t,18.4,["root","users","sam","documents","app"]);};
+}});
+
+/* 4: .. and paths */
+scenes.push({name:"Walk out",dur:33,beats:[
+  [0,"Chapter four: walking out, and paths."],
+  [3,"Step into data and look around: one file, runs.csv."],
+  [8.5,"Two dots always mean the folder one level up: the door you came in through. cd .. takes us back to workout_app."],
+  [13,"Chain them with a slash. cd ../.. climbs two levels, all the way to home."],
+  [18,"A path can also go down several steps at once: Documents, then workout_app, then data."],
+  [23,"cd with a tilde takes you home from anywhere."],
+  [26.5,"A path that starts with a slash is absolute: a full address from the very top. It works no matter where you are."]
+],build(g){
+  const ch=chapter(g,"4","Walk Out","dot dot, and paths");
+  const term=terminal(g,TERM);const tr=tree(g,{runs:6.4,logs:99,runlog:99});const pn=pin(g);
+  const evs=[{t:3,cmd:"cd data",cd:"data"},{t:5,cmd:"ls",out:["runs.csv"]},{t:8.5,cmd:"cd ..",cd:"workout_app"},
+    {t:13,cmd:"cd ../..",cd:"~"},{t:18,cmd:"cd Documents/workout_app/data",cd:"data"},{t:23,cmd:"cd ~",cd:"~"},
+    {t:26.5,cmd:"cd /Users/sam/Documents/workout_app",cd:"workout_app"}];
+  const up=el("g",{},g);el("path",{d:"M1395 635 C1380 612 1300 596 1262 587",fill:"none",stroke:C.yellow,"stroke-width":3,"marker-end":"url(#arrY)"},up);
+  tx(up,1400,614,"..",{"font-family":MONO,"font-size":34,fill:C.yellow});
+  const lab=el("g",{},g);
+  tx(lab,1230,820,"relative: directions from here",{"text-anchor":"middle","font-size":26,"font-style":"italic",fill:C.muted});
+  tx(lab,1230,856,"absolute: a full address from /",{"text-anchor":"middle","font-size":26,"font-style":"italic",fill:C.yellow});
+  return t=>{ch(t);const a=P(t,2.4,3);op(term.g,a);op(tr.g,a);op(pn.g,a);
+    term.render(t,evs,"workout_app");tr.update(t);
+    pn.update(t,[[0,"app"],[3.9,"data"],[9.4,"app"],[14,"documents",.5],[14.5,"sam",.5],[20,"documents",.45],[20.45,"app",.45],[20.9,"data",.45],
+      [23.9,"sam",.9],[28.9,"root",.5],[29.4,"users",.4],[29.8,"sam",.4],[30.2,"documents",.4],[30.6,"app",.4]]);
+    op(up,P(t,9,9.4)*(1-P(t,12.4,12.8)));op(lab,P(t,27,27.6));};
+}});
+
+/* 5: open . */
+scenes.push({name:"open .",dur:15,beats:[
+  [0,"Chapter five: open dot."],
+  [3,"A single dot means right here. open dot shows the current folder in Finder."],
+  [8,"Same folder, same files: the terminal and Finder are two views of one place."]
+],build(g){
+  const ch=chapter(g,"5","open .","the current folder, in Finder");
+  const term=terminal(g,TERM);const tr=tree(g,{logs:99,runlog:99});const pn=pin(g);
+  const evs=[{t:3,cmd:"open ."}];
+  const dot=el("g",{},g);tx(dot,TERM.x+24+30.5*TW,330,".  =  here",{"text-anchor":"middle","font-family":MONO,"font-size":44,fill:C.yellow});
+  const f=finder(g,900,190,660,470,"workout_app",APP_ITEMS);
+  return t=>{ch(t);const a=P(t,2.4,3);op(term.g,a);op(tr.g,a);op(pn.g,a);
+    term.render(t,evs,"workout_app");tr.update(t);pn.update(t,[[0,"app"]]);tr.hl("app",t>4&&t<5.4);
+    op(dot,P(t,3.9,4.3)*(1-P(t,7.5,8)));
+    const q=P(t,4.6,5.4);op(f,q*(1-P(t,12.5,13.2)));tf(f,40*(1-q),30*(1-q));};
+}});
+
+/* 6: clear, cat, run, history */
+const PACE=["def calculate_pace(distance_km, duration_minutes):","    return duration_minutes / distance_km","","pace = calculate_pace(5.4, 32)","print(\"Sam ran at\", round(pace, 2), \"min/km\")"];
+scenes.push({name:"Run a script",dur:28,beats:[
+  [0,"Chapter six: reading and running a script."],
+  [3,"clear wipes the screen. Nothing is deleted, and you're still in the same folder."],
+  [6,"cat prints a file's contents, so we can read a script before running it. Here's pace.py, with the calculate_pace function from week two."],
+  [12,"python3, then the file name, runs it. Python reads the script from top to bottom: define the function, call it, print the result."],
+  [20.5,"The up arrow brings back your last command. Press Enter and it runs again."]
+],build(g){
+  const ch=chapter(g,"6","Run a Script","cat, python3, and history");
+  const term=terminal(g,TERM);const tr=tree(g,{logs:99,runlog:99,runs:99});const pn=pin(g);const upk=keycap(g,"↑");
+  const beam=el("rect",{x:TERM.x+10,width:TERM.w-20,height:36,rx:6,fill:C.blue,"fill-opacity":.12,stroke:C.blue,"stroke-opacity":.6},g);op(beam,0);
+  const old=[{t:-9,cmd:"cd Documents/workout_app",cd:"workout_app"},{t:-8,cmd:"ls",out:["README.md  data  log_run.py  pace.py"]},{t:-7,cmd:"open ."}];
+  const evs=old.concat([{t:3,cmd:"clear",wipe:true},{t:6,cmd:"cat pace.py",out:PACE},{t:12,cmd:"python3 pace.py",wait:4,out:[[["Sam ran at 5.93 min/km",C.teal]]]},
+    {t:20.5,cmd:"python3 pace.py",hist:.9,out:[[["Sam ran at 5.93 min/km",C.teal]]]}]);
+  return t=>{ch(t);const a=P(t,2.4,3);op(term.g,a);op(tr.g,a);op(pn.g,a);
+    term.render(t,evs,"~");tr.update(t);pn.update(t,[[0,"app"]]);
+    tr.hl("pace",(t>6.4&&t<8)||(t>13&&t<17));
+    const rows=[1,2,4,5],bt=lin(t,13.3,16.5);const ri=rows[Math.min(3,Math.floor(bt*4))];
+    beam.setAttribute("y",term.rowY(ri)-26);op(beam,t>13.3&&t<16.6?1:0);
+    showKey(upk,t,20.5,760,760);};
+}});
+
+/* 7: errors */
+scenes.push({name:"When it goes wrong",dur:26,beats:[
+  [0,"Chapter seven: when it goes wrong."],
+  [3,"Run pace.py from the home folder and Python can't find it. It only looks in the folder you're in, and pace.py lives in workout_app."],
+  [11,"A typo gives the same kind of error. There's no folder called workuot_app."],
+  [16,"Tab completion fills in the real name, so there's nothing to misspell."],
+  [20,"Right folder, same command: it works. When a file can't be found, check where you are with pwd and ls."]
+],build(g){
+  const ch=chapter(g,"7","When It Goes Wrong","reading the errors");
+  const term=terminal(g,TERM);const tr=tree(g,{logs:99,runlog:99,runs:99});const pn=pin(g);const tab=keycap(g,"Tab ⇥");
+  const R=C.red;
+  const evs=[{t:3,cmd:"python3 pace.py",out:[[["python3: can't open file '/Users/sam/pace.py':",R]],[["[Errno 2] No such file or directory",R]]]},
+    {t:11,cmd:"cd Documents/workuot_app",out:[[["cd: no such file or directory: Documents/workuot_app",R]]]},
+    {t:16,cmd:"cd Documents/workout_app",tab:[12,1.2],cd:"workout_app"},{t:20,cmd:"python3 pace.py",out:[[["Sam ran at 5.93 min/km",C.teal]]]}];
+  const here=el("path",{d:"M1200 392 C1060 470 1030 580 1090 648",fill:"none",stroke:C.red,"stroke-width":2.5,"stroke-dasharray":"7 6","marker-end":"url(#arr)"},g);
+  const hl=tx(g,1000,545,"it's over here",{"text-anchor":"middle","font-size":26,"font-style":"italic",fill:C.red});
+  const typo=hlRect(g,TERM.x+24,term.rowY(3),24,28,39,C.red);
+  return t=>{ch(t);const a=P(t,2.4,3);op(term.g,a);op(tr.g,a);op(pn.g,a);
+    term.render(t,evs,"~");tr.update(t);pn.update(t,[[0,"sam"],[18.1,"documents",.5],[18.6,"app",.5]]);
+    tr.hl("pace",t>4.4&&t<10,C.red);op(here,P(t,4.6,5.2)*(1-P(t,10,10.4)));op(hl,P(t,4.8,5.3)*(1-P(t,10,10.4)));
+    op(typo,P(t,12.6,13)*(1-P(t,15.6,16)));showKey(tab,t,17.2,640,760);tr.hl("pace",t>20.8&&t<22.5,C.teal);};
+}});
+
+/* 8: mkdir + running log_run */
+scenes.push({name:"Make something",dur:23,beats:[
+  [0,"Chapter eight: making something."],
+  [3,"mkdir, make directory, builds a new folder. We'll call it logs."],
+  [7,"ls confirms it's there."],
+  [10,"log_run.py works out Sam's pace and saves it as a file inside logs. Scripts can't save into a folder that doesn't exist yet, which is why we made it first."],
+  [15,"ls logs shows the new file…"],
+  [18,"…and cat shows what the script wrote."]
+],build(g){
+  const ch=chapter(g,"8","Make Something","mkdir, and a script that saves a file");
+  const term=terminal(g,TERM);const tr=tree(g,{runs:99,logs:4,runlog:12.4});const pn=pin(g);
+  const evs=[{t:3,cmd:"mkdir logs"},{t:7,cmd:"ls",out:["README.md  data  log_run.py  logs  pace.py"]},
+    {t:10,cmd:"python3 log_run.py",wait:1.2,out:[[["Saved logs/run_log.txt",C.teal]]]},{t:15,cmd:"ls logs",out:["run_log.txt"]},
+    {t:18,cmd:"cat logs/run_log.txt",out:["Sam: 5.4 km at 5.93 min/km"]}];
+  const d=el("circle",{r:10,fill:C.teal,filter:"url(#glow)"},g);
+  return t=>{ch(t);const a=P(t,2.4,3);op(term.g,a);op(tr.g,a);op(pn.g,a);
+    term.render(t,evs,"workout_app");tr.update(t);pn.update(t,[[0,"app"]]);
+    tr.hl("logs",t>4&&t<5.5);tr.hl("logrun",t>11&&t<12.6,C.teal);
+    const q=P(t,11.4,12.4);const A=NODES.logrun,B=NODES.runlog;tf(d,lerp(A.x,B.x,q),lerp(A.y,B.y,q)-Math.sin(Math.PI*q)*80);op(d,t>11.4&&t<12.5?1:0);
+    tr.hl("runlog",t>18.8&&t<21,C.teal);};
+}});
+
+/* 9: recap + exercises */
+scenes.push({name:"Your turn",dur:24,beats:[
+  [0,"Let's recap, and then it's your turn."],
+  [3,"Here's everything in one place: where am I, look around, move, open, read, run, make, and tidy up. Plus Tab to finish names and the up arrow for history."],
+  [11,"Exercise one: from your home folder, get to data with a single cd. Then come back up to workout_app with dot dot."],
+  [15,"Exercise two: run log_run.py from your home folder. Read the error, then fix it by moving to the right folder first."]
+],build(g){
+  const ch=chapter(g,"✦","Recap","and then, your turn");
+  const items=[["pwd","where am I?"],["ls","what's here?"],["cd folder","go into a folder"],["cd ..","go up one level"],["cd ~","go home"],["open .","open here in Finder"],
+    ["cat file","print a file"],["python3 file.py","run a script"],["mkdir name","make a folder"],["clear","wipe the screen"],["Tab","finish a name"],["↑","previous command"]];
+  const cards=items.map(([c,d],i)=>{const cg=el("g",{},g);const x=110+(i%3)*470,y=190+Math.floor(i/3)*150;
+    el("rect",{x,y,width:440,height:124,rx:16,fill:"#10141a",stroke:"#2a313b","stroke-width":2},cg);
+    tx(cg,x+26,y+54,c,{"font-family":MONO,"font-size":32,fill:C.yellow});tx(cg,x+26,y+96,d,{"font-size":26,"font-style":"italic",fill:C.muted});op(cg,0);return cg;});
+  const ex=el("g",{},g);op(ex,0);
+  [["Exercise 1: one cd down, dot dot back","From ~, reach data in a single cd,","then return to workout_app with .."],["Exercise 2: fix the error","Run python3 log_run.py from ~, read the error,","then cd to the right folder and run it again"]].forEach(([h,a,b],i)=>{
+    const x=100+i*720;el("rect",{x,y:210,width:680,height:520,rx:18,fill:"#10141a",stroke:C.blue,"stroke-opacity":.6,"stroke-width":2},ex);
+    tx(ex,x+40,270,h,{"font-size":34,"font-weight":600});
+    const tb=el("rect",{x:x+40,y:320,width:600,height:150,rx:12,fill:"#0a0c10",stroke:"#2c333d","stroke-width":2},ex);
+    const pl=el("text",{x:x+64,y:400,"font-family":MONO,"font-size":26,style:"white-space:pre"},ex);
+    promptSegs("~").forEach(([s,c])=>{const sp=el("tspan",{fill:c},pl);sp.textContent=s;});
+    el("rect",{x:x+64+15*15.6,y:378,width:14,height:30,fill:C.white},ex);
+    tx(ex,x+40,560,a,{"font-size":28,"font-style":"italic",fill:C.muted});tx(ex,x+40,600,b,{"font-size":28,"font-style":"italic",fill:C.muted});});
+  return t=>{ch(t);const out=1-P(t,10.2,10.8);
+    cards.forEach((c,i)=>{const q=P(t,3+i*.35,3.5+i*.35);op(c,q*out);tf(c,0,16*(1-q));});
+    const q=P(t,11,11.8);op(ex,q);tf(ex,0,20*(1-q));};
+}});
+/* ---------- player ---------- */
+const svg=document.getElementById("svg");
+const defs=el("defs",{},svg);
+defs.innerHTML='<filter id="glow" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="7" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>'+
+ '<radialGradient id="vig" cx="50%" cy="45%" r="75%"><stop offset="0%" stop-color="#161b23"/><stop offset="100%" stop-color="#090b0f"/></radialGradient>'+
+ '<marker id="arrY" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#FFE38A"/></marker><pattern id="bp" width="28" height="28" patternUnits="userSpaceOnUse"><path d="M28 0H0V28" fill="none" stroke="#58C4DD" stroke-opacity=".14" stroke-width="1"/></pattern>'+
+ '<marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#58C4DD"/></marker>';
+el("rect",{width:W,height:H,fill:"url(#vig)"},svg);
+const layer=el("g",{},svg);
+
+const offs=[];let total=0;scenes.forEach(s=>{offs.push(total);total+=s.dur;});
+const bounds=[];scenes.forEach((s,i)=>s.beats.forEach(b=>{if(offs[i]+b[0]>0)bounds.push(offs[i]+b[0]);}));bounds.push(total);bounds.sort((a,b)=>a-b);
+const nextBoundary=t=>{for(const b of bounds)if(b>t+1e-4)return b;return total;};
+const narration=window.TUTORIAL_NARRATION||null;
+
+const $=id=>document.getElementById(id);
+const playBtn=$("play"),fill=$("fill"),knob=$("knob"),timeEl=$("time"),scrub=$("scrub"),bigplay=$("bigplay"),chapNav=$("chapters");
+const speedBtn=$("speed"),narrBtn=$("narr"),stopBtn=$("stopbeats"),cuesBtn=$("cuesBtn"),cuesEl=$("cues"),cueNow=$("cueNow"),cueNext=$("cueNext"),cueState=$("cueState");
+const ICON_PLAY='<svg viewBox="0 0 24 24"><path d="M7 4l13 8-13 8z" fill="currentColor"/></svg>';
+const ICON_PAUSE='<svg viewBox="0 0 24 24"><path d="M6 4h4v16H6zM14 4h4v16h-4z" fill="currentColor"/></svg>';
+const ICON_REPLAY='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M4 12a8 8 0 1 0 2.4-5.7"/><path d="M4 4v5h5"/></svg>';
+
+let now=0,playing=false,cur=-1,upd=null,beatKey=null,lastTs=null,started=false;
+let speed=.5,stopBeats=false,heldAt=-1,cuesOn=true;
+let narrate=!!narration,narrationSynced=false,narrationDriving=false,audioCueIndex=0,lastAudioTime=0;
+const speeds=[.25,.5,.75,1,1.25,1.5];
+const narrationAudio=narration?new Audio(narration.audio):null;
+if(narrationAudio)narrationAudio.preload="auto";
+if(narrationAudio)narrationAudio.addEventListener("ended",()=>{if(playing&&narrate)finishNarratedPlayback();});
+
+function sceneAt(t){for(let i=scenes.length-1;i>=0;i--)if(t>=offs[i])return i;return 0;}
+function fmt(s){s=Math.max(0,Math.floor(s));return Math.floor(s/60)+":"+String(s%60).padStart(2,"0");}
+function cueWindow(key){
+  const parts=key.split(":").map(Number),i=parts[0],k=parts[1],beats=scenes[i].beats;
+  const start=offs[i]+(k>=0?beats[k][0]:0);
+  const end=k+1<beats.length?offs[i]+beats[k+1][0]:offs[i]+scenes[i].dur;
+  return [start,end];
+}
+const narrationTimeline=[];
+if(narration)scenes.forEach((scene,i)=>scene.beats.forEach((_,k)=>{
+  const key=i+":"+k,timing=narration.cues[key];if(!timing)return;
+  const visual=cueWindow(key);narrationTimeline.push({index:narrationTimeline.length,key,playStart:timing[0],audioStart:timing[1],audioEnd:timing[2],visualStart:visual[0],visualEnd:visual[1]});
+}));
+function pauseNarration(){if(narrationAudio)narrationAudio.pause();narrationDriving=false;}
+function stopNarration(reset){pauseNarration();if(reset){narrationSynced=false;audioCueIndex=0;lastAudioTime=0;}}
+function visualEntryAt(t){for(let i=narrationTimeline.length-1;i>=0;i--)if(t>=narrationTimeline[i].visualStart-1e-4)return narrationTimeline[i];return narrationTimeline[0];}
+function audioEntryAt(t){
+  while(audioCueIndex+1<narrationTimeline.length&&t>=narrationTimeline[audioCueIndex+1].playStart)audioCueIndex++;
+  while(audioCueIndex>0&&t<narrationTimeline[audioCueIndex].playStart)audioCueIndex--;
+  return narrationTimeline[audioCueIndex];
+}
+function seekNarrationToVisual(t){
+  if(!narrationAudio||!narrationTimeline.length)return;
+  const entry=visualEntryAt(t),span=Math.max(.001,entry.visualEnd-entry.visualStart);
+  const progress=clamp((t-entry.visualStart)/span);
+  const target=progress<.0001?entry.playStart:lerp(entry.audioStart,entry.audioEnd,progress);
+  pauseNarration();try{narrationAudio.currentTime=target;}catch(_){}
+  audioCueIndex=entry.index;lastAudioTime=target;narrationSynced=true;
+}
+function playNarration(){
+  if(!narrate||!narrationAudio||!playing)return;
+  if(!narrationSynced)seekNarrationToVisual(now);
+  narrationDriving=true;const promise=narrationAudio.play();
+  if(promise)promise.catch(()=>{narrationDriving=false;});
+}
+function finishNarratedPlayback(){pauseNarration();now=total;playing=false;narrationSynced=true;render();setPlayUI();}
+function syncVisualToNarration(){
+  const current=narrationAudio.currentTime;
+  if(stopBeats){const crossed=narrationTimeline.find(entry=>entry.visualEnd<total&&entry.audioEnd>lastAudioTime+.001&&entry.audioEnd<=current&&Math.abs(entry.visualEnd-heldAt)>1e-6);
+    if(crossed){narrationAudio.pause();try{narrationAudio.currentTime=crossed.audioEnd;}catch(_){}audioCueIndex=crossed.index;lastAudioTime=crossed.audioEnd;narrationSynced=true;narrationDriving=false;now=crossed.visualEnd-.001;heldAt=crossed.visualEnd;playing=false;render();setPlayUI();return false;}}
+  const entry=audioEntryAt(current),span=Math.max(.001,entry.audioEnd-entry.audioStart);
+  const progress=clamp((current-entry.audioStart)/span);now=lerp(entry.visualStart,entry.visualEnd-.001,progress);lastAudioTime=current;
+  if(entry.index===narrationTimeline.length-1&&current>=entry.audioEnd){finishNarratedPlayback();return false;}
+  render();return true;
+}
+
+const chapBtns=scenes.map((s,i)=>{const b=document.createElement("button");b.innerHTML=`<span class="n">${i===0?"▸":i===scenes.length-1?"✦":i}</span>${s.name}`;
+  b.addEventListener("click",()=>seek(offs[i]));chapNav.appendChild(b);return b;});
+scenes.forEach((s,i)=>{if(i===0)return;const d=document.createElement("div");d.className="tick";d.style.left=(offs[i]/total*100)+"%";scrub.querySelector(".track").appendChild(d);});
+scrub.setAttribute("aria-valuemax",String(Math.round(total)));
+
+function render(){
+  const tt=Math.min(now,total-1e-4);const i=sceneAt(tt);
+  if(i!==cur){cur=i;while(layer.firstChild)layer.removeChild(layer.firstChild);const g=el("g",{},layer);upd=scenes[i].build(g);
+    chapBtns.forEach((b,j)=>b.setAttribute("aria-current",j===i?"true":"false"));}
+  const lt=tt-offs[i];upd(lt);
+  const bs=scenes[i].beats;let k=0;for(let j=0;j<bs.length;j++)if(lt>=bs[j][0])k=j;
+  const key=i+":"+k;
+  if(key!==beatKey){beatKey=key;cueNow.textContent=bs[k][1];
+    const nxt=k+1<bs.length?bs[k+1][1]:(scenes[i+1]?scenes[i+1].beats[0][1]:"End of episode.");cueNext.textContent="Next: "+nxt;}
+  const pct=now/total*100;fill.style.width=pct+"%";knob.style.left=pct+"%";
+  timeEl.textContent=fmt(now)+" / "+fmt(total);scrub.setAttribute("aria-valuenow",String(Math.round(now)));
+}
+function setState(){
+  cueState.textContent=(!playing&&stopBeats&&heldAt>0&&Math.abs(now-heldAt)<.01)?"Held at the end of this beat. Press Space to continue.":"";
+}
+function setPlayUI(){playBtn.innerHTML=playing?ICON_PAUSE:(now>=total?ICON_REPLAY:ICON_PLAY);playBtn.setAttribute("aria-label",playing?"Pause":"Play");setState();}
+function setNarrUI(){narrBtn.textContent=narrate?"Narration: on":"Narration: off";narrBtn.setAttribute("aria-pressed",String(narrate));
+  speedBtn.setAttribute("aria-label",narrate?"Animation speed when narration is off":"Animation speed");
+  speedBtn.title=narrate?"Narration is the timing master; this speed applies when narration is off.":"Animation playback speed";
+  if(!narration){narrBtn.disabled=true;narrBtn.textContent="Narration unavailable";}}
+function tick(ts){
+  if(!playing){lastTs=null;return;}
+  if(narrate&&narrationAudio&&narrationDriving){lastTs=ts;if(syncVisualToNarration()&&playing)requestAnimationFrame(tick);return;}
+  if(lastTs==null)lastTs=ts;const dt=Math.min(.1,(ts-lastTs)/1000)*speed;lastTs=ts;
+  let next=now+dt;
+  if(stopBeats){const nb=nextBoundary(now);if(next>=nb&&nb<total&&Math.abs(nb-heldAt)>1e-6){now=nb-.001;heldAt=nb;playing=false;pauseNarration();render();setPlayUI();return;}}
+  now=next;
+  if(now>=total){now=total;playing=false;stopNarration(true);setPlayUI();}
+  render();
+  if(playing)requestAnimationFrame(tick);
+}
+function play(){
+  if(!started){started=true;bigplay.style.display="none";now=0;cur=-1;beatKey=null;}
+  if(now>=total){now=0;beatKey=null;narrationSynced=false;}
+  playing=true;render();if(narrate)playNarration();setPlayUI();lastTs=null;requestAnimationFrame(tick);
+}
+function pause(){playing=false;pauseNarration();setPlayUI();}
+function seek(t){if(!started){started=true;bigplay.style.display="none";}now=clamp(t,0,total);heldAt=-1;beatKey=null;render();if(narrate){seekNarrationToVisual(now);if(playing)playNarration();}else narrationSynced=false;setPlayUI();}
+
+playBtn.addEventListener("click",()=>playing?pause():play());
+bigplay.addEventListener("click",play);
+speedBtn.addEventListener("click",()=>{speed=speeds[(speeds.indexOf(speed)+1)%speeds.length];speedBtn.textContent=speed+"×";});
+narrBtn.addEventListener("click",()=>{narrate=!narrate;if(!narrate)stopNarration(true);else{narrationSynced=false;if(playing)playNarration();}setNarrUI();});
+stopBtn.addEventListener("click",()=>{stopBeats=!stopBeats;stopBtn.setAttribute("aria-pressed",String(stopBeats));stopBtn.textContent=stopBeats?"Stop at each beat: on":"Stop at each beat: off";setState();});
+cuesBtn.addEventListener("click",()=>{cuesOn=!cuesOn;cuesBtn.setAttribute("aria-pressed",String(cuesOn));cuesBtn.textContent=cuesOn?"Cues: on":"Cues: off";cuesEl.hidden=!cuesOn;});
+$("fs").addEventListener("click",()=>{const s=$("stage");try{if(document.fullscreenElement)document.exitFullscreen();else if(s.requestFullscreen)s.requestFullscreen();}catch(e){}});
+let dragging=false;
+function fromEvent(e){const r=scrub.getBoundingClientRect();return clamp((e.clientX-r.left)/r.width)*total;}
+scrub.addEventListener("pointerdown",e=>{dragging=true;try{scrub.setPointerCapture(e.pointerId);}catch(_){}seek(fromEvent(e));});
+scrub.addEventListener("pointermove",e=>{if(dragging)seek(fromEvent(e));});
+scrub.addEventListener("pointerup",()=>{dragging=false;});
+document.addEventListener("keydown",e=>{const tag=(e.target.tagName||"").toLowerCase();if(tag==="button"||tag==="summary")return;
+  if(e.code==="Space"||e.key==="k"){e.preventDefault();playing?pause():play();}
+  else if(e.key==="ArrowRight"){e.preventDefault();seek(now+5);}else if(e.key==="ArrowLeft"){e.preventDefault();seek(now-5);}
+  else if(e.key==="Home"){e.preventDefault();seek(0);}});
+
+/* poster frame */
+now=9.6;render();now=0;cueNow.textContent=scenes[0].beats[0][1];cueNext.textContent="Next: "+scenes[0].beats[1][1];
+fill.style.width="0%";knob.style.left="0%";timeEl.textContent=fmt(0)+" / "+fmt(total);
+setPlayUI();setNarrUI();
+})();
+</script>
+</body>
+</html>

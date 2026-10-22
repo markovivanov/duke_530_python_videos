@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0d1116">
+<meta name="description" content="The DesignTech 530 Python module: eight animated lessons built around prototyping a fitness app.">
+<title>DesignTech 530 — Python Fitness App Module</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme:dark;
+  --bg:#0d1116;--surface:#131920;--surface-2:#181f28;--ink:#ece8df;--muted:#9aa5af;
+  --line:#29323c;--cyan:#58c4dd;--gold:#f0ac5f;--green:#83c167;--purple:#c792ea;
+  --red:#fc6255;--serif:"Newsreader",Georgia,"Times New Roman",serif;
+  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;background:var(--bg)}
+body{margin:0;background:
+  radial-gradient(circle at 82% 8%,rgba(88,196,221,.08),transparent 27rem),
+  radial-gradient(circle at 10% 32%,rgba(199,146,234,.05),transparent 24rem),var(--bg);
+  color:var(--ink);font-family:var(--serif);line-height:1.5;min-width:300px;position:relative}
+body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.18;
+  background-image:linear-gradient(rgba(88,196,221,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(88,196,221,.08) 1px,transparent 1px);
+  background-size:64px 64px;mask-image:linear-gradient(to bottom,black,transparent 72%)}
+a{color:inherit;text-decoration:none}
+button,a{-webkit-tap-highlight-color:transparent}
+.skip{position:fixed;z-index:20;left:12px;top:10px;transform:translateY(-160%);background:var(--cyan);color:#071014;padding:8px 12px;border-radius:6px;font:700 13px var(--mono)}
+.skip:focus{transform:none}
+.shell{width:min(1180px,calc(100% - 40px));margin-inline:auto}
+.site-header{height:78px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:12px;font:600 12px var(--mono);letter-spacing:.1em;text-transform:uppercase}
+.brand-mark{display:grid;place-items:center;width:38px;height:34px;border:1px solid var(--cyan);border-radius:5px;color:var(--cyan);letter-spacing:-.08em;padding-right:1px}
+.brand-course{display:flex;align-items:baseline;gap:6px}.brand-course strong{color:var(--cyan);font-size:13px}
+.header-nav{display:flex;align-items:center;gap:24px;color:var(--muted);font:500 12px var(--mono);letter-spacing:.06em;text-transform:uppercase}
+.header-nav a{transition:color .2s ease}
+.header-nav a:hover{color:var(--ink)}
+.header-nav .start-link{color:var(--ink);border:1px solid var(--line);border-radius:999px;padding:9px 14px}
+.header-nav .start-link:hover{border-color:var(--cyan);color:var(--cyan)}
+
+.hero{padding:clamp(68px,10vw,126px) 0 clamp(72px,9vw,108px)}
+.hero-grid{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(420px,.95fr);gap:clamp(44px,7vw,92px);align-items:center}
+.eyebrow{display:flex;align-items:center;gap:12px;margin:0 0 22px;color:var(--cyan);font:600 12px var(--mono);letter-spacing:.12em;text-transform:uppercase}
+.eyebrow::before{content:"";width:38px;height:1px;background:var(--cyan)}
+h1{max-width:760px;margin:0;font-size:clamp(54px,6vw,78px);font-weight:500;line-height:.94;letter-spacing:-.04em}
+h1 em{color:var(--cyan);font-weight:400}
+.hero-copy{max-width:610px;margin:28px 0 0;color:#bdc5cc;font-size:clamp(19px,2vw,23px);line-height:1.5}
+.hero-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:34px}
+.button{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;padding:0 19px;border:1px solid var(--line);border-radius:8px;font:600 14px var(--mono);transition:transform .2s ease,border-color .2s ease,background .2s ease}
+.button.primary{background:var(--cyan);border-color:var(--cyan);color:#071014}
+.button:hover{transform:translateY(-2px);border-color:var(--cyan)}
+.button svg{width:17px;height:17px}
+.course-facts{display:flex;flex-wrap:wrap;gap:22px;margin:34px 0 0;padding:0;list-style:none;color:var(--muted);font:500 12px var(--mono);text-transform:uppercase;letter-spacing:.06em}
+.course-facts li{display:flex;align-items:center;gap:8px}
+.course-facts li::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--gold)}
+
+.hero-visual{position:relative;min-height:490px;isolation:isolate}
+.hero-visual::before{content:"530";position:absolute;z-index:-1;right:-4%;top:-28%;color:transparent;-webkit-text-stroke:1px rgba(88,196,221,.2);font:700 clamp(118px,15vw,210px)/1 var(--mono);letter-spacing:-.09em}
+.orbit{position:absolute;inset:4% 4% auto auto;width:82%;aspect-ratio:1;border:1px solid rgba(88,196,221,.15);border-radius:50%;z-index:-1}
+.orbit::before,.orbit::after{content:"";position:absolute;border:1px solid rgba(88,196,221,.09);border-radius:50%}
+.orbit::before{inset:12%}.orbit::after{inset:27%}
+.terminal{position:absolute;inset:0 7% auto 0;background:rgba(18,23,29,.94);border:1px solid #303946;border-radius:14px;box-shadow:0 38px 90px -42px #000;overflow:hidden;transform:rotate(-1.5deg)}
+.terminal-bar{height:44px;display:flex;align-items:center;gap:7px;padding:0 15px;border-bottom:1px solid var(--line);background:#10151b}
+.dot{width:8px;height:8px;border-radius:50%;background:#3c4652}.dot:first-child{background:var(--red)}.dot:nth-child(2){background:var(--gold)}.dot:nth-child(3){background:var(--green)}
+.terminal-name{margin-left:auto;color:#6f7b87;font:11px var(--mono)}
+.code{padding:25px 26px 30px;font:clamp(12px,1.25vw,15px)/1.9 var(--mono);white-space:nowrap}
+.code-line{display:block}.ln{display:inline-block;width:25px;color:#4e5965;user-select:none}.kw{color:var(--purple)}.name{color:#ffe38a}.num{color:var(--gold)}.str{color:var(--green)}.fn{color:var(--cyan)}.comment{color:#687582;font-style:italic}
+.cursor{display:inline-block;width:8px;height:1.1em;margin-left:3px;vertical-align:-.16em;background:var(--cyan);animation:blink 1.1s steps(1) infinite}
+.output{position:absolute;right:0;bottom:13px;width:76%;padding:23px 24px 21px;background:#eef1f3;color:#15212c;border-radius:12px;box-shadow:0 26px 70px -30px #000;transform:rotate(2deg)}
+.output-label{display:flex;justify-content:space-between;margin-bottom:12px;color:#60707c;font:600 10px var(--mono);letter-spacing:.1em;text-transform:uppercase}
+.pace{display:flex;align-items:baseline;gap:9px;margin-bottom:18px}.pace strong{font:600 47px/1 var(--serif);letter-spacing:-.04em}.pace span{color:#60707c;font:13px var(--mono)}
+.chart{display:flex;align-items:flex-end;gap:9px;height:76px;border-bottom:1px solid #c6ced5;padding:0 6px}
+.bar{flex:1;min-width:18px;height:var(--h);background:var(--c);border-radius:4px 4px 0 0;transform-origin:bottom;animation:grow .9s cubic-bezier(.2,.7,.2,1) both}.bar:nth-child(2){animation-delay:.08s}.bar:nth-child(3){animation-delay:.16s}.bar:nth-child(4){animation-delay:.24s}.bar:nth-child(5){animation-delay:.32s}
+.route-dot{position:absolute;right:5%;top:45%;width:14px;height:14px;border:3px solid var(--bg);border-radius:50%;background:var(--gold);box-shadow:0 0 0 1px var(--gold),0 0 30px var(--gold);animation:pulse 2s ease-in-out infinite}
+
+.section{padding:clamp(72px,9vw,112px) 0;border-top:1px solid var(--line)}
+.section-head{display:grid;grid-template-columns:160px minmax(0,720px);gap:28px;margin-bottom:44px;align-items:start}
+.kicker{margin:8px 0 0;color:var(--cyan);font:600 11px var(--mono);letter-spacing:.13em;text-transform:uppercase}
+h2{margin:0;font-size:clamp(38px,5vw,62px);font-weight:500;line-height:1.02;letter-spacing:-.03em}
+.section-intro{grid-column:2;margin:12px 0 0;color:var(--muted);font-size:19px;max-width:64ch}
+
+.primer{display:grid;grid-template-columns:126px 1fr auto;gap:28px;align-items:center;padding:28px 30px;border:1px solid #34404c;border-radius:14px;background:linear-gradient(110deg,rgba(88,196,221,.09),rgba(19,25,32,.75) 45%,rgba(240,172,95,.06));transition:border-color .2s ease,transform .2s ease}
+.primer:hover{border-color:var(--cyan);transform:translateY(-3px)}
+.primer-zero{color:var(--cyan);font:400 72px/1 var(--serif);letter-spacing:-.07em}
+.primer-label{margin:0 0 6px;color:var(--gold);font:600 11px var(--mono);text-transform:uppercase;letter-spacing:.12em}
+.primer h3{margin:0 0 7px;font-size:28px;font-weight:500}.primer p{margin:0;color:var(--muted);font-size:17px}
+.primer-go{display:flex;align-items:center;gap:11px;white-space:nowrap;font:600 13px var(--mono)}
+.arrow{display:grid;place-items:center;width:38px;height:38px;border:1px solid var(--line);border-radius:50%;font-size:18px;transition:background .2s ease,color .2s ease,transform .2s ease}
+.primer:hover .arrow,.lesson:hover .arrow{background:var(--cyan);border-color:var(--cyan);color:#071014;transform:translateX(3px)}
+
+.lessons{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:0;padding:0;list-style:none;counter-reset:lesson}
+.lesson{height:100%;position:relative;display:flex;flex-direction:column;min-height:285px;padding:26px 28px 24px;border:1px solid var(--line);border-radius:14px;background:linear-gradient(145deg,rgba(255,255,255,.025),transparent 42%),var(--surface);overflow:hidden;transition:transform .22s ease,border-color .22s ease,background .22s ease}
+.lesson:hover{transform:translateY(-4px);border-color:var(--lesson);background:var(--surface-2)}
+.lesson::after{content:"";position:absolute;width:190px;height:190px;right:-110px;top:-115px;border:1px solid color-mix(in srgb,var(--lesson) 30%,transparent);border-radius:50%;box-shadow:0 0 0 30px color-mix(in srgb,var(--lesson) 5%,transparent),0 0 0 60px color-mix(in srgb,var(--lesson) 3%,transparent)}
+.lesson-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:34px}
+.week{color:var(--lesson);font:600 11px var(--mono);letter-spacing:.12em;text-transform:uppercase}
+.duration{color:#76828d;font:500 11px var(--mono)}
+.lesson-code{margin-bottom:12px;color:var(--lesson);font:600 14px var(--mono)}
+.lesson h3{max-width:460px;margin:0;font-size:clamp(27px,3vw,36px);font-weight:500;line-height:1.08;letter-spacing:-.02em}
+.lesson-desc{max-width:52ch;margin:12px 0 24px;color:var(--muted);font-size:16px}
+.lesson-bottom{display:flex;align-items:end;justify-content:space-between;gap:18px;margin-top:auto}
+.tags{display:flex;flex-wrap:wrap;gap:7px}.tag{padding:5px 8px;border:1px solid var(--line);border-radius:999px;color:#8f9aa4;font:500 10px var(--mono)}
+.lesson .arrow{flex:0 0 auto;width:35px;height:35px;font-size:16px}
+
+.method{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--line)}
+.method-step{background:var(--surface);padding:30px}
+.method-n{display:block;margin-bottom:40px;color:var(--gold);font:600 11px var(--mono);letter-spacing:.1em}
+.method-step h3{margin:0 0 10px;font-size:26px;font-weight:500}.method-step p{margin:0;color:var(--muted);font-size:16px}
+
+.footer{padding:34px 0 48px;border-top:1px solid var(--line);color:#77838e}
+.footer-inner{display:flex;justify-content:space-between;align-items:center;gap:24px;font:500 11px var(--mono);letter-spacing:.05em;text-transform:uppercase}
+.footer a:hover{color:var(--cyan)}
+
+@keyframes blink{50%{opacity:0}}
+@keyframes grow{from{transform:scaleY(0)}}
+@keyframes pulse{50%{transform:scale(1.18);box-shadow:0 0 0 1px var(--gold),0 0 42px var(--gold)}}
+@media (max-width:900px){
+  .hero-grid{grid-template-columns:1fr}.hero-visual{min-height:450px;max-width:650px;width:100%;margin:4px auto 0}
+  .section-head{grid-template-columns:120px 1fr}.lessons{grid-template-columns:1fr}.lesson{min-height:250px}
+}
+@media (max-width:650px){
+  .shell{width:min(100% - 28px,1180px)}.site-header{height:66px}.header-nav>a:not(.start-link){display:none}
+  .hero{padding-top:56px}.hero-visual{min-height:365px}.terminal{inset:0 0 auto}.code{padding:19px 17px 24px;font-size:11px}.output{width:82%;padding:18px;bottom:0}.pace strong{font-size:38px}
+  .section-head{display:block}.kicker{margin:0 0 13px}.section-intro{margin-top:14px}.primer{grid-template-columns:76px 1fr;padding:22px}.primer-zero{font-size:54px}.primer-go{grid-column:2}.primer h3{font-size:24px}
+  .lesson{padding:22px;min-height:270px}.method{grid-template-columns:1fr}.method-n{margin-bottom:20px}.footer-inner{align-items:flex-start;flex-direction:column}
+}
+@media (max-width:430px){h1{font-size:49px}.course-facts{display:grid;gap:10px}.hero-visual{min-height:335px}.terminal-name{display:none}.code{font-size:9.5px}.output{width:88%}.primer{grid-template-columns:1fr}.primer-go{grid-column:1}.primer-zero{font-size:46px}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.cursor,.bar,.route-dot{animation:none}.button,.primer,.lesson,.arrow{transition:none}}
+</style>
+</head>
+<body>
+<a class="skip" href="#curriculum">Skip to curriculum</a>
+<header class="site-header shell">
+  <a class="brand" href="index.html" aria-label="DesignTech 530 Python module home"><span class="brand-mark">DT</span><span class="brand-course">DesignTech <strong>530</strong></span></a>
+  <nav class="header-nav" aria-label="Primary navigation">
+    <a href="#primer">Primer</a>
+    <a href="#curriculum">Modules</a>
+    <a class="start-link" href="week1-record-your-first-run%201.html">Start module</a>
+  </nav>
+</header>
+
+<main>
+  <section class="hero shell" aria-labelledby="hero-title">
+    <div class="hero-grid">
+      <div>
+        <p class="eyebrow">DesignTech 530 · Python module</p>
+        <h1 id="hero-title">DesignTech 530 Supplimental Python Tutorials</h1>
+        <p class="hero-copy">A visual course companion for DesignTech 530. Learn Python by prototyping one fitness app—from a single recorded run to a chart that communicates a week of activity.</p>
+        <div class="hero-actions">
+          <a class="button primary" href="week1-record-your-first-run%201.html">Start the Python module <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+          <a class="button" href="#curriculum">View the sequence</a>
+        </div>
+        <ul class="course-facts" aria-label="Course facts">
+          <li>8 studio lessons</li><li>39 min narrated</li><li>1 evolving prototype</li>
+        </ul>
+      </div>
+
+      <div class="hero-visual" aria-label="Illustration of Python code turning a run into a pace chart">
+        <div class="orbit" aria-hidden="true"></div>
+        <div class="terminal">
+          <div class="terminal-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="terminal-name">dt530 / fitness_app.py</span></div>
+          <div class="code" aria-hidden="true">
+            <span class="code-line"><span class="ln">1</span><span class="name">distance_km</span> = <span class="num">5.4</span></span>
+            <span class="code-line"><span class="ln">2</span><span class="name">minutes</span> = <span class="num">32</span></span>
+            <span class="code-line"><span class="ln">3</span><span class="name">pace</span> = <span class="name">minutes</span> / <span class="name">distance_km</span></span>
+            <span class="code-line"><span class="ln">4</span></span>
+            <span class="code-line"><span class="ln">5</span><span class="kw">if</span> <span class="name">pace</span> &lt; <span class="num">6</span>:</span>
+            <span class="code-line"><span class="ln">6</span>&nbsp;&nbsp;<span class="fn">print</span>(<span class="str">"Strong run."</span>)<span class="cursor"></span></span>
+          </div>
+        </div>
+        <div class="output" aria-hidden="true">
+          <div class="output-label"><span>Prototype / Week 08</span><span>5 runs</span></div>
+          <div class="pace"><strong>5:56</strong><span>min / km</span></div>
+          <div class="chart"><span class="bar" style="--h:52%;--c:#58c4dd"></span><span class="bar" style="--h:78%;--c:#f0ac5f"></span><span class="bar" style="--h:61%;--c:#83c167"></span><span class="bar" style="--h:92%;--c:#c792ea"></span><span class="bar" style="--h:70%;--c:#58c4dd"></span></div>
+        </div>
+        <span class="route-dot" aria-hidden="true"></span>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="primer" aria-labelledby="primer-title">
+    <div class="shell">
+      <div class="section-head">
+        <p class="kicker">Module 00 / Mental model</p>
+        <h2 id="primer-title">Before syntax, build a mental model.</h2>
+        <p class="section-intro">Start with a visual model of names, values, types and functions—the basic materials you will shape throughout the DesignTech 530 project.</p>
+      </div>
+      <a class="primer" href="python-visualized.html">
+        <span class="primer-zero" aria-hidden="true">00</span>
+        <span>
+          <span class="primer-label">DT 530 visual primer · 3:43</span>
+          <h3>Names, Shapes &amp; Machines</h3>
+          <p>Variables become name tags. Data types become materials. Functions become little factories.</p>
+        </span>
+        <span class="primer-go">Watch primer <span class="arrow" aria-hidden="true">→</span></span>
+      </a>
+    </div>
+  </section>
+
+  <section class="section" id="curriculum" aria-labelledby="curriculum-title">
+    <div class="shell">
+      <div class="section-head">
+        <p class="kicker">DT 530 / Module sequence</p>
+        <h2 id="curriculum-title">One prototype, eight design decisions.</h2>
+        <p class="section-intro">Each lesson adds a new capability to the same fitness app. Together they connect programming fundamentals to prototyping, systems thinking and visual communication.</p>
+      </div>
+
+      <ol class="lessons">
+        <li><a class="lesson" style="--lesson:#58c4dd" href="week1-record-your-first-run%201.html">
+          <span class="lesson-top"><span class="week">Week 01</span><span class="duration">5:42 narrated</span></span>
+          <span class="lesson-code">run_distance = 5.4</span>
+          <h3>Record your first run</h3>
+          <p class="lesson-desc">Give Python its first instructions, store workout facts as variables, calculate a result and print a run summary.</p>
+          <span class="lesson-bottom"><span class="tags"><span class="tag">print</span><span class="tag">variables</span><span class="tag">types</span></span><span class="arrow" aria-hidden="true">→</span></span>
+        </a></li>
+
+        <li><a class="lesson" style="--lesson:#f0ac5f" href="week2-calculate-running-pace%201.html">
+          <span class="lesson-top"><span class="week">Week 02</span><span class="duration">5:33 narrated</span></span>
+          <span class="lesson-code">def pace(distance, minutes):</span>
+          <h3>Calculate running pace</h3>
+          <p class="lesson-desc">Turn a useful calculation into a reusable function, then make sense of parameters, return values and scope.</p>
+          <span class="lesson-bottom"><span class="tags"><span class="tag">functions</span><span class="tag">return</span><span class="tag">scope</span></span><span class="arrow" aria-hidden="true">→</span></span>
+        </a></li>
+
+        <li><a class="lesson" style="--lesson:#c792ea" href="week3-fitness-profile-classes.html">
+          <span class="lesson-top"><span class="week">Week 03</span><span class="duration">6:06 narrated</span></span>
+          <span class="lesson-code">class FitnessProfile:</span>
+          <h3>Create a fitness profile</h3>
+          <p class="lesson-desc">Group data and behavior in a class, create individual profile objects and update them with methods.</p>
+          <span class="lesson-bottom"><span class="tags"><span class="tag">classes</span><span class="tag">objects</span><span class="tag">self</span></span><span class="arrow" aria-hidden="true">→</span></span>
+        </a></li>
+
+        <li><a class="lesson" style="--lesson:#83c167" href="week4-command-line.html">
+          <span class="lesson-top"><span class="week">Week 04</span><span class="duration">4:46 narrated</span></span>
+          <span class="lesson-code">$ python3 workout.py</span>
+          <h3>Find your way around</h3>
+          <p class="lesson-desc">Navigate the macOS terminal with confidence and run the fitness app’s Python files from the command line.</p>
+          <span class="lesson-bottom"><span class="tags"><span class="tag">pwd</span><span class="tag">ls</span><span class="tag">cd</span></span><span class="arrow" aria-hidden="true">→</span></span>
+        </a></li>
+
+        <li><a class="lesson" style="--lesson:#fc7a70" href="week5-conditionals.html">
+          <span class="lesson-top"><span class="week">Week 05</span><span class="duration">3:59 narrated</span></span>
+          <span class="lesson-code">if steps &gt;= goal:</span>
+          <h3>Respond to activity goals</h3>
+          <p class="lesson-desc">Use comparisons and conditional branches to make the app respond differently to different results.</p>
+          <span class="lesson-bottom"><span class="tags"><span class="tag">if</span><span class="tag">else</span><span class="tag">elif</span></span><span class="arrow" aria-hidden="true">→</span></span>
+        </a></li>
+
+        <li><a class="lesson" style="--lesson:#65d3b6" href="week6-loops.html">
+          <span class="lesson-top"><span class="week">Week 06</span><span class="duration">4:13 narrated</span></span>
+          <span class="lesson-code">for workout in week:</span>
+          <h3>Summarise a week</h3>
+          <p class="lesson-desc">Move through lists with loops, keep a running total and count only the workouts that match a condition.</p>
+          <span class="lesson-bottom"><span class="tags"><span class="tag">lists</span><span class="tag">for loops</span><span class="tag">range</span></span><span class="arrow" aria-hidden="true">→</span></span>
+        </a></li>
+
+        <li><a class="lesson" style="--lesson:#77a9ff" href="week7-files.html">
+          <span class="lesson-top"><span class="week">Week 07</span><span class="duration">4:46 narrated</span></span>
+          <span class="lesson-code">with open(path) as log:</span>
+          <h3>Save and reload a workout log</h3>
+          <p class="lesson-desc">Read workout data from disk, convert text into useful values and write a lasting weekly summary.</p>
+          <span class="lesson-bottom"><span class="tags"><span class="tag">files</span><span class="tag">paths</span><span class="tag">with open</span></span><span class="arrow" aria-hidden="true">→</span></span>
+        </a></li>
+
+        <li><a class="lesson" style="--lesson:#ffe38a" href="week8-charts.html">
+          <span class="lesson-top"><span class="week">Week 08</span><span class="duration">4:07 narrated</span></span>
+          <span class="lesson-code">plt.bar(days, distance)</span>
+          <h3>Chart weekly activity</h3>
+          <p class="lesson-desc">Bring in a library, turn matching lists into a bar chart and redraw it when the workout data changes.</p>
+          <span class="lesson-bottom"><span class="tags"><span class="tag">imports</span><span class="tag">matplotlib</span><span class="tag">charts</span></span><span class="arrow" aria-hidden="true">→</span></span>
+        </a></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="method-title">
+    <div class="shell">
+      <div class="section-head">
+        <p class="kicker">Studio practice</p>
+        <h2 id="method-title">Observe. Modify. Make.</h2>
+        <p class="section-intro">Use each lesson as a compact studio cycle between seeing a system, changing it and making the idea your own.</p>
+      </div>
+      <div class="method">
+        <div class="method-step"><span class="method-n">01 / OBSERVE</span><h3>See the system move</h3><p>Animation and optional narration reveal how code changes state over time.</p></div>
+        <div class="method-step"><span class="method-n">02 / MODIFY</span><h3>Interrogate the parts</h3><p>Pause at each beat, change the inputs and notice what the system does next.</p></div>
+        <div class="method-step"><span class="method-n">03 / MAKE</span><h3>Build your version</h3><p>Use each focused exercise to turn the pattern into a working prototype.</p></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="footer-inner shell"><span>DesignTech 530 · Python Fitness App Module</span><a href="#">Back to top ↑</a></div>
+</footer>
+</body>
+</html>

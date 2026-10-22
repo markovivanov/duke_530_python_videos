@@ -1,0 +1,745 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Week 3: Create a fitness profile with a class</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+  --page:#e9edf1;--ink:#15212c;--muted:#56636f;--line:#c9d1d9;--accent:#1f7ea0;--chip:#dde3e9;--panel:#f6f8fa;}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--page:#0d1116;--ink:#e4e8ec;--muted:#8c98a4;--line:#27303a;--accent:#58C4DD;--chip:#161c23;--panel:#12171d;}}
+:root[data-theme="dark"]{--page:#0d1116;--ink:#e4e8ec;--muted:#8c98a4;--line:#27303a;--accent:#58C4DD;--chip:#161c23;--panel:#12171d;}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--page);color:var(--ink);font-family:"Newsreader",Georgia,"Times New Roman",serif;line-height:1.5}
+.wrap{max-width:1180px;margin:0 auto;padding:clamp(14px,3vw,36px)}
+header{margin:0 0 20px}
+.home{display:inline-block;margin:0 0 10px;color:var(--accent);font:700 12px "JetBrains Mono",ui-monospace,Menlo,monospace;letter-spacing:.08em;text-transform:uppercase;text-decoration:none}
+.home:hover{text-decoration:underline}
+h1{font-size:clamp(34px,5.2vw,58px);font-weight:600;line-height:1.05;margin:0 0 8px;letter-spacing:-.01em}
+.lede{margin:0;color:var(--muted);font-size:clamp(17px,1.9vw,21px);max-width:64ch}
+.player{background:#0e1116;border-radius:14px;overflow:hidden;box-shadow:0 20px 60px -30px rgba(0,0,0,.6);border:1px solid #1d232c}
+.stage{position:relative;aspect-ratio:16/9;width:100%;background:#0b0e12}
+.stage svg{display:block;width:100%;height:100%}
+.stage:fullscreen{aspect-ratio:auto;width:100vw;height:100vh;background:#000}
+.bigplay{position:absolute;left:50%;top:78%;transform:translate(-50%,-50%);display:flex;align-items:center;gap:12px;
+  padding:12px 24px 12px 18px;border-radius:999px;border:2px solid #58C4DD;background:rgba(14,17,22,.85);color:#e9eef2;
+  font:600 clamp(15px,2vw,21px) "Newsreader",Georgia,serif;cursor:pointer;white-space:nowrap}
+.bigplay svg{width:24px;height:24px}
+.bigplay:hover{background:rgba(88,196,221,.15)}
+.controls{display:flex;align-items:center;gap:10px;padding:10px 14px;background:#12161c;color:#c7cfd6;flex-wrap:wrap}
+.controls button{background:none;border:1px solid #2c343f;color:#dfe5ea;border-radius:8px;height:36px;min-width:40px;padding:0 10px;
+  font:inherit;font-size:15px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;white-space:nowrap}
+.controls button:hover{border-color:#58C4DD}
+.controls button[aria-pressed="true"]{border-color:#58C4DD;color:#bfeaf5}
+.controls button svg{width:16px;height:16px}
+button:focus-visible,summary:focus-visible,.scrub:focus-visible{outline:2px solid #58C4DD;outline-offset:2px}
+.scrub{flex:1 1 220px;position:relative;height:30px;cursor:pointer;touch-action:none}
+.track{position:absolute;left:0;right:0;top:13px;height:4px;background:#2a313b;border-radius:2px}
+.fill{position:absolute;left:0;top:0;bottom:0;background:#58C4DD;border-radius:2px}
+.tick{position:absolute;top:-4px;width:2px;height:12px;background:#4a5563}
+.knob{position:absolute;top:8px;width:14px;height:14px;margin-left:-7px;border-radius:50%;background:#e9eef2;box-shadow:0 0 0 3px rgba(88,196,221,.35)}
+.time{font:14px "JetBrains Mono",ui-monospace,Menlo,monospace;color:#9aa6b1;white-space:nowrap}
+.cues{margin-top:14px;background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:10px;padding:14px 18px}
+#cueNow{margin:4px 0 6px;font-size:clamp(18px,2vw,23px);line-height:1.4;max-width:70ch}
+#cueNext{margin:0;color:var(--muted);font-size:16px;max-width:80ch}
+#cueState{margin:6px 0 0;color:var(--accent);font-size:16px;min-height:1em}
+.chapters{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0 0}
+.chapters button{font:inherit;font-size:16px;background:var(--chip);color:var(--ink);border:1px solid var(--line);border-radius:999px;padding:6px 14px;cursor:pointer}
+.chapters button .n{color:var(--accent);margin-right:6px;font-style:italic}
+.chapters button[aria-current="true"]{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+@media (max-width:640px){.time{order:3}.scrub{flex-basis:100%;order:9}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="home" href="index.html">← DesignTech 530</a>
+    <h1>Create a fitness profile</h1>
+    <p class="lede">Week 3 of Python for a fitness app, animated with optional narration: classes and objects, attributes, methods and self, creating and updating profiles, and AttributeError.</p>
+  </header>
+  <div class="player">
+    <div class="stage" id="stage">
+      <svg id="svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Animated lesson"></svg>
+      <button class="bigplay" id="bigplay"><svg viewBox="0 0 24 24"><path d="M7 4l13 8-13 8z" fill="#58C4DD"/></svg>Play</button>
+    </div>
+    <div class="controls">
+      <button id="play" aria-label="Play"></button>
+      <div class="scrub" id="scrub" tabindex="0" role="slider" aria-label="Seek" aria-valuemin="0"><div class="track"><div class="fill" id="fill"></div></div><div class="knob" id="knob"></div></div>
+      <span class="time" id="time">0:00</span>
+      <button id="speed" aria-label="Playback speed">0.5×</button>
+      <button id="narr" aria-label="Toggle AI-generated ElevenLabs narration" aria-pressed="true">Narration: on</button>
+      <button id="stopbeats" aria-pressed="false">Stop at each beat: off</button>
+      <button id="cuesBtn" aria-pressed="true">Cues: on</button>
+      <button id="fs" aria-label="Full screen, animation only"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
+    </div>
+  </div>
+  <section class="cues" id="cues" aria-live="polite">
+    <p id="cueNow"></p>
+    <p id="cueNext"></p>
+    <p id="cueState"></p>
+  </section>
+  <nav class="chapters" id="chapters" aria-label="Chapters"></nav>
+</div>
+<script src="assets/week3-narration/week3-narration-data.js"></script>
+<script>
+(function(){
+"use strict";
+const NS="http://www.w3.org/2000/svg";
+const W=1600,H=900;
+const C={bg:"#0e1116",blue:"#58C4DD",gold:"#F0AC5F",brown:"#8C6B4F",tan:"#D8C3A5",green:"#83C167",red:"#FC6255",teal:"#5CD0B3",purple:"#C792EA",yellow:"#FFE38A",white:"#ECE6DA",muted:"#9aa3ad"};
+const MONO="'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace";
+const SERIF="'Newsreader', Georgia, 'Times New Roman', serif";
+const SYN={kw:C.purple,fn:C.blue,num:C.gold,str:C.green,p:C.white,var:C.yellow,out:C.teal,err:C.red};
+/* ---------- tiny helpers ---------- */
+function el(tag,attrs,parent){const e=document.createElementNS(NS,tag);if(attrs)for(const k in attrs)e.setAttribute(k,attrs[k]);if(parent)parent.appendChild(e);return e;}
+function tx(parent,x,y,s,o){const t=el("text",Object.assign({x,y,fill:C.white,"font-family":SERIF,"font-size":32},o||{}),parent);t.textContent=s;return t;}
+const clamp=(v,a=0,b=1)=>Math.min(b,Math.max(a,v));
+const ease=x=>x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2;
+const lin=(t,a,b)=>clamp((t-a)/(b-a));
+const P=(t,a,b)=>ease(lin(t,a,b));
+const lerp=(a,b,p)=>a+(b-a)*p;
+function backOut(p){if(p<=0)return 0;if(p>=1)return 1;const c1=1.70158,c3=c1+1;return 1+c3*Math.pow(p-1,3)+c1*Math.pow(p-1,2);}
+function op(e,v){e.setAttribute("opacity",clamp(v).toFixed(3));}
+function tf(e,x,y,s,r){let str=`translate(${x.toFixed(1)},${y.toFixed(1)})`;if(s!==undefined&&s!==1)str+=` scale(${Math.max(0,s).toFixed(3)})`;if(r)str+=` rotate(${r.toFixed(1)})`;e.setAttribute("transform",str);}
+function overlap(t,runs){let s=0;runs.forEach(([a,b])=>{s+=clamp(t-a,0,b-a);});return s;}
+function inRuns(t,runs){return runs.some(([a,b])=>t>=a&&t<b);}
+
+/* ---------- drawing kit ---------- */
+function code(parent,x,y,lines,size){
+  size=size||36;const g=el("g",{},parent);const lh=size*1.45;const spans=[];let total=0;
+  lines.forEach((line,i)=>{
+    const t=el("text",{x,y:y+i*lh,"font-family":MONO,"font-size":size,style:"white-space:pre"},g);
+    line.forEach(([s,c])=>{const sp=el("tspan",{fill:SYN[c]||c},t);spans.push({sp,s,start:total});total+=s.length;});
+    total+=1;
+  });
+  return {g,total,reveal(n){n=Math.floor(n);spans.forEach(o=>{o.sp.textContent=o.s.slice(0,clamp(n-o.start,0,o.s.length));});}};
+}
+function codeLine(p,x,y,toks,fs,anchor){const t=el("text",{x,y,"font-family":MONO,"font-size":fs||30,"text-anchor":anchor||"start",style:"white-space:pre"},p);toks.forEach(([s,c])=>{const sp=el("tspan",{fill:SYN[c]||c},t);sp.textContent=s;});return t;}
+function token(parent,label,color,kind,r){
+  r=r||40;const g=el("g",{},parent);const fs=kind==="str"?r*.7:r*.85;
+  if(kind==="str"){const w=Math.max(r*2,label.length*fs*.62+36);el("rect",{x:-w/2,y:-r,width:w,height:r*2,rx:r,fill:color,"fill-opacity":.14,stroke:color,"stroke-width":3.5,filter:"url(#glow)"},g);g.halfW=w/2;}
+  else{el("circle",{r,fill:color,"fill-opacity":.14,stroke:color,"stroke-width":3.5,filter:"url(#glow)"},g);g.halfW=r;}
+  tx(g,0,2,label,{"text-anchor":"middle","dominant-baseline":"central","font-family":MONO,"font-size":fs,fill:color,"font-weight":700});
+  op(g,0);return g;
+}
+function nameTag(parent,name){
+  const g=el("g",{},parent);const fs=32;const w=name.length*fs*.62+44;
+  el("path",{d:`M0 -28 H${w} L${w+26} 0 L${w} 28 H0 Z`,fill:"#241c14",stroke:C.tan,"stroke-width":3,"stroke-linejoin":"round"},g);
+  el("circle",{cx:w+4,cy:0,r:6,fill:C.bg,stroke:C.tan,"stroke-width":2},g);
+  tx(g,w/2,2,name,{"text-anchor":"middle","dominant-baseline":"central","font-family":MONO,"font-size":fs,fill:C.yellow});
+  g.hole=w+4;op(g,0);return g;
+}
+function rope(parent){
+  const p=el("path",{fill:"none",stroke:C.tan,"stroke-width":3,"stroke-linecap":"round",pathLength:1,"stroke-dasharray":"1 1"},parent);
+  return {el:p,set(ax,ay,bx,by,draw,sag){sag=sag===undefined?40:sag;const dx=bx-ax;
+    p.setAttribute("d",`M${ax.toFixed(1)} ${ay.toFixed(1)} C${(ax+dx*.35).toFixed(1)} ${(ay+sag).toFixed(1)} ${(bx-dx*.35).toFixed(1)} ${(by+sag).toFixed(1)} ${bx.toFixed(1)} ${by.toFixed(1)}`);
+    p.setAttribute("stroke-dashoffset",(1-draw).toFixed(3));op(p,draw>0.001?1:0);}};
+}
+function cube(p,x,y,s,color){s=s||46;color=color||C.gold;const g=el("g",{},p);
+  el("rect",{x:0,y:0,width:s,height:s,rx:5,fill:color,"fill-opacity":.18,stroke:color,"stroke-width":3},g);
+  el("line",{x1:7,y1:8,x2:s-12,y2:8,stroke:color,"stroke-opacity":.6,"stroke-width":2,"stroke-linecap":"round"},g);
+  tf(g,x,y);return g;}
+function gearPath(r,n){const ri=r*.8,s=2*Math.PI/n;const pts=[];for(let i=0;i<n;i++){const a=i*s;pts.push([ri,a],[r,a+s*.15],[r,a+s*.45],[ri,a+s*.6]);}
+  return "M"+pts.map(([rr,a])=>`${(rr*Math.cos(a)).toFixed(1)} ${(rr*Math.sin(a)).toFixed(1)}`).join(" L")+" Z";}
+function gear(p,r,n,color){const g=el("g",{},p);el("path",{d:gearPath(r,n),fill:"#1c222c",stroke:color,"stroke-width":3,"stroke-linejoin":"round"},g);el("circle",{r:r*.28,fill:"none",stroke:color,"stroke-width":3},g);return g;}
+function belt(p,x1,x2,y){const g=el("g",{},p);
+  el("rect",{x:x1,y,width:x2-x1,height:16,rx:8,fill:"#1a1f27",stroke:"#3a424f","stroke-width":2},g);
+  const l=el("line",{x1:x1+8,x2:x2-8,y1:y+8,y2:y+8,stroke:"#4b5563","stroke-width":3,"stroke-dasharray":"14 12"},g);
+  return {g,update(t){l.setAttribute("stroke-dashoffset",(-t*50).toFixed(1));}};}
+function factory(p,name,param,color){
+  const g=el("g",{},p);
+  const smoke=[0,1,2,3].map(()=>el("circle",{fill:"#8a94a3"},g));
+  el("rect",{x:330,y:-118,width:44,height:90,fill:"#1a1f27",stroke:C.brown,"stroke-width":3},g);
+  let d="M0 0";for(let i=0;i<4;i++){const x=i*105;d+=` L${x} -45 L${x+105} 0`;}d+=" Z";
+  el("path",{d,fill:"#1a1f27",stroke:C.brown,"stroke-width":3,"stroke-linejoin":"round"},g);
+  el("path",{d:"M28 -122 L132 -122 L102 -30 L58 -30 Z",fill:"#20262f",stroke:color,"stroke-width":3,"stroke-linejoin":"round"},g);
+  tx(g,80,-82,param,{"text-anchor":"middle","dominant-baseline":"central","font-family":MONO,"font-size":param.length>2?24:30,fill:C.yellow});
+  el("rect",{x:0,y:0,width:420,height:260,rx:6,fill:"#151a21",stroke:C.brown,"stroke-width":4},g);
+  el("rect",{x:420,y:192,width:62,height:60,fill:"#151a21",stroke:C.brown,"stroke-width":4},g);
+  tx(g,451,180,"return",{"text-anchor":"middle","font-style":"italic","font-size":22,fill:C.muted});
+  el("rect",{x:36,y:24,width:348,height:92,rx:10,fill:"#07090c",stroke:color,"stroke-width":2},g);
+  const disp=tx(g,210,72,"",{"text-anchor":"middle","dominant-baseline":"central","font-family":MONO,"font-size":30,fill:color});
+  const g1=gear(g,48,12,color),g2=gear(g,36,9,C.gold),g3=gear(g,28,8,color);
+  const light=el("circle",{cx:394,cy:150,r:9},g);
+  return {g,update(t,running,ang,text,tc){
+    tf(g1,130,190,1,ang);tf(g2,206,190,1,-ang*48/36+10);tf(g3,264,190,1,ang*48/28);
+    light.setAttribute("fill",running?C.green:"#5a2a2a");
+    disp.textContent=text;disp.setAttribute("fill",tc||color);
+    smoke.forEach((c,i)=>{const ph=(t*.45+i/4)%1;c.setAttribute("cx",(352+14*Math.sin(ph*6+i)).toFixed(1));c.setAttribute("cy",(-128-ph*110).toFixed(1));
+      c.setAttribute("r",(9+18*ph).toFixed(1));op(c,(1-ph)*(running?.5:.25));});
+  }};
+}
+function feedPos(p,sx,sy,hx,hy){
+  if(p<.4){const q=ease(p/.4);return [lerp(sx,hx-200,q),sy,1,1];}
+  if(p<.8){const q=ease((p-.4)/.4);const x0=hx-200,y0=sy,cx=hx-120,cy=hy-170,ex=hx,ey=hy-30;
+    return [(1-q)*(1-q)*x0+2*(1-q)*q*cx+q*q*ex,(1-q)*(1-q)*y0+2*(1-q)*q*cy+q*q*ey,1,1];}
+  const q=ease((p-.8)/.2);return [hx,lerp(hy-30,hy+60,q),1-.6*q,1-q];
+}
+function chapter(g,num,name,sub){
+  const big=el("g",{},g);
+  tx(big,0,-100,num,{"text-anchor":"middle","font-size":38,"font-style":"italic",fill:C.blue});
+  const line=el("line",{y1:-70,y2:-70,stroke:C.blue,"stroke-width":2},big);
+  tx(big,0,20,name,{"text-anchor":"middle","font-size":116,"font-weight":600});
+  tx(big,0,88,sub,{"text-anchor":"middle","font-size":38,"font-style":"italic",fill:C.muted});
+  const small=el("g",{},g);
+  tx(small,70,92,num,{"font-size":34,"font-style":"italic",fill:C.blue});
+  tx(small,104,92,name,{"font-size":34,"font-style":"italic",fill:C.muted});
+  return t=>{const a=P(t,0,.8),b=P(t,2.2,3);op(big,a*(1-b));tf(big,800,430-b*60,1-.15*b);op(small,b);
+    line.setAttribute("x1",(-150*a).toFixed(1));line.setAttribute("x2",(150*a).toFixed(1));};
+}
+
+/* ---------- extra kit ---------- */
+function spanSet(parts,n){let k=0;parts.forEach(([sp,s])=>{sp.textContent=s.slice(0,clamp(n-k,0,s.length));k+=s.length;});}
+function hlRect(p,x0,y,fs,a,b,color){const cw=fs*.6;const r=el("rect",{x:x0+a*cw-4,y:y-fs*.9,width:(b-a)*cw+8,height:fs*1.25,rx:7,fill:color,"fill-opacity":.16,stroke:color,"stroke-opacity":.7,"stroke-width":1.5},p);op(r,0);return r;}
+function phone(p,title){const g=el("g",{},p);
+  el("rect",{x:0,y:0,width:380,height:600,rx:44,fill:"#0b0e12",stroke:"#3a424f","stroke-width":4},g);
+  el("rect",{x:150,y:18,width:80,height:10,rx:5,fill:"#2a313b"},g);
+  tx(g,32,82,title,{"font-size":30,"font-weight":600});
+  el("line",{x1:30,x2:350,y1:104,y2:104,stroke:"#262c35","stroke-width":2},g);return g;}
+function bubble(p,text,color){const g=el("g",{},p);const w=text.length*10.6+36;
+  el("rect",{x:0,y:-26,width:w,height:52,rx:14,fill:color,"fill-opacity":.12,stroke:color,"stroke-width":2},g);
+  tx(g,18,1,text,{"dominant-baseline":"central","font-size":23});g.w=w;op(g,0);return g;}
+function chip(p,x,y,text,color){const g=el("g",{},p);const w=text.length*14.4+32;
+  el("rect",{x,y:y-30,width:w,height:44,rx:22,fill:color,"fill-opacity":.12,stroke:color,"stroke-width":2},g);
+  tx(g,x+16,y,text,{"font-family":MONO,"font-size":24,fill:color});op(g,0);return g;}
+function blankTag(p,w){const g=el("g",{},p);
+  el("path",{d:`M0 -28 H${w} L${w+26} 0 L${w} 28 H0 Z`,fill:"#15191f",stroke:C.tan,"stroke-width":2.5,"stroke-dasharray":"8 7","stroke-linejoin":"round"},g);
+  tx(g,w/2,2,"?",{"text-anchor":"middle","dominant-baseline":"central","font-family":MONO,"font-size":32,fill:C.yellow});g.hole=w+4;return g;}
+function numberLine(p,x0,y,ppk,max){const g=el("g",{},p);
+  el("line",{x1:x0-10,x2:x0+ppk*max+20,y1:y,y2:y,stroke:C.muted,"stroke-width":2.5},g);
+  for(let k=0;k<=max;k++){el("line",{x1:x0+k*ppk,x2:x0+k*ppk,y1:y-9,y2:y+9,stroke:C.muted,"stroke-width":2},g);
+    tx(g,x0+k*ppk,y+38,String(k),{"text-anchor":"middle","font-family":MONO,"font-size":22,fill:C.muted});}
+  tx(g,x0+ppk*max+34,y+7,"km",{"font-family":MONO,"font-size":22,fill:C.muted});return g;}
+function shakeX(t,a){return t>a?10*Math.sin((t-a)*40)*(1-lin(t,a,a+.7)):0;}
+
+/* ---------- episode 3 kit ---------- */
+function card(p,o){o=o||{};const T=!!o.template;const g=el("g",{},p);
+  el("rect",{x:0,y:0,width:420,height:380,rx:22,fill:T?"url(#bp)":"#12171e",stroke:T?C.blue:C.tan,"stroke-width":3,"stroke-dasharray":T?"12 8":"none"},g);
+  if(T)el("rect",{x:0,y:0,width:420,height:380,rx:22,fill:C.blue,"fill-opacity":.05},g);
+  const head=tx(g,24,48,o.title||"FitnessProfile",{"font-family":o.mono?MONO:SERIF,"font-size":o.mono?26:28,"font-style":o.mono?"normal":"italic",fill:o.mono?C.yellow:(T?C.blue:C.muted)});
+  if(o.sub)tx(g,396,48,o.sub,{"text-anchor":"end","font-size":22,"font-style":"italic",fill:C.muted});
+  const rows={};
+  [["name",108],["height_m",178],["weight_kg",248]].forEach(([k,y])=>{
+    tx(g,24,y+7,k,{"font-family":MONO,"font-size":20,fill:C.muted});
+    const box=el("rect",{x:150,y:y-24,width:246,height:48,rx:10,fill:"#0b0e12",stroke:T?C.blue:"#3a424f","stroke-width":2,"stroke-dasharray":T?"6 5":"none"},g);
+    const v=tx(g,166,y+9,T?"?":"",{"font-family":MONO,"font-size":28,fill:T?C.muted:C.white});
+    rows[k]={box,v,y};});
+  const btn=el("rect",{x:24,y:296,width:372,height:60,rx:30,fill:C.purple,"fill-opacity":.1,stroke:C.purple,"stroke-width":2.5},g);
+  tx(g,46,334,"calculate_bmi()",{"font-family":MONO,"font-size":22,fill:C.purple});
+  const res=tx(g,378,334,"",{"text-anchor":"end","font-family":MONO,"font-size":26,fill:C.teal});
+  const api={g,rows,btn,res,head,
+    set(k,s,c){rows[k].v.textContent=s;rows[k].v.setAttribute("fill",c||C.white);},
+    hl(k,on){const b=rows[k].box;b.setAttribute("stroke",on?C.yellow:(T?C.blue:"#3a424f"));b.setAttribute("stroke-width",on?3.5:2);b.setAttribute("filter",on?"url(#glow)":"none");},
+    hlBtn(on){btn.setAttribute("filter",on?"url(#glow)":"none");btn.setAttribute("fill-opacity",on?.3:.1);},
+    slot(k,X,Y,s){return [X+273*s,Y+rows[k].y*s];}};
+  if(o.vals){api.set("name","\""+o.vals[0]+"\"",C.green);api.set("height_m",o.vals[1],C.gold);api.set("weight_kg",o.vals[2],C.gold);}
+  if(o.bmi)res.textContent=o.bmi;
+  return api;}
+function selfPtr(p,label){const g=el("g",{},p);
+  tx(g,0,-50,label||"self",{"text-anchor":"middle","font-family":MONO,"font-size":28,fill:C.yellow});
+  el("path",{d:"M0 -40 V-8",stroke:C.yellow,"stroke-width":3,"marker-end":"url(#arrY)"},g);op(g,0);return g;}
+function fly(tok,t,a,b,sx,sy,ex,ey,lift,fadeEnd){const q=P(t,a,b);
+  tf(tok,lerp(sx,ex,q),lerp(sy,ey,q)-Math.sin(Math.PI*q)*(lift||0));
+  op(tok,(t>a?1:0)*(fadeEnd?1-P(t,b-.12,b):1));}
+function scale3(g,X0,Y0,S0,X1,Y1,S1,q){tf(g,lerp(X0,X1,q),lerp(Y0,Y1,q),lerp(S0,S1,q));}
+
+/* ---------- scenes ---------- */
+const scenes=[];
+
+/* 0: cold open */
+scenes.push({name:"Cold open",dur:12,beats:[
+  [0,"Our fitness app needs a separate profile for each person."],
+  [3.5,"Each profile keeps a name, a height and a weight together, and can calculate a BMI from its own values."],
+  [7.6,"Week three: creating a fitness profile with a class."]
+],build(g){
+  const data=[["Sam","1.75","70.0","22.86"],["Alex","1.60","64.0","25.0"],["Jordan","1.80","81.0","25.0"]];
+  const cs=data.map((d,i)=>{const c=card(g,{vals:d.slice(0,3)});op(c.g,0);c.X=180+i*494;c.bmi=d[3];return c;});
+  const ttl=el("g",{},g);op(ttl,0);
+  tx(ttl,800,330,"Week 3",{"text-anchor":"middle","font-size":40,"font-style":"italic",fill:C.blue});
+  const rule=el("line",{y1:360,y2:360,stroke:C.blue,"stroke-width":2},ttl);
+  tx(ttl,800,462,"Create a fitness profile",{"text-anchor":"middle","font-size":100,"font-weight":600});
+  const sub=tx(ttl,800,532,"with a class",{"text-anchor":"middle","font-size":40,"font-style":"italic",fill:C.muted});
+  return t=>{const out=1-P(t,7,7.8);
+    cs.forEach((c,i)=>{const q=P(t,.3+i*.5,1.1+i*.5);op(c.g,q*out);tf(c.g,c.X,300+40*(1-q),.6);
+      const s=4+i*.6;c.hlBtn(t>s&&t<s+.8);c.res.textContent=t>s+.6?c.bmi:"";});
+    const q=P(t,7.8,8.8);op(ttl,q);tf(ttl,0,20*(1-q));
+    rule.setAttribute("x1",(800-170*q).toFixed(1));rule.setAttribute("x2",(800+170*q).toFixed(1));op(sub,P(t,8.6,9.4));};
+}});
+
+/* 1: familiar function + loose values */
+scenes.push({name:"Familiar function",dur:21,beats:[
+  [0,"Chapter one: start with a familiar function."],
+  [3,"BMI is weight in kilograms divided by height in metres, squared. Squared means height times itself."],
+  [5.5,"Picture it as a square: 1.75 metres on each side gives an area of 3.0625 square metres."],
+  [9,"Share 70 kilograms over that area: 22.86. That's Sam's BMI."],
+  [13.6,"But the app has to keep every person's measurements. As loose variables, which height belongs to whom?"],
+  [16.3,"What we want is to keep each person's values together, in one profile."]
+],build(g){
+  const ch=chapter(g,"1","A Familiar Function","BMI, and a storage problem");
+  const A=el("g",{},g);
+  const cb=code(A,110,200,[[["def ","kw"],["calculate_bmi","fn"],["(","p"],["weight_kg","var"],[", ","p"],["height_m","var"],["):","p"]],
+    [["    bmi","var"],[" = ","p"],["weight_kg","var"],[" / (","p"],["height_m","var"],[" * ","p"],["height_m","var"],[")","p"]],
+    [["    return ","kw"],["bmi","var"]]],26);
+  const cc=code(A,110,330,[[["sam_bmi","var"],[" = ","p"],["calculate_bmi","fn"],["(","p"],["70.0","num"],[", ","p"],["1.75","num"],[")","p"]]],26);
+  const outp=tx(A,110,392,"› Sam's BMI: 22.86",{"font-family":MONO,"font-size":28,fill:C.teal});
+  const sq=el("g",{},A);const X0=900,Y0=700,S=350;
+  const grid=el("g",{stroke:C.blue,"stroke-opacity":.18,"stroke-width":1},sq);
+  for(let k=1;k<7;k++){el("line",{x1:X0+k*50,x2:X0+k*50,y1:Y0-S,y2:Y0},grid);el("line",{x1:X0,x2:X0+S,y1:Y0-k*50,y2:Y0-k*50},grid);}
+  const area=el("rect",{x:X0,y:Y0-S,width:S,height:S,fill:C.blue,"fill-opacity":.14},sq);
+  const wfill=el("rect",{x:X0,y:Y0-S,width:S,height:S,fill:C.gold,"fill-opacity":.22},sq);
+  const edge=el("path",{d:`M${X0} ${Y0} H${X0+S} V${Y0-S} H${X0} Z`,fill:"none",stroke:C.blue,"stroke-width":4,pathLength:1,"stroke-dasharray":"1 1"},sq);
+  const lb=tx(sq,X0+S/2,Y0+40,"1.75 m",{"text-anchor":"middle","font-family":MONO,"font-size":26,fill:C.blue});
+  const ll=tx(sq,X0-16,Y0-S/2+8,"1.75 m",{"text-anchor":"end","font-family":MONO,"font-size":26,fill:C.blue});
+  const al=el("g",{},sq);tx(al,X0+S/2,Y0-S/2-8,"1.75 × 1.75",{"text-anchor":"middle","font-family":MONO,"font-size":28,fill:C.white});
+  tx(al,X0+S/2,Y0-S/2+32,"= 3.0625 m²",{"text-anchor":"middle","font-family":MONO,"font-size":28,fill:C.white});
+  const w70=token(A,"70 kg",C.gold,"str",40);
+  const eq=tx(A,X0+S/2,Y0+100,"70 ÷ 3.0625 = 22.86 kg per m²",{"text-anchor":"middle","font-family":MONO,"font-size":28,fill:C.gold});
+  const B=el("g",{},g);op(B,0);
+  const q1=tx(B,800,250,"Which height belongs to whom?",{"text-anchor":"middle","font-size":40,"font-style":"italic",fill:C.yellow});
+  const cS=card(B,{vals:["Sam","1.75","70.0"]}),cA=card(B,{vals:["Alex","1.60","64.0"]});
+  const chips=[["sam_name = \"Sam\"",cS,"name",0],["sam_height_m = 1.75",cS,"height_m",0],["sam_weight_kg = 70.0",cS,"weight_kg",0],
+    ["alex_name = \"Alex\"",cA,"name",1],["alex_height_m = 1.60",cA,"height_m",1],["alex_weight_kg = 64.0",cA,"weight_kg",1]].map(([s,c,k,j],i)=>{
+    const e=el("g",{},B);const w=s.length*13.2+30;
+    el("rect",{x:-w/2,y:-24,width:w,height:48,rx:24,fill:"#161b22",stroke:C.tan,"stroke-width":2},e);
+    tx(e,0,1,s,{"text-anchor":"middle","dominant-baseline":"central","font-family":MONO,"font-size":22,fill:C.yellow});
+    const pos=[[330,420],[1180,380],[760,560],[1260,650],[420,700],[900,760]][i];
+    return {e,c,k,j,pos};});
+  const CX=[260,920],CY=330,CS=.95;
+  return t=>{
+    ch(t);op(A,1-P(t,13,13.6));
+    cb.reveal(100*lin(t,3,5));
+    edge.setAttribute("stroke-dashoffset",(1-P(t,5.5,7)).toFixed(3));op(grid,P(t,6.5,7.2));
+    op(area,P(t,7,7.6));op(lb,P(t,6.6,7.1));op(ll,P(t,6.6,7.1));op(al,P(t,7.4,8));
+    const drop=P(t,9.4,10.4);tf(w70,X0+S/2,lerp(230,Y0-S/2,drop),1-.7*drop);op(w70,P(t,9,9.3)*(1-P(t,10.2,10.5)));
+    op(wfill,P(t,10.2,10.8));op(al,P(t,7.4,8)*(1-P(t,10.2,10.6)));op(eq,P(t,10.4,11));
+    cc.reveal(36*lin(t,11,12));op(outp,P(t,12.1,12.5));
+    op(B,P(t,13.6,14.2));op(q1,P(t,14.2,14.7)*(1-P(t,16,16.4)));
+    const snap=P(t,16.5,18);
+    [cS,cA].forEach((c,j)=>{op(c.g,P(t,16.2,16.8));tf(c.g,CX[j],CY,CS);
+      Object.keys(c.rows).forEach(k=>op(c.rows[k].v,P(t,17.7,18.1)));});
+    chips.forEach((o,i)=>{const [sx,sy]=o.c.slot(o.k,CX[o.j],CY,CS);const jx=Math.sin(t*1.3+i*2)*14,jy=Math.cos(t*1.1+i)*10;
+      tf(o.e,lerp(o.pos[0]+jx,sx,snap),lerp(o.pos[1]+jy,sy,snap),lerp(1,.6,snap));op(o.e,1-P(t,17.7,18.1));});
+  };
+}});
+
+/* 2: class vs object */
+scenes.push({name:"Class & object",dur:24,beats:[
+  [0,"Chapter two: a class and its objects."],
+  [3,"A class defines a kind of object. FitnessProfile is the template: which values a profile holds, and what it can do."],
+  [6,"An object, also called an instance, is one particular example made from that class. This one is Sam's profile."],
+  [10.5,"An attribute is a value stored on an object, like Sam's height."],
+  [13,"A method is a function defined inside the class. calculate_bmi works with this profile's own values."],
+  [16,"One class, as many objects as we need, each holding its own values."]
+],build(g){
+  const ch=chapter(g,"2","Class & Object","one template, many profiles");
+  const TX=110,TY=240,S=.85,OX=700;
+  const tpl=card(g,{template:true});op(tpl.g,0);tf(tpl.g,TX,TY,S);
+  const ghost=card(g,{template:true});op(ghost.g,0);
+  const sam=card(g,{vals:["Sam","1.75","70.0"],title:"Sam's profile"});op(sam.g,0);tf(sam.g,OX,TY,S);
+  const lc=tx(g,TX+178,212,"the class: a template",{"text-anchor":"middle","font-size":30,"font-style":"italic",fill:C.blue});
+  const lo=tx(g,OX+178,212,"an object: one profile",{"text-anchor":"middle","font-size":30,"font-style":"italic",fill:C.tan});
+  const la=el("g",{},g);el("path",{d:"M1040 391 H1110",stroke:C.yellow,"stroke-width":2.5},la);
+  tx(la,1122,384,"attribute",{"font-size":34,"font-weight":600,fill:C.yellow});tx(la,1122,418,"a value stored on the object",{"font-size":24,"font-style":"italic",fill:C.muted});
+  const lm=el("g",{},g);el("path",{d:"M1040 517 H1110",stroke:C.purple,"stroke-width":2.5},lm);
+  tx(lm,1122,510,"method",{"font-size":34,"font-weight":600,fill:C.purple});tx(lm,1122,544,"a function inside the class",{"font-size":24,"font-style":"italic",fill:C.muted});
+  const minis=[["Alex","1.60","64.0"],["Jordan","1.80","81.0"],["Casey","1.60","64.0"]].map((v,i)=>{const c=card(g,{vals:v,title:v[0]+"'s profile"});op(c.g,0);c.X=560+i*200;return c;});
+  const arrow=el("path",{d:"M475 420 H690",stroke:C.blue,"stroke-width":3,"stroke-dasharray":"10 8","marker-end":"url(#arr)"},g);
+  return t=>{
+    ch(t);op(tpl.g,P(t,3,3.8));op(lc,P(t,3.5,4));
+    const q=P(t,6,7.6);op(ghost.g,(t>6?1:0)*(1-P(t,7.3,7.8))*.9);tf(ghost.g,lerp(TX,OX,q),TY,S);
+    op(sam.g,P(t,7.2,7.8));op(lo,P(t,7.8,8.3));op(arrow,P(t,7.6,8)*(1-P(t,15.5,16)));
+    sam.hl("height_m",t>10.5&&t<13);op(la,P(t,10.5,11));
+    sam.hlBtn(t>13&&t<15.8);op(lm,P(t,13,13.5));
+    minis.forEach((c,i)=>{const s=16.4+i*.8;const k=P(t,s,s+.8);op(c.g,k);scale3(c.g,TX+60,TY+100,.3,c.X,660,.4,k);});
+  };
+}});
+
+/* 3: read the class */
+scenes.push({name:"Read the class",dur:29,beats:[
+  [0,"Chapter three: reading the class, one part at a time."],
+  [6.5,"class FitnessProfile names the class. Capital letters set class names apart from variable names."],
+  [9,"__init__, with two underscores on each side, is the initialisation method. Python calls it whenever we create a profile."],
+  [12,"self refers to the particular object being set up or used. self.height_m means the height stored on this profile."],
+  [15,"self.name = name stores the value we pass in as an attribute on the new object. Same for height and weight."],
+  [19,"calculate_bmi is a method, because it sits inside the class. It reads this object's attributes and returns a result."],
+  [23,"Watch the two indentation levels: methods sit four spaces in, and their instructions another four."]
+],build(g){
+  const ch=chapter(g,"3","Read the Class","one part at a time");
+  const fs=24,lh=fs*1.45,X=110,Y=196;const ly=i=>Y+i*lh;
+  const L=[[["class ","kw"],["FitnessProfile","fn"],[":","p"]],
+    [["    def ","kw"],["__init__","fn"],["(","p"],["self","kw"],[", ","p"],["name","var"],[", ","p"],["height_m","var"],[", ","p"],["weight_kg","var"],["):","p"]],
+    [["        self","kw"],[".","p"],["name","var"],[" = ","p"],["name","var"]],
+    [["        self","kw"],[".","p"],["height_m","var"],[" = ","p"],["height_m","var"]],
+    [["        self","kw"],[".","p"],["weight_kg","var"],[" = ","p"],["weight_kg","var"]],
+    [],
+    [["    def ","kw"],["calculate_bmi","fn"],["(","p"],["self","kw"],["):","p"]],
+    [["        bmi","var"],[" = ","p"],["self","kw"],[".weight_kg / (","p"],["self","kw"],[".height_m * ","p"],["self","kw"],[".height_m)","p"]],
+    [["        return ","kw"],["bmi","var"]]];
+  const H={cls:hlRect(g,X,ly(0),fs,0,20,C.blue),init:hlRect(g,X,ly(1),fs,8,16,C.blue),self:hlRect(g,X,ly(1),fs,17,21,C.yellow),
+    a1:hlRect(g,X,ly(2),fs,8,28,C.yellow),a2:hlRect(g,X,ly(3),fs,8,32,C.yellow),a3:hlRect(g,X,ly(4),fs,8,34,C.yellow)};
+  const mB=el("rect",{x:X+4*fs*.6-4,y:ly(6)-fs*.9,width:58*fs*.6+8,height:lh*2+fs*1.25,rx:8,fill:C.purple,"fill-opacity":.14,stroke:C.purple,"stroke-opacity":.7,"stroke-width":1.5},g);op(mB,0);
+  const cb=code(g,X,Y,L,fs);
+  const guides=el("g",{},g);[4,8].forEach((n,i)=>{const x=X+n*fs*.6-10;el("line",{x1:x,x2:x,y1:ly(1)-24,y2:ly(8)+10,stroke:i?C.teal:C.gold,"stroke-width":2.5,"stroke-dasharray":"6 6"},guides);
+    tx(guides,x+(i?8:-8),ly(8)+44,i?"level 2":"level 1",{"text-anchor":i?"start":"end","font-size":22,"font-style":"italic",fill:i?C.teal:C.gold});});
+  const tpl=card(g,{template:true});op(tpl.g,0);const CX=1080,CY=200,CS=.9;tf(tpl.g,CX,CY,CS);
+  const sp=selfPtr(g,"self: this profile");tf(sp,CX+189,CY);
+  const note=tx(g,110,640,"",{"font-size":36});const sub=tx(g,110,690,"",{"font-size":28,"font-style":"italic",fill:C.muted});
+  const N=[[6.5,"class FitnessProfile:","names the class, capitalised"],[9,"__init__","two underscores each side; runs when we create a profile"],
+    [12,"self","the particular object being set up or used"],[15,"self.name = name","stores the passed-in value on this object"],
+    [19,"calculate_bmi(self)","a method: a function inside the class"],[23,"Two indentation levels","methods 4 spaces in, their instructions 4 more"]];
+  return t=>{
+    ch(t);cb.reveal(330*lin(t,3,6));op(tpl.g,P(t,3.4,4.2));
+    const on=(a,b)=>t>=a&&t<b;
+    op(H.cls,on(6.5,9)?1:0);tpl.head.setAttribute("filter",on(6.5,9)?"url(#glow)":"none");
+    op(H.init,on(9,12)?1:0);op(H.self,on(12,15)?1:0);op(sp,on(12,15)?P(t,12,12.4):0);
+    op(H.a1,on(15,19)&&t>=15?1:0);op(H.a2,on(15.9,19)?1:0);op(H.a3,on(16.8,19)?1:0);
+    tpl.hl("name",on(15,19));tpl.hl("height_m",on(15.9,19));tpl.hl("weight_kg",on(16.8,19));
+    op(mB,on(19,23)?1:0);tpl.hlBtn(on(19,23));
+    op(guides,P(t,23,23.5));
+    let cur=null;N.forEach(n=>{if(t>=n[0])cur=n;});
+    note.textContent=cur?cur[1]:"";sub.textContent=cur?cur[2]:"";
+    note.setAttribute("font-family",cur&&cur[1].match(/[_(]/)?MONO:SERIF);note.setAttribute("fill",cur&&cur[1]==="self"?C.yellow:C.white);
+    const k=cur?P(t,cur[0],cur[0]+.4):0;op(note,k);op(sub,k);
+  };
+}});
+
+/* 4: create one profile */
+scenes.push({name:"Create a profile",dur:22,beats:[
+  [0,"Chapter four: creating one profile."],
+  [3,"Calling the class name creates an object. A fresh profile is stamped out from the template."],
+  [6.2,"Python runs __init__ and supplies self automatically: self is this brand-new profile."],
+  [8,"Our three arguments line up with the parameters after self: name, height, weight."],
+  [10,"self.name = name stores Sam on this profile. Then the height, 1.75, and the weight, 70.0."],
+  [15,"The variable sam_profile now refers to one complete object."]
+],build(g){
+  const ch=chapter(g,"4","Create a Profile","calling the class");
+  const cb=code(g,110,200,[[["sam_profile","var"],[" = ","p"],["FitnessProfile","fn"],["(","p"],["\"Sam\"","str"],[", ","p"],["1.75","num"],[", ","p"],["70.0","num"],[")","p"]]],26);
+  const TX=110,TY=330,TS=.6,CX=760,CY=320;
+  const tpl=card(g,{template:true});op(tpl.g,0);tf(tpl.g,TX,TY,TS);
+  const lt=tx(g,TX+126,TY-16,"the class",{"text-anchor":"middle","font-size":26,"font-style":"italic",fill:C.blue});
+  const ghost=card(g,{template:true});op(ghost.g,0);
+  const obj=card(g,{title:"a new FitnessProfile"});op(obj.g,0);tf(obj.g,CX,CY,1);
+  const sig=codeLine(g,CX,272,[["__init__","fn"],["(","p"],["self","kw"],[", ","p"],["name","var"],[", ","p"],["height_m","var"],[", ","p"],["weight_kg","var"],[")","p"]],24);
+  const selfHl=hlRect(g,CX,272,24,9,13,C.yellow);
+  const sp=el("path",{d:"M918 284 V314",stroke:C.yellow,"stroke-width":3,"marker-end":"url(#arrY)"},g);op(sp,0);
+  const auto=tx(g,CX+436,CY+40,"Python fills in self",{"font-size":24,"font-style":"italic",fill:C.yellow});
+  const asg=[["name",408],["height_m",478],["weight_kg",548]].map(([k,y])=>{const e=codeLine(g,1210,y,[["self","kw"],[".","p"],[k,"var"],[" = ","p"],[k,"var"]],22);op(e,0);return e;});
+  const toks=[token(g,"\"Sam\"",C.green,"str",26),token(g,"1.75",C.gold,"num",30),token(g,"70.0",C.gold,"num",30)];
+  const src=[601,703,796],par=[1005,1120,1271],keys=["name","height_m","weight_kg"],vals=["\"Sam\"","1.75","70.0"],cols=[C.green,C.gold,C.gold];
+  const r=rope(g);const tag=nameTag(g,"sam_profile");
+  return t=>{
+    ch(t);cb.reveal(47*lin(t,3,4.5));op(tpl.g,P(t,3,3.6));op(lt,P(t,3.2,3.8));
+    const q=P(t,4.8,6);op(ghost.g,(t>4.8?1:0)*(1-P(t,5.8,6.2)));scale3(ghost.g,TX,TY,TS,CX,CY,1,q);op(obj.g,P(t,5.8,6.2));
+    op(sig,P(t,6.2,6.6));op(sp,P(t,6.6,7)*(1-P(t,9.8,10.2)));op(selfHl,P(t,6.6,7)*(1-P(t,9.8,10.2)));op(auto,P(t,6.9,7.3)*(1-P(t,9.8,10.2)));
+    toks.forEach((k,i)=>{const s=10+i*1.4;
+      if(t<s){fly(k,t,8+i*.2,9.4+i*.2,src[i],236,par[i],236,60);op(k,t>8+i*.2?1:0);}
+      else{const [sx,sy]=obj.slot(keys[i],CX,CY,1);fly(k,t,s,s+1,par[i],236,sx,sy,40,true);}
+      op(asg[i],P(t,s-.2,s+.2));obj.hl(keys[i],t>s+.8&&t<s+1.6);
+      obj.set(keys[i],t>s+.9?vals[i]:"",cols[i]);});
+    const a=P(t,15,15.5);op(tag,a);tf(tag,300-30*(1-a),760);r.set(300+tag.hole,760,CX,CY+360,P(t,15.5,16.2),30);
+  };
+}});
+
+/* 5: dot notation and methods */
+scenes.push({name:"Dots & methods",dur:24,beats:[
+  [0,"Chapter five: dot notation and methods."],
+  [3,"A dot connects an object to one of its attributes. sam_profile.name follows the tag to this profile and reads the name stored there."],
+  [7,"sam_profile.height_m reads the height: 1.75 metres."],
+  [11,"Add parentheses and the dot calls a method instead. calculate_bmi runs with self set to Sam's profile…"],
+  [14.5,"…so self.weight_kg and self.height_m are Sam's own stored values. 70 divided by 1.75 squared: 22.86."],
+  [19.5,"Notice the call needs no measurement arguments. They're already stored in the object."]
+],build(g){
+  const ch=chapter(g,"5","Dots & Methods","reading attributes, calling methods");
+  const L1=code(g,110,190,[[["print","fn"],["(","p"],["\"Name:\"","str"],[", ","p"],["sam_profile","var"],[".name","var"],[")","p"]]],24);
+  const L2=code(g,110,228,[[["print","fn"],["(","p"],["\"Height:\"","str"],[", ","p"],["sam_profile","var"],[".height_m","var"],[", ","p"],["\"m\"","str"],[")","p"]]],24);
+  const L3=code(g,110,266,[[["sam_bmi","var"],[" = ","p"],["sam_profile","var"],[".calculate_bmi()","fn"]]],24);
+  const CX=720,CY=300;const c=card(g,{vals:["Sam","1.75","70.0"],title:"Sam's profile"});tf(c.g,CX,CY,1);op(c.g,0);
+  const r=rope(g);const tag=nameTag(g,"sam_profile");
+  const dot=el("circle",{r:11,fill:C.yellow,filter:"url(#glow)"},g);
+  const outs=["Name: Sam","Height: 1.75 m","Sam's BMI: 22.86"].map((s,i)=>tx(g,110,690+i*50,"› "+s,{"font-family":MONO,"font-size":28,fill:C.teal}));
+  const sp=selfPtr(g,"self = Sam's profile");tf(sp,CX+210,CY);
+  const reads=el("g",{},g);[178,248].forEach(y=>el("path",{d:`M${CX+396} ${CY+y} C${CX+470} ${CY+y} ${CX+470} ${CY+326} ${CX+396} ${CY+326}`,fill:"none",stroke:C.yellow,"stroke-width":2.5,"stroke-dasharray":"6 5"},reads));
+  const calc=tx(g,CX+210,CY+430,"",{"text-anchor":"middle","font-family":MONO,"font-size":24,fill:C.white});
+  const noarg=tx(g,CX+210,CY+480,"no measurement arguments needed",{"text-anchor":"middle","font-size":28,"font-style":"italic",fill:C.yellow});
+  const TX=180,TY=480;
+  function dotTo(t,a,b,ex,ey){if(t<a||t>b+.6){op(dot,0);return;}const q=P(t,a,b);const hx=TX+tag.hole,x1=CX;
+    let x,y;if(q<.5){const k=q/.5;x=lerp(hx,x1,k);y=TY;}else{const k=(q-.5)/.5;x=lerp(x1,ex,k);y=lerp(TY,ey,k);}
+    tf(dot,x,y);op(dot,1-P(t,b+.3,b+.6));}
+  return t=>{
+    ch(t);op(c.g,P(t,3,3.6));
+    const a=P(t,3,3.6);op(tag,a);tf(tag,TX,TY);r.set(TX+tag.hole,TY,CX,TY,a,10);
+    L1.reveal(38*lin(t,3,4));L2.reveal(46*lin(t,7,8));L3.reveal(46*lin(t,11,12.3));
+    const [nx,ny]=c.slot("name",CX,CY,1),[hx,hy]=c.slot("height_m",CX,CY,1);
+    if(t<7)dotTo(t,4.2,5.2,nx,ny);else if(t<11)dotTo(t,8.2,9.2,hx,hy);else dotTo(t,12.6,13.6,CX+210,CY+326);
+    c.hl("name",t>5.2&&t<6.6);c.hl("height_m",(t>9.2&&t<10.6)||(t>14.5&&t<17));c.hl("weight_kg",t>14.5&&t<17);
+    c.hlBtn(t>13.6&&t<18);op(sp,P(t,13.8,14.2)*(1-P(t,19,19.4)));op(reads,P(t,14.5,15)*(1-P(t,17.5,18)));
+    calc.textContent=t<16?"self.weight_kg / (self.height_m * self.height_m)":t<17?"70.0 / (1.75 * 1.75)":"22.857142857142858";op(calc,P(t,14.6,15));
+    c.res.textContent=t>17.2?"22.86":"";
+    op(outs[0],P(t,6,6.4));op(outs[1],P(t,9.8,10.2));op(outs[2],P(t,18,18.4));op(noarg,P(t,19.5,20));
+  };
+}});
+
+/* 6: second profile and update */
+scenes.push({name:"Two profiles",dur:31,beats:[
+  [0,"Chapter six: a second profile, and an update."],
+  [3,"Same class, second object. Alex's profile follows the same definition but stores its own values."],
+  [8,"The same method on Alex's object uses Alex's measurements: 25.0."],
+  [12.5,"Update one profile by assigning to its attribute. Sam's weight becomes 72.0."],
+  [16,"And Alex's weight? Still 64.0. Each object keeps its own values."],
+  [18.5,"The method reads the stored values every time it runs, so recalculating gives 23.51."],
+  [23,"But sam_bmi, calculated earlier, still holds 22.86. The new result lives in updated_sam_bmi."]
+],build(g){
+  const ch=chapter(g,"6","Two Profiles","separate objects, separate values");
+  const A=el("g",{},g);
+  const a1=code(A,110,180,[[["alex_profile","var"],[" = ","p"],["FitnessProfile","fn"],["(","p"],["\"Alex\"","str"],[", ","p"],["1.60","num"],[", ","p"],["64.0","num"],[")","p"]]],24);
+  const a2=code(A,110,218,[[["alex_bmi","var"],[" = ","p"],["alex_profile","var"],[".calculate_bmi()","fn"]]],24);
+  const B=el("g",{},g);op(B,0);
+  const b1=code(B,110,180,[[["sam_profile","var"],[".weight_kg","var"],[" = ","p"],["72.0","num"]]],24);
+  const b2=code(B,110,218,[[["updated_sam_bmi","var"],[" = ","p"],["sam_profile","var"],[".calculate_bmi()","fn"]]],24);
+  const S=.9,SX=180,AX=920,Y=280;
+  const cs=card(g,{vals:["Sam","1.75","70.0"],title:"sam_profile",mono:true,bmi:"22.86"});tf(cs.g,SX,Y,S);op(cs.g,0);
+  const ca=card(g,{title:"alex_profile",mono:true});tf(ca.g,AX,Y,S);op(ca.g,0);
+  const old=tx(g,0,0,"70.0",{"font-family":MONO,"font-size":28,fill:C.gold});
+  const [wx,wy]=cs.slot("weight_kg",SX,Y,S);
+  const still=tx(g,AX+189,Y+400,"still 64.0 ✓",{"text-anchor":"middle","font-size":30,"font-style":"italic",fill:C.green});
+  const r1=rope(g),r2=rope(g);const t1=nameTag(g,"sam_bmi"),t2=nameTag(g,"updated_sam_bmi");
+  const k1=token(g,"22.86",C.blue,"str",32),k2=token(g,"23.51",C.blue,"str",32);op(k1,1);op(k2,1);
+  return t=>{
+    ch(t);op(cs.g,P(t,3,3.6));op(A,1-P(t,12,12.5));op(B,P(t,12.5,12.8));
+    a1.reveal(49*lin(t,3,4.3));a2.reveal(38*lin(t,8,9));
+    const q=P(t,4.5,5.5);op(ca.g,q);tf(ca.g,AX,Y+30*(1-q),S);
+    ca.set("name",t>5.8?"\"Alex\"":"",C.green);ca.set("height_m",t>6.3?"1.60":"",C.gold);ca.set("weight_kg",t>6.8?"64.0":"",C.gold);
+    ca.hlBtn(t>9.3&&t<10.5);ca.res.textContent=t>10?"25.0":"";
+    b1.reveal(29*lin(t,12.5,13.5));b2.reveal(49*lin(t,18.5,19.8));
+    const f=P(t,14,15);tf(old,wx-107*S,wy+10*S+120*f);old.setAttribute("font-size",28*S);op(old,t>14&&t<15.1?1-f:0);
+    cs.set("weight_kg",t<14?"70.0":t<14.8?"":"72.0",C.gold);cs.hl("weight_kg",t>14.8&&t<16);
+    ca.hl("weight_kg",t>16&&t<18.2);op(still,P(t,16,16.5)*(1-P(t,22.5,23)));
+    cs.hlBtn(t>20.2&&t<21.4);cs.res.textContent=t<20.4?"22.86":t<20.9?"":"23.51";
+    [[t1,r1,k1,760,23],[t2,r2,k2,840,24]].forEach(([tg,rp,k,y,s])=>{const a=P(t,s,s+.5);op(tg,a);tf(tg,SX,y);op(k,a);tf(k,720,y);rp.set(SX+tg.hole,y,720-k.halfW,y,a,10);});
+  };
+}});
+
+/* 7: summary + AttributeError */
+scenes.push({name:"Summary & errors",dur:23,beats:[
+  [0,"Chapter seven: a profile summary, and a common error."],
+  [3,"Read the attributes, call the method, and we have a small profile card as text."],
+  [9.5,"Change sam_profile to alex_profile on every line, and the same code summarises Alex instead. Note that 1.60 prints as 1.6."],
+  [13.5,"Watch out: the name after the dot must exist on the object. sam_profile.weight looks for a weight slot, but there's only weight_kg."],
+  [17.5,"That's an AttributeError. Check the spelling against the class definition. Python even suggests the right name."]
+],build(g){
+  const ch=chapter(g,"7","Summary & Errors","reading a whole profile");
+  const mk=(v)=>[[["print","fn"],["(","p"],["\"Fitness profile:\"","str"],[", ","p"],[v,"var"],[".name","var"],[")","p"]],
+    [["print","fn"],["(","p"],["\"Height:\"","str"],[", ","p"],[v,"var"],[".height_m","var"],[", ","p"],["\"m\"","str"],[")","p"]],
+    [["print","fn"],["(","p"],["\"Weight:\"","str"],[", ","p"],[v,"var"],[".weight_kg","var"],[", ","p"],["\"kg\"","str"],[")","p"]],
+    [["current_bmi","var"],[" = ","p"],[v,"var"],[".calculate_bmi()","fn"]],
+    [["print","fn"],["(","p"],["\"BMI:\"","str"],[", ","p"],["round","fn"],["(","p"],["current_bmi","var"],[", ","p"],["2","num"],["))","p"]]];
+  const A=el("g",{},g);
+  const cS=code(A,110,220,mk("sam_profile"),22),cA=code(A,110,220,mk("alex_profile"),22);cA.reveal(999);
+  const panel=el("g",{},A);el("rect",{x:1000,y:190,width:500,height:290,rx:16,fill:"#07090c",stroke:"#2a313b","stroke-width":2},panel);
+  tx(panel,1024,228,"Output",{"font-size":24,"font-style":"italic",fill:C.muted});
+  const oS=["Fitness profile: Sam","Height: 1.75 m","Weight: 72.0 kg","BMI: 23.51"].map((s,i)=>tx(panel,1024,286+i*48,s,{"font-family":MONO,"font-size":28}));
+  const oA=["Fitness profile: Alex","Height: 1.6 m","Weight: 64.0 kg","BMI: 25.0"].map((s,i)=>tx(panel,1024,286+i*48,s,{"font-family":MONO,"font-size":28}));
+  const B=el("g",{},g);op(B,0);
+  const hlW=hlRect(B,110,420,34,18,24,C.red);
+  const e1=code(B,110,420,[[["print","fn"],["(","p"],["sam_profile","var"],[".weight","var"],[")","p"]]],34);
+  const CX=1080,CY=250,CS=.9;const c=card(B,{vals:["Sam","1.75","72.0"],title:"sam_profile",mono:true});tf(c.g,CX,CY,CS);
+  const err=el("g",{},B);
+  tx(err,110,530,"AttributeError: 'FitnessProfile' object has no attribute 'weight'.",{"font-family":MONO,"font-size":22,fill:C.red});
+  tx(err,110,566,"Did you mean: 'weight_kg'?",{"font-family":MONO,"font-size":22,fill:C.yellow});
+  const nope=tx(B,CX+189,CY+400,"no slot called weight",{"text-anchor":"middle","font-size":28,"font-style":"italic",fill:C.red});
+  return t=>{
+    ch(t);op(A,1-P(t,13,13.5));
+    cS.reveal(230*lin(t,3,5));const sw=P(t,9.5,10.5);op(cS.g,1-sw);op(cA.g,sw);
+    oS.forEach((e,i)=>op(e,P(t,5.4+i*.7,5.8+i*.7)*(1-sw)));oA.forEach((e,i)=>op(e,sw*P(t,10.5+i*.4,10.8+i*.4)));
+    op(B,P(t,13.5,14));e1.reveal(25*lin(t,13.8,14.6));
+    ["name","height_m","weight_kg"].forEach((k,i)=>c.hl(k,t>14.8+i*.5&&t<15.3+i*.5));
+    op(nope,P(t,16.4,16.8));op(hlW,P(t,16.6,17));
+    op(err,P(t,17.3,17.6));tf(err,shakeX(t,17.6),0);
+  };
+}});
+
+/* 8: recap and exercises */
+scenes.push({name:"Your turn",dur:24,beats:[
+  [0,"Let's recap, and then it's your turn."],
+  [3,"A class groups related data and behaviour. Each profile object has its own attributes. And a method uses self to work with the object it was called on."],
+  [10.4,"Exercise one: add two profiles. Create Jordan, 1.80 metres and 81 kilos, and Casey, 1.60 and 64. Call each one's BMI method."],
+  [14,"Exercise two: correct a measurement. Taylor's weight was entered as 80. Update it to 81, then calculate the BMI again."]
+],build(g){
+  const ch=chapter(g,"✦","Recap","and then, your turn");
+  const cx=[300,800,1300];const cols=cx.map(()=>el("g",{},g));
+  const i1=card(cols[0],{template:true});tf(i1.g,237,190,.3);
+  const i2=card(cols[1],{vals:["Sam","1.75","72.0"]});tf(i2.g,737,190,.3);
+  const sp=selfPtr(cols[2],"self");op(sp,1);tf(sp,1300,300);
+  const heads=["Class","Object","self"],subs=[["groups related data","and behaviour"],["its own attributes,","its own values"],["the object a method","is working on"]];
+  cols.forEach((c,i)=>{tx(c,cx[i],380,heads[i],{"text-anchor":"middle","font-size":46,"font-weight":600,"font-family":i===2?MONO:SERIF,fill:i===2?C.yellow:C.white});
+    subs[i].forEach((s,j)=>tx(c,cx[i],430+j*36,s,{"text-anchor":"middle","font-size":28,"font-style":"italic",fill:C.muted}));op(c,0);});
+  const e1=el("g",{},g);op(e1,0);
+  el("rect",{x:100,y:190,width:680,height:600,rx:18,fill:"#10141a",stroke:C.blue,"stroke-opacity":.6,"stroke-width":2},e1);
+  tx(e1,140,250,"Exercise 1: add two profiles",{"font-size":36,"font-weight":600});
+  [["Jordan","1.80","81.0",150],["Casey","1.60","64.0",450]].forEach(([n,h,w,x])=>{const c=card(e1,{vals:[n,h,w],title:n.toLowerCase()+"_profile",mono:true,bmi:"?"});tf(c.g,x,300,.66);});
+  tx(e1,140,610,"Use FitnessProfile; no new class needed",{"font-size":26,"font-style":"italic",fill:C.yellow});
+  tx(e1,140,742,"Call calculate_bmi() on each and round to 2 places",{"font-size":25,"font-style":"italic",fill:C.muted});
+  const e2=el("g",{},g);op(e2,0);
+  el("rect",{x:820,y:190,width:680,height:600,rx:18,fill:"#10141a",stroke:C.blue,"stroke-opacity":.6,"stroke-width":2},e2);
+  tx(e2,860,250,"Exercise 2: correct a measurement",{"font-size":36,"font-weight":600});
+  const c2=card(e2,{vals:["Taylor","1.80","80.0"],title:"practice_profile",mono:true,bmi:"?"});const X=950,Y=300,S=.9;tf(c2.g,X,Y,S);
+  const [wx,wy]=c2.slot("weight_kg",X,Y,S);
+  const fix=el("g",{},e2);tx(fix,wx+130,wy+10,"→ 81.0",{"font-family":MONO,"font-size":28,fill:C.yellow});
+  tx(e2,860,742,"Assign to weight_kg, then call the method again",{"font-size":25,"font-style":"italic",fill:C.muted});
+  return t=>{
+    ch(t);const rout=1-P(t,9.5,10.2);
+    cols.forEach((c,i)=>{const q=P(t,3+i*1.2,3.8+i*1.2);op(c,q*rout);tf(c,0,24*(1-q));});
+    let q=P(t,10.4,11.2);op(e1,q);tf(e1,0,20*(1-q));
+    q=P(t,14,14.8);op(e2,q);tf(e2,0,20*(1-q));
+    c2.hl("weight_kg",t>15.5);op(fix,P(t,15.5,16));
+  };
+}});
+/* ---------- player ---------- */
+const svg=document.getElementById("svg");
+const defs=el("defs",{},svg);
+defs.innerHTML='<filter id="glow" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="7" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>'+
+ '<radialGradient id="vig" cx="50%" cy="45%" r="75%"><stop offset="0%" stop-color="#161b23"/><stop offset="100%" stop-color="#090b0f"/></radialGradient>'+
+ '<marker id="arrY" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#FFE38A"/></marker><pattern id="bp" width="28" height="28" patternUnits="userSpaceOnUse"><path d="M28 0H0V28" fill="none" stroke="#58C4DD" stroke-opacity=".14" stroke-width="1"/></pattern>'+
+ '<marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#58C4DD"/></marker>';
+el("rect",{width:W,height:H,fill:"url(#vig)"},svg);
+const layer=el("g",{},svg);
+
+const offs=[];let total=0;scenes.forEach(s=>{offs.push(total);total+=s.dur;});
+const bounds=[];scenes.forEach((s,i)=>s.beats.forEach(b=>{if(offs[i]+b[0]>0)bounds.push(offs[i]+b[0]);}));bounds.push(total);bounds.sort((a,b)=>a-b);
+const nextBoundary=t=>{for(const b of bounds)if(b>t+1e-4)return b;return total;};
+const narration=window.TUTORIAL_NARRATION||null;
+
+const $=id=>document.getElementById(id);
+const playBtn=$("play"),fill=$("fill"),knob=$("knob"),timeEl=$("time"),scrub=$("scrub"),bigplay=$("bigplay"),chapNav=$("chapters");
+const speedBtn=$("speed"),narrBtn=$("narr"),stopBtn=$("stopbeats"),cuesBtn=$("cuesBtn"),cuesEl=$("cues"),cueNow=$("cueNow"),cueNext=$("cueNext"),cueState=$("cueState");
+const ICON_PLAY='<svg viewBox="0 0 24 24"><path d="M7 4l13 8-13 8z" fill="currentColor"/></svg>';
+const ICON_PAUSE='<svg viewBox="0 0 24 24"><path d="M6 4h4v16H6zM14 4h4v16h-4z" fill="currentColor"/></svg>';
+const ICON_REPLAY='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M4 12a8 8 0 1 0 2.4-5.7"/><path d="M4 4v5h5"/></svg>';
+
+let now=0,playing=false,cur=-1,upd=null,beatKey=null,lastTs=null,started=false;
+let speed=.5,stopBeats=false,heldAt=-1,cuesOn=true;
+let narrate=!!narration,narrationSynced=false,narrationDriving=false,audioCueIndex=0,lastAudioTime=0;
+const speeds=[.25,.5,.75,1,1.25,1.5];
+const narrationAudio=narration?new Audio(narration.audio):null;
+if(narrationAudio)narrationAudio.preload="auto";
+if(narrationAudio)narrationAudio.addEventListener("ended",()=>{if(playing&&narrate)finishNarratedPlayback();});
+
+function sceneAt(t){for(let i=scenes.length-1;i>=0;i--)if(t>=offs[i])return i;return 0;}
+function fmt(s){s=Math.max(0,Math.floor(s));return Math.floor(s/60)+":"+String(s%60).padStart(2,"0");}
+function cueWindow(key){
+  const parts=key.split(":").map(Number),i=parts[0],k=parts[1],beats=scenes[i].beats;
+  const start=offs[i]+(k>=0?beats[k][0]:0);
+  const end=k+1<beats.length?offs[i]+beats[k+1][0]:offs[i]+scenes[i].dur;
+  return [start,end];
+}
+const narrationTimeline=[];
+if(narration)scenes.forEach((scene,i)=>scene.beats.forEach((_,k)=>{
+  const key=i+":"+k,timing=narration.cues[key];if(!timing)return;
+  const visual=cueWindow(key);narrationTimeline.push({index:narrationTimeline.length,key,playStart:timing[0],audioStart:timing[1],audioEnd:timing[2],visualStart:visual[0],visualEnd:visual[1]});
+}));
+function pauseNarration(){if(narrationAudio)narrationAudio.pause();narrationDriving=false;}
+function stopNarration(reset){pauseNarration();if(reset){narrationSynced=false;audioCueIndex=0;lastAudioTime=0;}}
+function visualEntryAt(t){for(let i=narrationTimeline.length-1;i>=0;i--)if(t>=narrationTimeline[i].visualStart-1e-4)return narrationTimeline[i];return narrationTimeline[0];}
+function audioEntryAt(t){
+  while(audioCueIndex+1<narrationTimeline.length&&t>=narrationTimeline[audioCueIndex+1].playStart)audioCueIndex++;
+  while(audioCueIndex>0&&t<narrationTimeline[audioCueIndex].playStart)audioCueIndex--;
+  return narrationTimeline[audioCueIndex];
+}
+function seekNarrationToVisual(t){
+  if(!narrationAudio||!narrationTimeline.length)return;
+  const entry=visualEntryAt(t),span=Math.max(.001,entry.visualEnd-entry.visualStart);
+  const progress=clamp((t-entry.visualStart)/span);
+  const target=progress<.0001?entry.playStart:lerp(entry.audioStart,entry.audioEnd,progress);
+  pauseNarration();try{narrationAudio.currentTime=target;}catch(_){}
+  audioCueIndex=entry.index;lastAudioTime=target;narrationSynced=true;
+}
+function playNarration(){
+  if(!narrate||!narrationAudio||!playing)return;
+  if(!narrationSynced)seekNarrationToVisual(now);
+  narrationDriving=true;const promise=narrationAudio.play();
+  if(promise)promise.catch(()=>{narrationDriving=false;});
+}
+function finishNarratedPlayback(){pauseNarration();now=total;playing=false;narrationSynced=true;render();setPlayUI();}
+function syncVisualToNarration(){
+  const current=narrationAudio.currentTime;
+  if(stopBeats){const crossed=narrationTimeline.find(entry=>entry.visualEnd<total&&entry.audioEnd>lastAudioTime+.001&&entry.audioEnd<=current&&Math.abs(entry.visualEnd-heldAt)>1e-6);
+    if(crossed){narrationAudio.pause();try{narrationAudio.currentTime=crossed.audioEnd;}catch(_){}audioCueIndex=crossed.index;lastAudioTime=crossed.audioEnd;narrationSynced=true;narrationDriving=false;now=crossed.visualEnd-.001;heldAt=crossed.visualEnd;playing=false;render();setPlayUI();return false;}}
+  const entry=audioEntryAt(current),span=Math.max(.001,entry.audioEnd-entry.audioStart);
+  const progress=clamp((current-entry.audioStart)/span);now=lerp(entry.visualStart,entry.visualEnd-.001,progress);lastAudioTime=current;
+  if(entry.index===narrationTimeline.length-1&&current>=entry.audioEnd){finishNarratedPlayback();return false;}
+  render();return true;
+}
+
+const chapBtns=scenes.map((s,i)=>{const b=document.createElement("button");b.innerHTML=`<span class="n">${i===0?"▸":i===scenes.length-1?"✦":i}</span>${s.name}`;
+  b.addEventListener("click",()=>seek(offs[i]));chapNav.appendChild(b);return b;});
+scenes.forEach((s,i)=>{if(i===0)return;const d=document.createElement("div");d.className="tick";d.style.left=(offs[i]/total*100)+"%";scrub.querySelector(".track").appendChild(d);});
+scrub.setAttribute("aria-valuemax",String(Math.round(total)));
+
+function render(){
+  const tt=Math.min(now,total-1e-4);const i=sceneAt(tt);
+  if(i!==cur){cur=i;while(layer.firstChild)layer.removeChild(layer.firstChild);const g=el("g",{},layer);upd=scenes[i].build(g);
+    chapBtns.forEach((b,j)=>b.setAttribute("aria-current",j===i?"true":"false"));}
+  const lt=tt-offs[i];upd(lt);
+  const bs=scenes[i].beats;let k=0;for(let j=0;j<bs.length;j++)if(lt>=bs[j][0])k=j;
+  const key=i+":"+k;
+  if(key!==beatKey){beatKey=key;cueNow.textContent=bs[k][1];
+    const nxt=k+1<bs.length?bs[k+1][1]:(scenes[i+1]?scenes[i+1].beats[0][1]:"End of episode.");cueNext.textContent="Next: "+nxt;}
+  const pct=now/total*100;fill.style.width=pct+"%";knob.style.left=pct+"%";
+  timeEl.textContent=fmt(now)+" / "+fmt(total);scrub.setAttribute("aria-valuenow",String(Math.round(now)));
+}
+function setState(){
+  cueState.textContent=(!playing&&stopBeats&&heldAt>0&&Math.abs(now-heldAt)<.01)?"Held at the end of this beat. Press Space to continue.":"";
+}
+function setPlayUI(){playBtn.innerHTML=playing?ICON_PAUSE:(now>=total?ICON_REPLAY:ICON_PLAY);playBtn.setAttribute("aria-label",playing?"Pause":"Play");setState();}
+function setNarrUI(){narrBtn.textContent=narrate?"Narration: on":"Narration: off";narrBtn.setAttribute("aria-pressed",String(narrate));
+  speedBtn.setAttribute("aria-label",narrate?"Animation speed when narration is off":"Animation speed");
+  speedBtn.title=narrate?"Narration is the timing master; this speed applies when narration is off.":"Animation playback speed";
+  if(!narration){narrBtn.disabled=true;narrBtn.textContent="Narration unavailable";}}
+function tick(ts){
+  if(!playing){lastTs=null;return;}
+  if(narrate&&narrationAudio&&narrationDriving){lastTs=ts;if(syncVisualToNarration()&&playing)requestAnimationFrame(tick);return;}
+  if(lastTs==null)lastTs=ts;const dt=Math.min(.1,(ts-lastTs)/1000)*speed;lastTs=ts;
+  let next=now+dt;
+  if(stopBeats){const nb=nextBoundary(now);if(next>=nb&&nb<total&&Math.abs(nb-heldAt)>1e-6){now=nb-.001;heldAt=nb;playing=false;pauseNarration();render();setPlayUI();return;}}
+  now=next;
+  if(now>=total){now=total;playing=false;stopNarration(true);setPlayUI();}
+  render();
+  if(playing)requestAnimationFrame(tick);
+}
+function play(){
+  if(!started){started=true;bigplay.style.display="none";now=0;cur=-1;beatKey=null;}
+  if(now>=total){now=0;beatKey=null;narrationSynced=false;}
+  playing=true;render();if(narrate)playNarration();setPlayUI();lastTs=null;requestAnimationFrame(tick);
+}
+function pause(){playing=false;pauseNarration();setPlayUI();}
+function seek(t){if(!started){started=true;bigplay.style.display="none";}now=clamp(t,0,total);heldAt=-1;beatKey=null;render();if(narrate){seekNarrationToVisual(now);if(playing)playNarration();}else narrationSynced=false;setPlayUI();}
+
+playBtn.addEventListener("click",()=>playing?pause():play());
+bigplay.addEventListener("click",play);
+speedBtn.addEventListener("click",()=>{speed=speeds[(speeds.indexOf(speed)+1)%speeds.length];speedBtn.textContent=speed+"×";});
+narrBtn.addEventListener("click",()=>{narrate=!narrate;if(!narrate)stopNarration(true);else{narrationSynced=false;if(playing)playNarration();}setNarrUI();});
+stopBtn.addEventListener("click",()=>{stopBeats=!stopBeats;stopBtn.setAttribute("aria-pressed",String(stopBeats));stopBtn.textContent=stopBeats?"Stop at each beat: on":"Stop at each beat: off";setState();});
+cuesBtn.addEventListener("click",()=>{cuesOn=!cuesOn;cuesBtn.setAttribute("aria-pressed",String(cuesOn));cuesBtn.textContent=cuesOn?"Cues: on":"Cues: off";cuesEl.hidden=!cuesOn;});
+$("fs").addEventListener("click",()=>{const s=$("stage");try{if(document.fullscreenElement)document.exitFullscreen();else if(s.requestFullscreen)s.requestFullscreen();}catch(e){}});
+let dragging=false;
+function fromEvent(e){const r=scrub.getBoundingClientRect();return clamp((e.clientX-r.left)/r.width)*total;}
+scrub.addEventListener("pointerdown",e=>{dragging=true;try{scrub.setPointerCapture(e.pointerId);}catch(_){}seek(fromEvent(e));});
+scrub.addEventListener("pointermove",e=>{if(dragging)seek(fromEvent(e));});
+scrub.addEventListener("pointerup",()=>{dragging=false;});
+document.addEventListener("keydown",e=>{const tag=(e.target.tagName||"").toLowerCase();if(tag==="button"||tag==="summary")return;
+  if(e.code==="Space"||e.key==="k"){e.preventDefault();playing?pause():play();}
+  else if(e.key==="ArrowRight"){e.preventDefault();seek(now+5);}else if(e.key==="ArrowLeft"){e.preventDefault();seek(now-5);}
+  else if(e.key==="Home"){e.preventDefault();seek(0);}});
+
+/* poster frame */
+now=9.6;render();now=0;cueNow.textContent=scenes[0].beats[0][1];cueNext.textContent="Next: "+scenes[0].beats[1][1];
+fill.style.width="0%";knob.style.left="0%";timeEl.textContent=fmt(0)+" / "+fmt(total);
+setPlayUI();setNarrUI();
+})();
+</script>
+</body>
+</html>

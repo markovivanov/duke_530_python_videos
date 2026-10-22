@@ -1,0 +1,313 @@
+{
+  "provider": "ElevenLabs",
+  "model_id": "eleven_multilingual_v2",
+  "voice": {
+    "id": "21m00Tcm4TlvDq8ikWAM",
+    "name": "Rachel"
+  },
+  "audio": "week6-narration.mp3",
+  "duration_seconds": 252.819,
+  "cues": {
+    "0:0": {
+      "start": 0.0,
+      "spoken_end": 7.245,
+      "end": 7.488,
+      "caption": "The app has a distance for every day of Sam's week. To summarise it, Python has to visit every single day.",
+      "spoken": "The app has a distance for every day of Sam's week. To summarise it, Python has to visit every single day."
+    },
+    "0:1": {
+      "start": 7.488,
+      "spoken_end": 12.817,
+      "end": 13.096,
+      "caption": "Add them all up: 20 kilometres. Count the days with a run: five.",
+      "spoken": "Add them all up: 20 kilometers. Count the days with a run: five."
+    },
+    "0:2": {
+      "start": 13.096,
+      "spoken_end": 16.997,
+      "end": 18.112,
+      "caption": "Week six: summarising a week of activity with loops.",
+      "spoken": "Week six: summarising a week of activity with loops."
+    },
+    "1:0": {
+      "start": 18.112,
+      "spoken_end": 20.956,
+      "end": 21.328,
+      "caption": "Chapter one: meet the week's data.",
+      "spoken": "Chapter one: meet the week's data."
+    },
+    "1:1": {
+      "start": 21.328,
+      "spoken_end": 26.796,
+      "end": 27.028,
+      "caption": "A list stores items in order, inside square brackets. Seven distances, Monday to Sunday.",
+      "spoken": "A list stores items in order, inside square brackets. Seven distances, Monday to Sunday."
+    },
+    "1:2": {
+      "start": 27.028,
+      "spoken_end": 35.352,
+      "end": 35.724,
+      "caption": "Each item has a position, called an index, and Python counts from zero. Monday is index 0; Sunday is index 6.",
+      "spoken": "Each item has a position, called an index, and Python counts from zero. Monday is index 0; Sunday is index 6."
+    },
+    "1:3": {
+      "start": 35.724,
+      "spoken_end": 41.888,
+      "end": 42.33,
+      "caption": "A zero just means no run was recorded that day. len tells us there are seven items.",
+      "spoken": "A zero just means no run was recorded that day. len tells us there are seven items."
+    },
+    "2:0": {
+      "start": 42.33,
+      "spoken_end": 44.431,
+      "end": 44.814,
+      "caption": "Chapter two: the for loop.",
+      "spoken": "Chapter two: the for loop."
+    },
+    "2:1": {
+      "start": 44.814,
+      "spoken_end": 53.731,
+      "end": 54.172,
+      "caption": "A for loop takes one item at a time from the list. distance_km is a name we choose; in connects it to our list.",
+      "spoken": "A for loop takes one item at a time from the list. distance underscore kilometers is a name we choose; in connects it to our list."
+    },
+    "2:2": {
+      "start": 54.172,
+      "spoken_end": 59.895,
+      "end": 60.499,
+      "caption": "On each pass, the name is tied to the next value, and the indented body runs with it.",
+      "spoken": "On each pass, the name is tied to the next value, and the indented body runs with it."
+    },
+    "2:3": {
+      "start": 60.499,
+      "spoken_end": 64.226,
+      "end": 64.737,
+      "caption": "After Sunday, there's nothing left, so the loop stops.",
+      "spoken": "After Sunday, there's nothing left, so the loop stops."
+    },
+    "2:4": {
+      "start": 64.737,
+      "spoken_end": 68.452,
+      "end": 68.963,
+      "caption": "The print is written once, but the loop ran it seven times.",
+      "spoken": "The print is written once, but the loop ran it seven times."
+    },
+    "3:0": {
+      "start": 68.963,
+      "spoken_end": 73.769,
+      "end": 74.211,
+      "caption": "Chapter three: building a total, one item at a time.",
+      "spoken": "Chapter three: building a total, one item at a time."
+    },
+    "3:1": {
+      "start": 74.211,
+      "spoken_end": 79.783,
+      "end": 80.294,
+      "caption": "An accumulator is a variable that holds a running total. It starts at zero, before the loop.",
+      "spoken": "An accumulator is a variable that holds a running total. It starts at zero, before the loop."
+    },
+    "3:2": {
+      "start": 80.294,
+      "spoken_end": 89.095,
+      "end": 89.605,
+      "caption": "Each pass reads the old total, adds the current distance, and stores the new total under the same name. 0 plus 3 is 3.",
+      "spoken": "Each pass reads the old total, adds the current distance, and stores the new total under the same name. 0 plus 3 is 3."
+    },
+    "3:3": {
+      "start": 89.605,
+      "spoken_end": 93.866,
+      "end": 94.249,
+      "caption": "Tuesday's zero adds nothing. Wednesday's 5 makes 8.",
+      "spoken": "Tuesday's zero adds nothing. Wednesday's 5 makes 8."
+    },
+    "3:4": {
+      "start": 94.249,
+      "spoken_end": 96.002,
+      "end": 96.061,
+      "caption": "The bar grows day by day…",
+      "spoken": "The bar grows day by day..."
+    },
+    "3:5": {
+      "start": 96.061,
+      "spoken_end": 101.215,
+      "end": 101.657,
+      "caption": "…to 20 kilometres. The final print sits outside the loop, so it runs just once.",
+      "spoken": "...to 20 kilometers. The final print sits outside the loop, so it runs just once."
+    },
+    "3:6": {
+      "start": 101.657,
+      "spoken_end": 109.459,
+      "end": 110.411,
+      "caption": "Watch out: put the reset inside the loop and every pass starts over from zero. You'd end up with just Sunday's 6.",
+      "spoken": "Watch out: put the reset inside the loop and every pass starts over from zero. You'd end up with just Sunday's 6."
+    },
+    "4:0": {
+      "start": 110.411,
+      "spoken_end": 113.325,
+      "end": 113.766,
+      "caption": "Chapter four: counting the days with a run.",
+      "spoken": "Chapter four: counting the days with a run."
+    },
+    "4:1": {
+      "start": 113.766,
+      "spoken_end": 121.231,
+      "end": 121.742,
+      "caption": "The loop still visits every day. Inside it, an if asks: is this distance greater than zero?",
+      "spoken": "The loop still visits every day. Inside it, an if asks: is this distance greater than zero?"
+    },
+    "4:2": {
+      "start": 121.742,
+      "spoken_end": 125.62,
+      "end": 125.945,
+      "caption": "Only when the answer is True does the counter go up by one.",
+      "spoken": "Only when the answer is True does the counter go up by one."
+    },
+    "4:3": {
+      "start": 125.945,
+      "spoken_end": 129.242,
+      "end": 129.625,
+      "caption": "Zero days fail the check, so they're skipped.",
+      "spoken": "Zero days fail the check, so they're skipped."
+    },
+    "4:4": {
+      "start": 129.625,
+      "spoken_end": 131.947,
+      "end": 132.319,
+      "caption": "Five days with a recorded run.",
+      "spoken": "Five days with a recorded run."
+    },
+    "4:5": {
+      "start": 132.319,
+      "spoken_end": 141.305,
+      "end": 142.327,
+      "caption": "One loop, containing one decision. The if is indented inside the for, and the counter update is indented again inside the if.",
+      "spoken": "One loop, containing one decision. The if is indented inside the for, and the counter update is indented again inside the if."
+    },
+    "5:0": {
+      "start": 142.327,
+      "spoken_end": 144.66,
+      "end": 144.881,
+      "caption": "Chapter five: counting with range.",
+      "spoken": "Chapter five: counting with range."
+    },
+    "5:1": {
+      "start": 144.881,
+      "spoken_end": 152.868,
+      "end": 153.089,
+      "caption": "Sometimes the app needs whole numbers. range(1, 4) supplies numbers from 1 up to, but not including, 4.",
+      "spoken": "Sometimes the app needs whole numbers. range(1, 4) supplies numbers from 1 up to, but not including, 4."
+    },
+    "5:2": {
+      "start": 153.089,
+      "spoken_end": 155.829,
+      "end": 156.084,
+      "caption": "Will session 4 appear? Predict before it runs.",
+      "spoken": "Will session 4 appear? Predict before it runs."
+    },
+    "5:3": {
+      "start": 156.084,
+      "spoken_end": 158.998,
+      "end": 159.114,
+      "caption": "Session 1, session 2, session 3…",
+      "spoken": "Session 1, session 2, session 3..."
+    },
+    "5:4": {
+      "start": 159.114,
+      "spoken_end": 163.607,
+      "end": 164.71,
+      "caption": "…and then it stops. The stop value itself is never included.",
+      "spoken": "...and then it stops. The stop value itself is never included."
+    },
+    "6:0": {
+      "start": 164.71,
+      "spoken_end": 168.425,
+      "end": 168.634,
+      "caption": "Chapter six: reusing the weekly calculation.",
+      "spoken": "Chapter six: reusing the weekly calculation."
+    },
+    "6:1": {
+      "start": 168.634,
+      "spoken_end": 175.821,
+      "end": 176.332,
+      "caption": "Put the loop inside a function. The parameter receives whichever list we supply, and the total starts fresh on every call.",
+      "spoken": "Put the loop inside a function. The parameter receives whichever list we supply, and the total starts fresh on every call."
+    },
+    "6:2": {
+      "start": 176.332,
+      "spoken_end": 182.659,
+      "end": 183.1,
+      "caption": "This week's list goes in. The loop adds up all seven days, and return sends back 20.0.",
+      "spoken": "This week's list goes in. The loop adds up all seven days, and return sends back twenty point zero."
+    },
+    "6:3": {
+      "start": 183.1,
+      "spoken_end": 188.952,
+      "end": 189.393,
+      "caption": "Same machine, different week: the previous week's distances total 14.0.",
+      "spoken": "Same machine, different week: the previous week's distances total fourteen point zero."
+    },
+    "6:4": {
+      "start": 189.393,
+      "spoken_end": 198.6,
+      "end": 199.041,
+      "caption": "Watch out: return belongs outside the loop. Indent it inside, and the function returns after the very first item: 3.0.",
+      "spoken": "Watch out: return belongs outside the loop. Indent it inside, and the function returns after the very first item: three point zero."
+    },
+    "7:0": {
+      "start": 199.041,
+      "spoken_end": 202.478,
+      "end": 202.919,
+      "caption": "Chapter seven: predict, then modify.",
+      "spoken": "Chapter seven: predict, then modify."
+    },
+    "7:1": {
+      "start": 202.919,
+      "spoken_end": 210.082,
+      "end": 210.256,
+      "caption": "Square brackets with an index pick out one item. Index 1 is Tuesday, so this records a 2 kilometre run.",
+      "spoken": "Square brackets with an index pick out one item. Index 1 is Tuesday, so this records a 2 kilometer run."
+    },
+    "7:2": {
+      "start": 210.256,
+      "spoken_end": 212.184,
+      "end": 212.462,
+      "caption": "Predict the new total before running it.",
+      "spoken": "Predict the new total before running it."
+    },
+    "7:3": {
+      "start": 212.462,
+      "spoken_end": 217.095,
+      "end": 217.304,
+      "caption": "The function recomputes from the current list every time: 22.0 kilometres.",
+      "spoken": "The function recomputes from the current list every time: twenty two point zero kilometers."
+    },
+    "8:0": {
+      "start": 217.304,
+      "spoken_end": 219.556,
+      "end": 220.369,
+      "caption": "Let's recap, and then it's your turn.",
+      "spoken": "Let's recap, and then it's your turn."
+    },
+    "8:1": {
+      "start": 220.369,
+      "spoken_end": 232.675,
+      "end": 233.186,
+      "caption": "A for loop applies its body to every item. A total or a counter starts before the loop and changes inside it. And a condition can decide which items count.",
+      "spoken": "A for loop applies its body to every item. A total or a counter starts before the loop and changes inside it. And a condition can decide which items count."
+    },
+    "8:2": {
+      "start": 233.186,
+      "spoken_end": 245.052,
+      "end": 245.563,
+      "caption": "Exercise one: total a new week. Start at zero in your own cell, add each distance in a loop, and print after the loop. You should get 14.0.",
+      "spoken": "Exercise one: total a new week. Start at zero in your own cell, add each distance in a loop, and print after the loop. You should get fourteen point zero."
+    },
+    "8:3": {
+      "start": 245.563,
+      "spoken_end": 252.814,
+      "end": 252.819,
+      "caption": "Exercise two: count the days with a distance greater than zero in another fresh week. There should be three.",
+      "spoken": "Exercise two: count the days with a distance greater than zero in another fresh week. There should be three."
+    }
+  }
+}

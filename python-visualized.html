@@ -1,0 +1,688 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Python, Visualized: Names, Shapes &amp; Machines</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  --page:#e9edf1; --ink:#15212c; --muted:#56636f; --line:#c9d1d9; --accent:#1f7ea0; --chip:#dde3e9;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){ --page:#0d1116; --ink:#e4e8ec; --muted:#8c98a4; --line:#27303a; --accent:#58C4DD; --chip:#161c23; }
+}
+:root[data-theme="dark"]{ --page:#0d1116; --ink:#e4e8ec; --muted:#8c98a4; --line:#27303a; --accent:#58C4DD; --chip:#161c23; }
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--page);color:var(--ink);font-family:"Newsreader",Georgia,"Times New Roman",serif;line-height:1.5}
+.wrap{max-width:1180px;margin:0 auto;padding:clamp(14px,3vw,36px)}
+header{margin:0 0 20px}
+.home{display:inline-block;margin:0 0 10px;color:var(--accent);font:700 12px "JetBrains Mono",ui-monospace,Menlo,monospace;letter-spacing:.08em;text-transform:uppercase;text-decoration:none}
+.home:hover{text-decoration:underline}
+h1{font-size:clamp(34px,5.2vw,58px);font-weight:600;line-height:1.05;margin:0 0 8px;letter-spacing:-.01em}
+.lede{margin:0;color:var(--muted);font-size:clamp(17px,1.9vw,21px);max-width:62ch}
+.player{background:#0e1116;border-radius:14px;overflow:hidden;box-shadow:0 20px 60px -30px rgba(0,0,0,.6);border:1px solid #1d232c}
+.stage{position:relative;aspect-ratio:16/9;width:100%}
+.stage svg{display:block;width:100%;height:100%}
+.bigplay{position:absolute;inset:0;margin:auto;width:max-content;height:max-content;display:flex;align-items:center;gap:12px;
+  padding:14px 26px 14px 20px;border-radius:999px;border:2px solid #58C4DD;background:rgba(14,17,22,.82);color:#e9eef2;
+  font:600 clamp(16px,2vw,22px) "Newsreader",Georgia,serif;cursor:pointer;top:52%}
+.bigplay svg{width:26px;height:26px}
+.bigplay:hover{background:rgba(88,196,221,.15)}
+.cap{min-height:3.4em;padding:12px clamp(14px,4vw,48px);text-align:center;color:#e9e4d8;background:#0b0e12;
+  font-size:clamp(16px,2vw,23px);line-height:1.4;border-top:1px solid #1b2027;display:flex;align-items:center;justify-content:center}
+.controls{display:flex;align-items:center;gap:12px;padding:10px 14px;background:#12161c;color:#c7cfd6;flex-wrap:wrap}
+.controls button{background:none;border:1px solid #2c343f;color:#dfe5ea;border-radius:8px;height:36px;min-width:40px;padding:0 10px;
+  font:inherit;font-size:15px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.controls button:hover{border-color:#58C4DD}
+.controls button[aria-pressed="true"]{border-color:#58C4DD;color:#bfeaf5}
+.controls button svg{width:16px;height:16px}
+button:focus-visible,summary:focus-visible,.scrub:focus-visible{outline:2px solid #58C4DD;outline-offset:2px}
+.scrub{flex:1 1 240px;position:relative;height:30px;cursor:pointer;touch-action:none}
+.track{position:absolute;left:0;right:0;top:13px;height:4px;background:#2a313b;border-radius:2px}
+.fill{position:absolute;left:0;top:0;bottom:0;background:#58C4DD;border-radius:2px}
+.tick{position:absolute;top:9px;width:2px;height:12px;background:#4a5563}
+.knob{position:absolute;top:8px;width:14px;height:14px;margin-left:-7px;border-radius:50%;background:#e9eef2;box-shadow:0 0 0 3px rgba(88,196,221,.35)}
+.time{font:14px "JetBrains Mono",ui-monospace,Menlo,monospace;color:#9aa6b1;white-space:nowrap}
+.chapters{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0 0}
+.chapters button{font:inherit;font-size:16px;background:var(--chip);color:var(--ink);border:1px solid var(--line);border-radius:999px;padding:6px 14px;cursor:pointer}
+.chapters button .n{color:var(--accent);margin-right:6px;font-style:italic}
+.chapters button[aria-current="true"]{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.codebox{margin-top:22px;border-top:1px solid var(--line);padding-top:14px}
+.codebox summary{cursor:pointer;font-size:19px}
+.codebox pre{background:#0e1116;color:#dfe5ea;border-radius:10px;padding:16px 18px;overflow-x:auto;font:14px/1.6 "JetBrains Mono",ui-monospace,Menlo,monospace;margin:12px 0 10px}
+.codebox .row{display:flex;gap:12px;align-items:center;color:var(--muted);font-size:16px}
+.codebox .row button{font:inherit;font-size:15px;background:var(--chip);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:5px 14px;cursor:pointer}
+.foot{color:var(--muted);font-size:15px;margin-top:14px}
+.player:fullscreen{display:flex;flex-direction:column;background:#000;border-radius:0}
+.player:fullscreen .stage{aspect-ratio:auto;flex:1;min-height:0}
+@media (max-width:560px){ .time{order:3} .scrub{flex-basis:100%;order:5} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="home" href="index.html">← DesignTech 530</a>
+    <h1>Python, Visualized</h1>
+    <p class="lede">Episode 1: Names, Shapes &amp; Machines. Variables, data types and functions, drawn as name tags, materials and little factories. About three minutes.</p>
+  </header>
+
+  <div class="player" id="player">
+    <div class="stage">
+      <svg id="svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Animated explainer"></svg>
+      <button class="bigplay" id="bigplay"><svg viewBox="0 0 24 24"><path d="M7 4l13 8-13 8z" fill="#58C4DD"/></svg>Play episode</button>
+    </div>
+    <div class="cap" id="cap" aria-live="polite"></div>
+    <div class="controls">
+      <button id="play" aria-label="Play"></button>
+      <div class="scrub" id="scrub" tabindex="0" role="slider" aria-label="Seek" aria-valuemin="0">
+        <div class="track"><div class="fill" id="fill"></div></div>
+        <div class="knob" id="knob"></div>
+      </div>
+      <span class="time" id="time">0:00</span>
+      <button id="speed" aria-label="Playback speed">0.5×</button>
+      <button id="narr" aria-label="Toggle AI-generated narration" aria-pressed="true">Narration: on</button>
+      <button id="fs" aria-label="Fullscreen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
+    </div>
+  </div>
+
+  <nav class="chapters" id="chapters" aria-label="Chapters"></nav>
+
+  <details class="codebox">
+    <summary>Every line of code from the episode</summary>
+<pre><code id="codeText"># 1. Variables: names are tags tied to values
+age = 12
+age = age + 1        # a brand-new 13; the tag moves over
+nickname = age       # a second tag on the same 13
+
+# 2. Data types: what a value is made of
+bricks = 7           # int
+water = 3.14         # float
+word = "hello"       # str
+is_on = True         # bool
+print(type(bricks), type(water), type(word), type(is_on))
+print(3 + 4)         # 7
+print("3" + "4")     # 34
+# print(3 + "4")     # TypeError!
+
+# 3. Functions: little factories
+def double(x):
+    return x * 2
+
+print(double(3))     # 6
+print(double("ha"))  # haha
+
+# 4. Assembly lines
+def shout(word):
+    return word.upper() + "!"
+
+result = shout(double("hi"))
+print(result)        # HIHI!
+
+# Your turn: write greet(name) so greet("Ada") gives "Hello, Ada!"</code></pre>
+    <div class="row"><button id="copy">Copy code</button><span id="copied"></span></div>
+  </details>
+
+  <p class="foot">Space plays and pauses. The arrow keys skip five seconds. Narration is AI-generated with ElevenLabs.</p>
+</div>
+
+<script src="assets/episode1-narration/episode1-narration-data.js"></script>
+<script>
+(function(){
+"use strict";
+const NS="http://www.w3.org/2000/svg";
+const W=1600,H=900;
+const C={bg:"#0e1116",blue:"#58C4DD",gold:"#F0AC5F",brown:"#8C6B4F",tan:"#D8C3A5",green:"#83C167",red:"#FC6255",teal:"#5CD0B3",purple:"#C792EA",yellow:"#FFE38A",white:"#ECE6DA",muted:"#9aa3ad"};
+const MONO="'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace";
+const SERIF="'Newsreader', Georgia, 'Times New Roman', serif";
+const SYN={kw:C.purple,fn:C.blue,num:C.gold,str:C.green,p:C.white,var:C.yellow,out:C.teal,err:C.red};
+
+/* ---------- tiny helpers ---------- */
+function el(tag,attrs,parent){const e=document.createElementNS(NS,tag);if(attrs)for(const k in attrs)e.setAttribute(k,attrs[k]);if(parent)parent.appendChild(e);return e;}
+function tx(parent,x,y,s,o){const t=el("text",Object.assign({x,y,fill:C.white,"font-family":SERIF,"font-size":32},o||{}),parent);t.textContent=s;return t;}
+const clamp=(v,a=0,b=1)=>Math.min(b,Math.max(a,v));
+const ease=x=>x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2;
+const lin=(t,a,b)=>clamp((t-a)/(b-a));
+const P=(t,a,b)=>ease(lin(t,a,b));
+const lerp=(a,b,p)=>a+(b-a)*p;
+function backOut(p){if(p<=0)return 0;if(p>=1)return 1;const c1=1.70158,c3=c1+1;return 1+c3*Math.pow(p-1,3)+c1*Math.pow(p-1,2);}
+function op(e,v){e.setAttribute("opacity",clamp(v).toFixed(3));}
+function tf(e,x,y,s,r){let str=`translate(${x.toFixed(1)},${y.toFixed(1)})`;if(s!==undefined&&s!==1)str+=` scale(${Math.max(0,s).toFixed(3)})`;if(r)str+=` rotate(${r.toFixed(1)})`;e.setAttribute("transform",str);}
+function overlap(t,runs){let s=0;runs.forEach(([a,b])=>{s+=clamp(t-a,0,b-a);});return s;}
+function inRuns(t,runs){return runs.some(([a,b])=>t>=a&&t<b);}
+
+/* ---------- drawing kit ---------- */
+function code(parent,x,y,lines,size){
+  size=size||36;const g=el("g",{},parent);const lh=size*1.45;const spans=[];let total=0;
+  lines.forEach((line,i)=>{
+    const t=el("text",{x,y:y+i*lh,"font-family":MONO,"font-size":size,style:"white-space:pre"},g);
+    line.forEach(([s,c])=>{const sp=el("tspan",{fill:SYN[c]||c},t);spans.push({sp,s,start:total});total+=s.length;});
+    total+=1;
+  });
+  return {g,total,reveal(n){n=Math.floor(n);spans.forEach(o=>{o.sp.textContent=o.s.slice(0,clamp(n-o.start,0,o.s.length));});}};
+}
+function codeLine(p,x,y,toks,fs,anchor){const t=el("text",{x,y,"font-family":MONO,"font-size":fs||30,"text-anchor":anchor||"start",style:"white-space:pre"},p);toks.forEach(([s,c])=>{const sp=el("tspan",{fill:SYN[c]||c},t);sp.textContent=s;});return t;}
+function token(parent,label,color,kind,r){
+  r=r||40;const g=el("g",{},parent);const fs=kind==="str"?r*.7:r*.85;
+  if(kind==="str"){const w=Math.max(r*2,label.length*fs*.62+36);el("rect",{x:-w/2,y:-r,width:w,height:r*2,rx:r,fill:color,"fill-opacity":.14,stroke:color,"stroke-width":3.5,filter:"url(#glow)"},g);g.halfW=w/2;}
+  else{el("circle",{r,fill:color,"fill-opacity":.14,stroke:color,"stroke-width":3.5,filter:"url(#glow)"},g);g.halfW=r;}
+  tx(g,0,2,label,{"text-anchor":"middle","dominant-baseline":"central","font-family":MONO,"font-size":fs,fill:color,"font-weight":700});
+  op(g,0);return g;
+}
+function nameTag(parent,name){
+  const g=el("g",{},parent);const fs=32;const w=name.length*fs*.62+44;
+  el("path",{d:`M0 -28 H${w} L${w+26} 0 L${w} 28 H0 Z`,fill:"#241c14",stroke:C.tan,"stroke-width":3,"stroke-linejoin":"round"},g);
+  el("circle",{cx:w+4,cy:0,r:6,fill:C.bg,stroke:C.tan,"stroke-width":2},g);
+  tx(g,w/2,2,name,{"text-anchor":"middle","dominant-baseline":"central","font-family":MONO,"font-size":fs,fill:C.yellow});
+  g.hole=w+4;op(g,0);return g;
+}
+function rope(parent){
+  const p=el("path",{fill:"none",stroke:C.tan,"stroke-width":3,"stroke-linecap":"round",pathLength:1,"stroke-dasharray":"1 1"},parent);
+  return {el:p,set(ax,ay,bx,by,draw,sag){sag=sag===undefined?40:sag;const dx=bx-ax;
+    p.setAttribute("d",`M${ax.toFixed(1)} ${ay.toFixed(1)} C${(ax+dx*.35).toFixed(1)} ${(ay+sag).toFixed(1)} ${(bx-dx*.35).toFixed(1)} ${(by+sag).toFixed(1)} ${bx.toFixed(1)} ${by.toFixed(1)}`);
+    p.setAttribute("stroke-dashoffset",(1-draw).toFixed(3));op(p,draw>0.001?1:0);}};
+}
+function cube(p,x,y,s,color){s=s||46;color=color||C.gold;const g=el("g",{},p);
+  el("rect",{x:0,y:0,width:s,height:s,rx:5,fill:color,"fill-opacity":.18,stroke:color,"stroke-width":3},g);
+  el("line",{x1:7,y1:8,x2:s-12,y2:8,stroke:color,"stroke-opacity":.6,"stroke-width":2,"stroke-linecap":"round"},g);
+  tf(g,x,y);return g;}
+function gearPath(r,n){const ri=r*.8,s=2*Math.PI/n;const pts=[];for(let i=0;i<n;i++){const a=i*s;pts.push([ri,a],[r,a+s*.15],[r,a+s*.45],[ri,a+s*.6]);}
+  return "M"+pts.map(([rr,a])=>`${(rr*Math.cos(a)).toFixed(1)} ${(rr*Math.sin(a)).toFixed(1)}`).join(" L")+" Z";}
+function gear(p,r,n,color){const g=el("g",{},p);el("path",{d:gearPath(r,n),fill:"#1c222c",stroke:color,"stroke-width":3,"stroke-linejoin":"round"},g);el("circle",{r:r*.28,fill:"none",stroke:color,"stroke-width":3},g);return g;}
+function belt(p,x1,x2,y){const g=el("g",{},p);
+  el("rect",{x:x1,y,width:x2-x1,height:16,rx:8,fill:"#1a1f27",stroke:"#3a424f","stroke-width":2},g);
+  const l=el("line",{x1:x1+8,x2:x2-8,y1:y+8,y2:y+8,stroke:"#4b5563","stroke-width":3,"stroke-dasharray":"14 12"},g);
+  return {g,update(t){l.setAttribute("stroke-dashoffset",(-t*50).toFixed(1));}};}
+function factory(p,name,param,color){
+  const g=el("g",{},p);
+  const smoke=[0,1,2,3].map(()=>el("circle",{fill:"#8a94a3"},g));
+  el("rect",{x:330,y:-118,width:44,height:90,fill:"#1a1f27",stroke:C.brown,"stroke-width":3},g);
+  let d="M0 0";for(let i=0;i<4;i++){const x=i*105;d+=` L${x} -45 L${x+105} 0`;}d+=" Z";
+  el("path",{d,fill:"#1a1f27",stroke:C.brown,"stroke-width":3,"stroke-linejoin":"round"},g);
+  el("path",{d:"M28 -122 L132 -122 L102 -30 L58 -30 Z",fill:"#20262f",stroke:color,"stroke-width":3,"stroke-linejoin":"round"},g);
+  tx(g,80,-82,param,{"text-anchor":"middle","dominant-baseline":"central","font-family":MONO,"font-size":param.length>2?24:30,fill:C.yellow});
+  el("rect",{x:0,y:0,width:420,height:260,rx:6,fill:"#151a21",stroke:C.brown,"stroke-width":4},g);
+  el("rect",{x:420,y:192,width:62,height:60,fill:"#151a21",stroke:C.brown,"stroke-width":4},g);
+  tx(g,451,180,"return",{"text-anchor":"middle","font-style":"italic","font-size":22,fill:C.muted});
+  el("rect",{x:36,y:24,width:348,height:92,rx:10,fill:"#07090c",stroke:color,"stroke-width":2},g);
+  const disp=tx(g,210,72,"",{"text-anchor":"middle","dominant-baseline":"central","font-family":MONO,"font-size":30,fill:color});
+  const g1=gear(g,48,12,color),g2=gear(g,36,9,C.gold),g3=gear(g,28,8,color);
+  const light=el("circle",{cx:394,cy:150,r:9},g);
+  return {g,update(t,running,ang,text,tc){
+    tf(g1,130,190,1,ang);tf(g2,206,190,1,-ang*48/36+10);tf(g3,264,190,1,ang*48/28);
+    light.setAttribute("fill",running?C.green:"#5a2a2a");
+    disp.textContent=text;disp.setAttribute("fill",tc||color);
+    smoke.forEach((c,i)=>{const ph=(t*.45+i/4)%1;c.setAttribute("cx",(352+14*Math.sin(ph*6+i)).toFixed(1));c.setAttribute("cy",(-128-ph*110).toFixed(1));
+      c.setAttribute("r",(9+18*ph).toFixed(1));op(c,(1-ph)*(running?.5:.25));});
+  }};
+}
+function feedPos(p,sx,sy,hx,hy){
+  if(p<.4){const q=ease(p/.4);return [lerp(sx,hx-200,q),sy,1,1];}
+  if(p<.8){const q=ease((p-.4)/.4);const x0=hx-200,y0=sy,cx=hx-120,cy=hy-170,ex=hx,ey=hy-30;
+    return [(1-q)*(1-q)*x0+2*(1-q)*q*cx+q*q*ex,(1-q)*(1-q)*y0+2*(1-q)*q*cy+q*q*ey,1,1];}
+  const q=ease((p-.8)/.2);return [hx,lerp(hy-30,hy+60,q),1-.6*q,1-q];
+}
+function chapter(g,num,name,sub){
+  const big=el("g",{},g);
+  tx(big,0,-100,num,{"text-anchor":"middle","font-size":38,"font-style":"italic",fill:C.blue});
+  const line=el("line",{y1:-70,y2:-70,stroke:C.blue,"stroke-width":2},big);
+  tx(big,0,20,name,{"text-anchor":"middle","font-size":116,"font-weight":600});
+  tx(big,0,88,sub,{"text-anchor":"middle","font-size":38,"font-style":"italic",fill:C.muted});
+  const small=el("g",{},g);
+  tx(small,70,92,num,{"font-size":34,"font-style":"italic",fill:C.blue});
+  tx(small,104,92,name,{"font-size":34,"font-style":"italic",fill:C.muted});
+  return t=>{const a=P(t,0,.8),b=P(t,2.2,3);op(big,a*(1-b));tf(big,800,430-b*60,1-.15*b);op(small,b);
+    line.setAttribute("x1",(-150*a).toFixed(1));line.setAttribute("x2",(150*a).toFixed(1));};
+}
+
+/* ---------- scenes ---------- */
+const scenes=[];
+
+/* 0: cold open */
+scenes.push({name:"Cold open",dur:12,caps:[
+  [0.3,"Every program, whether it's a calculator, a chat app or a video game, is really a story about data."],
+  [4.2,"Where the data lives. What it's made of. How it changes."],
+  [7,"Today we'll draw three big ideas as pictures: variables, data types, and functions."]
+],build(g){
+  const cw=52*.6,x0=800-21*cw/2;
+  const cb=code(g,x0,420,[[["print","fn"],["(","p"],["\"hello, world\"","str"],[")","p"]]],52);
+  const caret=el("rect",{width:4,height:58,y:374,fill:C.blue},g);
+  const out=tx(g,x0,510,"› hello, world",{"font-family":MONO,"font-size":44,fill:C.teal});
+  const rule=el("line",{y1:318,y2:318,stroke:C.blue,"stroke-width":2},g);
+  const title=tx(g,800,440,"Python, Visualized",{"text-anchor":"middle","font-size":124,"font-weight":600});
+  const sub=tx(g,800,515,"Episode 1: Names, Shapes & Machines",{"text-anchor":"middle","font-size":40,"font-style":"italic",fill:C.muted});
+  const ic=[el("g",{},g),el("g",{},g),el("g",{},g)];
+  const tg=nameTag(ic[0],"age");op(tg,1);tf(tg,-66,0,.8);
+  cube(ic[1],-50,-24,44);cube(ic[1],2,-24,44);cube(ic[1],-24,-72,44);
+  const gr=gear(ic[2],42,12,C.blue);
+  const labels=["variables","types","functions"];const xs=[560,800,1040];
+  ic.forEach((g2,i)=>tx(g2,0,80,labels[i],{"text-anchor":"middle","font-size":30,"font-style":"italic",fill:C.muted}));
+  return t=>{
+    const n=22*lin(t,1,3);cb.reveal(n);
+    const gone=P(t,6,6.8);
+    op(cb.g,1-gone);tf(cb.g,0,-40*gone);
+    caret.setAttribute("x",(x0+Math.min(21,Math.floor(n))*cw+2).toFixed(1));
+    op(caret,((t>1&&t<3)?1:(Math.floor(t*2.5)%2?0:1))*(1-gone));
+    op(out,P(t,3.4,4.2)*(1-gone));tf(out,0,-40*gone);
+    const a=P(t,6.8,7.8);op(title,a);tf(title,0,20*(1-a));
+    rule.setAttribute("x1",(800-180*a).toFixed(1));rule.setAttribute("x2",(800+180*a).toFixed(1));op(rule,a);
+    op(sub,P(t,7.8,8.6));
+    ic.forEach((g2,i)=>{const q=P(t,9+i*.35,9.7+i*.35);op(g2,q);tf(g2,xs[i],660+20*(1-q));});
+    tf(gr,0,0,1,t*25);
+  };
+}});
+
+/* 1: variables */
+scenes.push({name:"Variables",dur:27,caps:[
+  [0,"Chapter one: variables."],
+  [3,"When Python runs age = 12, it first makes the value 12…"],
+  [5.2,"…then ties a name tag to it. A variable isn't a box. It's a label on a string."],
+  [9,"Now: age = age + 1. Python always works out the right-hand side first."],
+  [11.2,"12 plus 1 makes a brand-new value, 13. Then the tag's string moves over to it."],
+  [14,"Nothing is tied to the 12 anymore, so Python quietly recycles it."],
+  [17,"nickname = age doesn't copy anything. It ties a second tag to the very same 13."],
+  [22,"Names are cheap. Values are the real things. Keep this picture; it explains a lot of Python."]
+],build(g){
+  const ch=chapter(g,"1","Variables","names are tags, not boxes");
+  const cb=code(g,130,262,[
+    [["age","var"],[" = ","p"],["12","num"]],
+    [["age","var"],[" = ","p"],["age","var"],[" + ","p"],["1","num"]],
+    [["nickname","var"],[" = ","p"],["age","var"]]
+  ],38);
+  const mark=tx(g,88,262,"▸",{fill:C.blue,"font-size":34,"font-family":MONO});
+  const r1=rope(g),r2=rope(g);
+  const o12=token(g,"12",C.gold,"num",60),o13=token(g,"13",C.gold,"num",60);
+  const ghost=tx(g,1250,262,"12 + 1",{"text-anchor":"middle","font-family":MONO,"font-size":40,fill:C.gold});
+  const rec=tx(g,1250,250,"recycled",{"text-anchor":"middle","font-size":30,"font-style":"italic",fill:C.muted});
+  const tAge=nameTag(g,"age"),tNick=nameTag(g,"nickname");
+  return t=>{
+    ch(t);
+    cb.reveal(9*lin(t,3,4.2)+14*lin(t,9,10.6)+15*lin(t,17,18.4));
+    const idx=t<9?0:t<17?1:2;op(mark,P(t,3,3.4));mark.setAttribute("y",262+idx*55);
+    const f12=P(t,14,15.6);
+    tf(o12,1250,380-90*f12,backOut(lin(t,4.2,5)));op(o12,(t>4.2?1:0)*(1-f12));
+    op(ghost,P(t,10.6,11.1)*(1-P(t,11.4,12)));
+    const pulse=t>22?1+.06*Math.sin((t-22)*5)*(1-P(t,24,26)):1;
+    tf(o13,1250,620,backOut(lin(t,11.2,12))*pulse);op(o13,t>11.2?1:0);
+    op(rec,P(t,14.3,14.8)*(1-P(t,15.6,16.2)));tf(rec,0,-60*f12);
+    const a=P(t,5.2,5.8);op(tAge,a);tf(tAge,720-30*(1-a),500);
+    const ey=lerp(380,620,P(t,12.2,13.2));
+    r1.set(720+tAge.hole,500,1190,ey,P(t,5.9,6.8),30);
+    const b=P(t,18.4,19);op(tNick,b);tf(tNick,640-30*(1-b),730);
+    r2.set(640+tNick.hole,730,1190,620,P(t,19,20),20);
+  };
+}});
+
+/* 2: data types */
+scenes.push({name:"Data types",dur:34,caps:[
+  [0,"Chapter two: data types, or what a value is made of."],
+  [3.5,"int: whole numbers. Countable, like bricks. There's no such thing as half a brick."],
+  [7,"float: numbers with a decimal point. Measured, like water in a beaker."],
+  [10.5,"str: text. A string is literally a string of characters, like beads on a thread, numbered from zero."],
+  [14,"bool: a light switch. Just two settings, True or False."],
+  [19.5,"So why care? Watch the same plus sign work on two different materials."],
+  [21,"Bricks plus bricks: 3 and 4 stack into 7."],
+  [23.5,"Beads plus beads: the threads get tied end to end, so \"3\" + \"4\" becomes \"34\"."],
+  [27.5,"Mix materials, a number plus text, and Python refuses with a TypeError. It won't guess how to glue a brick to a bead."]
+],build(g){
+  const ch=chapter(g,"2","Data Types","the material a value is made of");
+  const xs=[260,620,980,1340],starts=[3.5,7,10.5,14];
+  const panels=xs.map(()=>el("g",{},g));
+  const meta=[
+    [[["bricks","var"],[" = ","p"],["7","num"]],"int",C.gold,"whole & countable"],
+    [[["water","var"],[" = ","p"],["3.14","num"]],"float",C.blue,"measured, in between"],
+    [[["word","var"],[" = ","p"],["\"hello\"","str"]],"str",C.green,"characters on a thread"],
+    [[["is_on","var"],[" = ","p"],["True","kw"]],"bool",C.purple,"only True or False"]
+  ];
+  panels.forEach((p,i)=>{const [toks,ty,col,tag]=meta[i];
+    codeLine(p,0,650,toks,30,"middle");
+    tx(p,0,700,"type → "+ty,{"text-anchor":"middle","font-family":MONO,"font-size":26,fill:col});
+    tx(p,0,748,tag,{"text-anchor":"middle","font-size":28,"font-style":"italic",fill:C.muted});
+  });
+  // int
+  const cubes=[];[[-100,480],[-50,480],[0,480],[50,480],[-75,430],[-25,430],[25,430]].forEach(([x,y])=>cubes.push({g:cube(panels[0],x,y,46),x,y}));
+  // float
+  const clipId="bk"+Math.random().toString(36).slice(2,7);
+  const cp=el("clipPath",{id:clipId},panels[1]);
+  el("path",{d:"M-58 360 L-58 510 Q-58 528 -40 528 L40 528 Q58 528 58 510 L58 360 Z"},cp);
+  const liquid=el("rect",{x:-60,width:120,fill:C.blue,"fill-opacity":.35,"clip-path":`url(#${clipId})`},panels[1]);
+  el("path",{d:"M-60 350 L-60 510 Q-60 530 -40 530 L40 530 Q60 530 60 510 L60 350",fill:"none",stroke:C.white,"stroke-width":3,"stroke-linecap":"round"},panels[1]);
+  for(let k=1;k<=4;k++)el("line",{x1:44,x2:58,y1:530-k*37,y2:530-k*37,stroke:C.muted,"stroke-width":2},panels[1]);
+  const readout=tx(panels[1],0,322,"0.00",{"text-anchor":"middle","font-family":MONO,"font-size":34,fill:C.blue});
+  // str
+  el("path",{d:"M-170 452 Q0 478 170 452",fill:"none",stroke:C.tan,"stroke-width":2.5},panels[2]);
+  const beads=[..."hello"].map((ch2,i)=>{const b=el("g",{},panels[2]);el("circle",{r:27,fill:"#18241a",stroke:C.green,"stroke-width":3},b);
+    tx(b,0,1,ch2,{"text-anchor":"middle","dominant-baseline":"central","font-family":MONO,"font-size":28,fill:C.green});return b;});
+  const idxs=[0,1,2,3,4].map(i=>tx(panels[2],-120+60*i,530,String(i),{"text-anchor":"middle","font-family":MONO,"font-size":20,fill:C.muted}));
+  // bool
+  const lamp=el("circle",{cx:0,cy:350,r:30,fill:C.yellow,stroke:C.yellow,"stroke-width":3},panels[3]);
+  const rays=el("g",{stroke:C.yellow,"stroke-width":3,"stroke-linecap":"round"},panels[3]);
+  for(let k=0;k<8;k++){const a=k*Math.PI/4;el("line",{x1:Math.cos(a)*42,y1:350+Math.sin(a)*42,x2:Math.cos(a)*56,y2:350+Math.sin(a)*56},rays);}
+  el("rect",{x:-14,y:380,width:28,height:14,rx:3,fill:"#3a424f"},panels[3]);
+  const track=el("rect",{x:-70,y:420,width:140,height:64,rx:32,fill:C.purple,stroke:C.purple,"stroke-width":3},panels[3]);
+  const knob=el("circle",{cy:452,r:25,fill:C.white},panels[3]);
+  const bl=tx(panels[3],0,540,"False",{"text-anchor":"middle","font-family":MONO,"font-size":30,fill:C.purple});
+
+  // comparison
+  const cg=el("g",{},g);
+  codeLine(cg,480,262,[["3","num"],[" + ","p"],["4","num"]],46,"middle");
+  codeLine(cg,1120,262,[["\"3\"","str"],[" + ","p"],["\"4\"","str"]],46,"middle");
+  el("line",{x1:800,x2:800,y1:220,y2:700,stroke:"#2a313b","stroke-width":2},cg);
+  for(let k=0;k<4;k++)cube(cg,457,680-50*(k+1),46);
+  const st3=el("g",{},cg);for(let k=0;k<3;k++)cube(st3,0,680-50*(k+1),46);
+  const l3=tx(cg,340,722,"3",{"text-anchor":"middle","font-family":MONO,"font-size":34,fill:C.gold});
+  const l4=tx(cg,480,722,"4",{"text-anchor":"middle","font-family":MONO,"font-size":34,fill:C.gold});
+  const r7=tx(cg,540,520,"= 7",{"font-family":MONO,"font-size":56,fill:C.gold});
+  function bead(lbl){const b=el("g",{},cg);el("line",{x1:-50,x2:50,y1:0,y2:0,stroke:C.tan,"stroke-width":2.5},b);
+    el("circle",{r:36,fill:"#18241a",stroke:C.green,"stroke-width":3},b);
+    tx(b,0,1,lbl,{"text-anchor":"middle","dominant-baseline":"central","font-family":MONO,"font-size":34,fill:C.green});return b;}
+  const b3=bead("3"),b4=bead("4");
+  const r34=tx(cg,1120,600,"= \"34\"",{"text-anchor":"middle","font-family":MONO,"font-size":52,fill:C.green});
+  const eg=el("g",{},cg);
+  codeLine(eg,800,810,[["3","num"],[" + ","p"],["\"4\"","str"],["   →   ","p"],["TypeError","err"]],40,"middle");
+
+  return t=>{
+    ch(t);
+    const out=1-P(t,18.5,19.4);
+    panels.forEach((p,i)=>{const q=P(t,starts[i],starts[i]+.8);op(p,q*out);tf(p,xs[i],30*(1-q));});
+    let a=starts[0];
+    cubes.forEach((c,k)=>{const q=lin(t,a+.6+k*.22,a+1.05+k*.22);tf(c.g,c.x,c.y-160*(1-backOut(q)));op(c.g,q>0?1:0);});
+    a=starts[1];const v=3.14*P(t,a+.8,a+2.8);const lv=530-v*37;
+    liquid.setAttribute("y",lv.toFixed(1));liquid.setAttribute("height",(532-lv).toFixed(1));readout.textContent=v.toFixed(2);
+    a=starts[2];beads.forEach((b,i)=>{const q=P(t,a+.8+i*.35,a+1.3+i*.35);const x=lerp(-230,-120+60*i,q);tf(b,x,458+ (Math.abs(x)<170?(1-Math.pow(x/170,2))*12:0));op(b,q);});
+    idxs.forEach(e=>op(e,P(t,a+2.8,a+3.3)));
+    a=starts[3];const on=P(t,a+1.4,a+2);
+    knob.setAttribute("cx",lerp(-38,38,on).toFixed(1));track.setAttribute("fill-opacity",(.08+.3*on).toFixed(2));
+    lamp.setAttribute("fill-opacity",(.05+.85*on).toFixed(2));op(rays,on);bl.textContent=on>.5?"True":"False";
+    lamp.setAttribute("filter",on>.5?"url(#glow)":"");
+
+    op(cg,P(t,19.5,20.3));
+    const m=lin(t,21,22.8),me=ease(m);
+    tf(st3,317+140*me,-200*me-60*Math.sin(Math.PI*m));
+    op(l3,1-P(t,21,21.5));op(l4,1-P(t,21,21.5));op(r7,P(t,22.8,23.4));
+    const q=P(t,23.5,25);tf(b3,lerp(1030,1084,q),470);tf(b4,lerp(1210,1156,q),470);
+    op(r34,P(t,25,25.6));
+    const shake=t>28.2?10*Math.sin((t-28.2)*40)*(1-lin(t,28.2,29)):0;
+    op(eg,P(t,27.5,28.2));tf(eg,shake,0);
+  };
+}});
+
+/* 3: functions */
+scenes.push({name:"Functions",dur:31,caps:[
+  [0,"Chapter three: functions, the little factories."],
+  [3,"def builds a machine called double. Nothing runs yet. It's a blueprint with a name."],
+  [6.5,"The machine has one input slot, labelled x, and one job: multiply by two."],
+  [9,"Calling double(3) drops a 3 into the hopper…"],
+  [12,"…where it gets a temporary name tag, x. The gears turn: x times 2…"],
+  [14.5,"…and return sends the result out of the chute. double(3) gives back 6."],
+  [19,"Same machine, different material. Let's feed it the string \"ha\"."],
+  [22,"A string times 2 repeats the text. Out comes \"haha\"."],
+  [25.5,"Write the recipe once, use it forever. That's the whole point of a function."]
+],build(g){
+  const ch=chapter(g,"3","Functions","little factories that transform values");
+  const cb=code(g,110,232,[
+    [["def ","kw"],["double","fn"],["(","p"],["x","var"],["):","p"]],
+    [["    return ","kw"],["x","var"],[" * ","p"],["2","num"]]
+  ],38);
+  const cw=38*.6;
+  const c1=code(g,110,432,[[["double","fn"],["(","p"],["3","num"],[")","p"]]],38);
+  const o1=tx(g,110+9*cw+24,432,"→ 6",{"font-family":MONO,"font-size":38,fill:C.teal});
+  const c2=code(g,110,500,[[["double","fn"],["(","p"],["\"ha\"","str"],[")","p"]]],38);
+  const o2=tx(g,110+12*cw+24,500,"→ \"haha\"",{"font-family":MONO,"font-size":38,fill:C.teal});
+  const bt=belt(g,90,1560,660);
+  const k3=token(g,"3",C.gold,"num",40),k6=token(g,"6",C.gold,"num",40);
+  const kha=token(g,"\"ha\"",C.green,"str",40),khaha=token(g,"\"haha\"",C.green,"str",40);
+  const fac=factory(g,"double","x",C.blue);
+  const runs=[[12,14.5],[22,24]];
+  return t=>{
+    ch(t);bt.update(t);op(bt.g,P(t,5,6.5));
+    cb.reveal(31*lin(t,3,5));
+    const fa=P(t,5,6.5);op(fac.g,fa);tf(fac.g,820,380+30*(1-fa));
+    let d="double(x)",dc="#4d6b78";
+    if(t>=12&&t<12.8){d="x = 3";dc=C.yellow;}else if(t>=12.8&&t<13.8){d="x * 2";dc=C.blue;}else if(t>=13.8&&t<14.5){d="6";dc=C.gold;}
+    if(t>=22&&t<22.7){d="x = \"ha\"";dc=C.yellow;}else if(t>=22.7&&t<23.4){d="x * 2";dc=C.blue;}else if(t>=23.4&&t<24){d="\"haha\"";dc=C.green;}
+    fac.update(t,inRuns(t,runs),t*12+420*overlap(t,runs),d,dc);
+    c1.reveal(10*lin(t,9,9.8));op(o1,P(t,15.5,16.1));
+    c2.reveal(13*lin(t,19,19.9));op(o2,P(t,25.5,26.1));
+    // run 1
+    let pp=backOut(lin(t,9.6,10.2));let f=feedPos(lin(t,10.2,12),200,618,900,260);
+    tf(k3,f[0],f[1],pp*f[2]);op(k3,t>9.6?f[3]:0);
+    let e=P(t,14.5,16),lv=P(t,18.5,19.3);
+    tf(k6,lerp(1290,1450,e)+200*lv,618);op(k6,P(t,14.5,14.8)*(1-lv));
+    // run 2
+    pp=backOut(lin(t,19.8,20.3));f=feedPos(lin(t,20.3,22),200,618,900,260);
+    tf(kha,f[0],f[1],pp*f[2]);op(kha,t>19.8?f[3]:0);
+    e=P(t,24,25.5);tf(khaha,lerp(1290,1440,e),618);op(khaha,P(t,24,24.3));
+  };
+}});
+
+/* 4: assembly lines */
+scenes.push({name:"Assembly lines",dur:28,caps:[
+  [0,"Chapter four: assembly lines."],
+  [3,"Here's a second machine. shout takes a word, makes it uppercase, and adds an exclamation mark."],
+  [7,"Now nest them. Python works inside out: the innermost call runs first."],
+  [10,"\"hi\" goes into double and comes out as \"hihi\"…"],
+  [13.5,"…which rolls straight into shout. Out comes \"HIHI!\""],
+  [18.5,"Finally, result = ties a name tag to the finished product. We're back at chapter one."],
+  [22.5,"That's secretly what every big program is: small, well-named machines, wired into assembly lines."]
+],build(g){
+  const ch=chapter(g,"4","Assembly Lines","machines feeding machines");
+  const cb=code(g,110,200,[
+    [["def ","kw"],["shout","fn"],["(","p"],["word","var"],["):","p"]],
+    [["    return ","kw"],["word","var"],[".upper() + ","p"],["\"!\"","str"]]
+  ],34);
+  const cw=34*.6;
+  const hl=[[15,27,C.blue],[9,28,C.purple],[0,28,C.yellow]].map(([a,b,c])=>el("rect",{x:110+a*cw-4,y:340-32,width:(b-a)*cw+8,height:44,rx:8,fill:c,"fill-opacity":.16,stroke:c,"stroke-opacity":.6,"stroke-width":1.5},g));
+  hl.forEach(r=>op(r,0));
+  const call=code(g,110,340,[[["result","var"],[" = ","p"],["shout","fn"],["(","p"],["double","fn"],["(","p"],["\"hi\"","str"],["))","p"]]],34);
+  const bt=belt(g,90,1560,718);
+  const ka=token(g,"\"hi\"",C.green,"str",34),kb=token(g,"\"hihi\"",C.green,"str",34),kc=token(g,"\"HIHI!\"",C.green,"str",34);
+  const r=rope(g);
+  const fd=factory(g,"double","x",C.blue),fsx=factory(g,"shout","word",C.purple);
+  const tag=nameTag(g,"result");
+  const rd=[[11.5,13]],rs=[[15,16.5]];
+  return t=>{
+    ch(t);bt.update(t);op(bt.g,P(t,4,5.2));
+    cb.reveal(46*lin(t,3,5));
+    let q=P(t,4,5.2);op(fd.g,q);tf(fd.g,330,520+30*(1-q),.7);
+    q=P(t,5.5,6.7);op(fsx.g,q);tf(fsx.g,870,520+30*(1-q),.7);
+    call.reveal(29*lin(t,7,8.6));
+    op(hl[0],P(t,10,10.4)*(1-P(t,13.1,13.5)));op(hl[1],P(t,13.5,13.9)*(1-P(t,16.8,17.2)));op(hl[2],P(t,18.5,18.9)*(1-P(t,21,21.6)));
+    let d="double(x)",dc="#4d6b78";
+    if(t>=11.5&&t<12.3){d="x = \"hi\"";dc=C.yellow;}else if(t>=12.3&&t<13){d="\"hihi\"";dc=C.green;}
+    fd.update(t,inRuns(t,rd),t*12+420*overlap(t,rd),d,dc);
+    let d2="shout(word)",dc2="#6b5a78";
+    if(t>=15&&t<15.8){d2="word = \"hihi\"";dc2=C.yellow;}else if(t>=15.8&&t<16.5){d2="\"HIHI!\"";dc2=C.green;}
+    fsx.update(t,inRuns(t,rs),t*12+420*overlap(t,rs),d2,dc2);
+    // hi
+    let pp=backOut(lin(t,9,9.5));let f=feedPos(lin(t,9.6,11.5),150,684,386,436);
+    tf(ka,f[0],f[1],pp*f[2]);op(ka,t>9?f[3]:0);
+    // hihi
+    const hb=kb.halfW;
+    if(t<13.5){tf(kb,lerp(640,666+hb,P(t,13,13.5)),684);op(kb,P(t,13,13.2));}
+    else{f=feedPos(lin(t,13.5,15),666+hb,684,926,436);tf(kb,f[0],f[1],f[2]);op(kb,f[3]);}
+    // HIHI!
+    const ex=P(t,16.5,17.5),lift=P(t,17.5,18.3);
+    tf(kc,lerp(1180,1300,ex)+100*lift,684-124*lift);op(kc,P(t,16.5,16.8));
+    const ta=P(t,18.5,19.1);op(tag,ta);tf(tag,1080-30*(1-ta),380);
+    r.set(1080+tag.hole,380,1400-kc.halfW,560,P(t,19.1,20),20);
+  };
+}});
+
+/* 5: recap */
+scenes.push({name:"Recap",dur:19,caps:[
+  [0,"Let's recap."],
+  [3,"Variables are name tags tied to values."],
+  [5,"Types are the material a value is made of, and the material decides the rules."],
+  [7,"Functions are machines: values go in, get transformed, and come out."],
+  [10,"Your turn: build a machine called greet that turns \"Ada\" into \"Hello, Ada!\". You already know every piece you need."],
+  [15.5,"Next episode: loops and decisions. See you there."]
+],build(g){
+  const ch=chapter(g,"✦","Recap","three ideas, three pictures");
+  const cols=[el("g",{},g),el("g",{},g),el("g",{},g)];const cx=[330,800,1270];
+  const rp=rope(cols[0]);const tg=nameTag(cols[0],"age");op(tg,1);tf(tg,170,330);
+  const k=token(cols[0],"13",C.gold,"num",44);op(k,1);tf(k,440,330);
+  rp.set(170+tg.hole,330,396,330,1,18);
+  cube(cols[1],680,305,50);cube(cols[1],734,305,50);cube(cols[1],707,251,50);
+  el("line",{x1:800,x2:910,y1:330,y2:330,stroke:C.tan,"stroke-width":2.5},cols[1]);
+  el("circle",{cx:855,cy:330,r:28,fill:"#18241a",stroke:C.green,"stroke-width":3},cols[1]);
+  tx(cols[1],855,331,"a",{"text-anchor":"middle","dominant-baseline":"central","font-family":MONO,"font-size":28,fill:C.green});
+  const fac=factory(cols[2],"f","x",C.blue);tf(fac.g,1190,315,.38);
+  const heads=["Variables","Types","Functions"],subs=["name tags tied to values","the material decides the rules","values in, transformed, out"];
+  cols.forEach((c,i)=>{tx(c,cx[i],470,heads[i],{"text-anchor":"middle","font-size":54,"font-weight":600});
+    tx(c,cx[i],522,subs[i],{"text-anchor":"middle","font-size":30,"font-style":"italic",fill:C.muted});});
+  const chal=el("g",{},g);
+  el("rect",{x:330,y:596,width:940,height:156,rx:18,fill:C.yellow,"fill-opacity":.04,stroke:C.yellow,"stroke-width":2,"stroke-dasharray":"10 8"},chal);
+  tx(chal,368,642,"Your turn",{"font-size":32,"font-style":"italic",fill:C.yellow});
+  codeLine(chal,800,712,[["greet","fn"],["(","p"],["\"Ada\"","str"],[")","p"],["   →   ","p"],["\"Hello, Ada!\"","str"]],38,"middle");
+  const nx=tx(g,800,840,"Next episode: loops and decisions",{"text-anchor":"middle","font-size":34,"font-style":"italic",fill:C.muted});
+  return t=>{
+    ch(t);
+    cols.forEach((c,i)=>{const q=P(t,3+2*i,3.8+2*i);op(c,q);tf(c,0,24*(1-q));});
+    fac.update(t,true,t*60,"f(x)",C.blue);
+    const q=P(t,10,10.8);op(chal,q);tf(chal,0,20*(1-q));
+    op(nx,P(t,15.5,16.3));
+  };
+}});
+
+/* ---------- player ---------- */
+const svg=document.getElementById("svg");
+const defs=el("defs",{},svg);
+defs.innerHTML='<filter id="glow" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="7" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>'+
+ '<radialGradient id="vig" cx="50%" cy="45%" r="75%"><stop offset="0%" stop-color="#161b23"/><stop offset="100%" stop-color="#090b0f"/></radialGradient>';
+el("rect",{width:W,height:H,fill:"url(#vig)"},svg);
+const layer=el("g",{},svg);
+
+const offs=[];let total=0;scenes.forEach(s=>{offs.push(total);total+=s.dur;});
+const bounds=[];scenes.forEach((s,i)=>s.caps.forEach(c=>{if(offs[i]+c[0]>0)bounds.push(offs[i]+c[0]);}));bounds.push(total);bounds.sort((a,b)=>a-b);
+const nextBoundary=t=>{for(const b of bounds)if(b>t+1e-4)return b;return total;};
+const narration=window.EPISODE1_NARRATION||null;
+
+const $=id=>document.getElementById(id);
+const capEl=$("cap"),playBtn=$("play"),fill=$("fill"),knob=$("knob"),timeEl=$("time"),scrub=$("scrub"),bigplay=$("bigplay"),chapNav=$("chapters");
+const speedBtn=$("speed"),narrBtn=$("narr");
+const ICON_PLAY='<svg viewBox="0 0 24 24"><path d="M7 4l13 8-13 8z" fill="currentColor"/></svg>';
+const ICON_PAUSE='<svg viewBox="0 0 24 24"><path d="M6 4h4v16H6zM14 4h4v16h-4z" fill="currentColor"/></svg>';
+const ICON_REPLAY='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M4 12a8 8 0 1 0 2.4-5.7"/><path d="M4 4v5h5"/></svg>';
+
+let now=0,playing=false,cur=-1,upd=null,capKey=null,lastTs=null,started=false,speed=.5;
+let narrate=!!narration,narrationSynced=false,narrationDriving=false,audioCueIndex=0,lastAudioTime=0;
+const speeds=[.25,.5,.75,1,1.25,1.5];
+const narrationAudio=narration?new Audio(narration.audio):null;
+if(narrationAudio)narrationAudio.preload="auto";
+if(narrationAudio)narrationAudio.addEventListener("ended",()=>{if(playing&&narrate)finishNarratedPlayback();});
+
+function sceneAt(t){for(let i=scenes.length-1;i>=0;i--)if(t>=offs[i])return i;return 0;}
+function fmt(s){s=Math.max(0,Math.floor(s));return Math.floor(s/60)+":"+String(s%60).padStart(2,"0");}
+function cueWindow(key){
+  const parts=key.split(":").map(Number),i=parts[0],k=parts[1],caps=scenes[i].caps;
+  const start=offs[i]+(k>=0?caps[k][0]:0);
+  const end=k+1<caps.length?offs[i]+caps[k+1][0]:offs[i]+scenes[i].dur;
+  return [start,end];
+}
+const narrationTimeline=[];
+if(narration)scenes.forEach((scene,i)=>scene.caps.forEach((_,k)=>{
+  const key=i+":"+k,timing=narration.cues[key];if(!timing)return;
+  const visual=cueWindow(key);narrationTimeline.push({index:narrationTimeline.length,key,playStart:timing[0],audioStart:timing[1],audioEnd:timing[2],visualStart:visual[0],visualEnd:visual[1]});
+}));
+function pauseNarration(){if(narrationAudio)narrationAudio.pause();narrationDriving=false;}
+function stopNarration(reset){pauseNarration();if(reset){narrationSynced=false;audioCueIndex=0;lastAudioTime=0;}}
+function visualEntryAt(t){for(let i=narrationTimeline.length-1;i>=0;i--)if(t>=narrationTimeline[i].visualStart-1e-4)return narrationTimeline[i];return narrationTimeline[0];}
+function audioEntryAt(t){
+  while(audioCueIndex+1<narrationTimeline.length&&t>=narrationTimeline[audioCueIndex+1].playStart)audioCueIndex++;
+  while(audioCueIndex>0&&t<narrationTimeline[audioCueIndex].playStart)audioCueIndex--;
+  return narrationTimeline[audioCueIndex];
+}
+function seekNarrationToVisual(t){
+  if(!narrationAudio||!narrationTimeline.length)return;
+  const entry=visualEntryAt(t),span=Math.max(.001,entry.visualEnd-entry.visualStart);
+  const progress=clamp((t-entry.visualStart)/span);
+  const target=progress<.0001?entry.playStart:lerp(entry.audioStart,entry.audioEnd,progress);
+  pauseNarration();try{narrationAudio.currentTime=target;}catch(_){}
+  audioCueIndex=entry.index;lastAudioTime=target;narrationSynced=true;
+}
+function playNarration(){
+  if(!narrate||!narrationAudio||!playing)return;
+  if(!narrationSynced)seekNarrationToVisual(now);
+  narrationDriving=true;const promise=narrationAudio.play();
+  if(promise)promise.catch(()=>{narrationDriving=false;});
+}
+function finishNarratedPlayback(){pauseNarration();now=total;playing=false;narrationSynced=true;render();setPlayUI();}
+function syncVisualToNarration(){
+  const current=narrationAudio.currentTime,entry=audioEntryAt(current),span=Math.max(.001,entry.audioEnd-entry.audioStart);
+  const progress=clamp((current-entry.audioStart)/span);now=lerp(entry.visualStart,entry.visualEnd-.001,progress);lastAudioTime=current;
+  if(entry.index===narrationTimeline.length-1&&current>=entry.audioEnd){finishNarratedPlayback();return false;}
+  render();return true;
+}
+
+/* chapter UI */
+const chapBtns=scenes.map((s,i)=>{const b=document.createElement("button");b.innerHTML=`<span class="n">${i===0?"▸":i===5?"✦":i}</span>${s.name}`;
+  b.addEventListener("click",()=>{seek(offs[i]);if(!playing)play();});chapNav.appendChild(b);return b;});
+scenes.forEach((s,i)=>{if(i===0)return;const d=document.createElement("div");d.className="tick";d.style.left=(offs[i]/total*100)+"%";scrub.querySelector(".track").appendChild(d);});
+scrub.setAttribute("aria-valuemax",String(Math.round(total)));
+
+function render(){
+  const tt=Math.min(now,total-1e-4);const i=sceneAt(tt);
+  if(i!==cur){cur=i;while(layer.firstChild)layer.removeChild(layer.firstChild);const g=el("g",{},layer);upd=scenes[i].build(g);
+    chapBtns.forEach((b,j)=>b.setAttribute("aria-current",j===i?"true":"false"));}
+  const lt=tt-offs[i];upd(lt);
+  const caps=scenes[i].caps;let k=-1;for(let j=0;j<caps.length;j++)if(lt>=caps[j][0])k=j;
+  const key=i+":"+k;
+  if(key!==capKey){capKey=key;capEl.textContent=k>=0?caps[k][1]:"";}
+  const pct=now/total*100;fill.style.width=pct+"%";knob.style.left=pct+"%";
+  timeEl.textContent=fmt(now)+" / "+fmt(total);scrub.setAttribute("aria-valuenow",String(Math.round(now)));
+}
+function setPlayUI(){playBtn.innerHTML=playing?ICON_PAUSE:(now>=total?ICON_REPLAY:ICON_PLAY);playBtn.setAttribute("aria-label",playing?"Pause":"Play");}
+function setNarrUI(){narrBtn.textContent=narrate?"Narration: on":"Narration: off";narrBtn.setAttribute("aria-pressed",String(narrate));
+  speedBtn.setAttribute("aria-label",narrate?"Animation speed when narration is off":"Animation speed");
+  speedBtn.title=narrate?"Narration is the timing master; this speed applies when narration is off.":"Animation playback speed";
+  if(!narration){narrBtn.disabled=true;narrBtn.textContent="Narration unavailable";}}
+function tick(ts){
+  if(!playing){lastTs=null;return;}
+  if(narrate&&narrationAudio&&narrationDriving){lastTs=ts;if(syncVisualToNarration()&&playing)requestAnimationFrame(tick);return;}
+  if(lastTs==null)lastTs=ts;const dt=Math.min(.1,(ts-lastTs)/1000)*speed;lastTs=ts;
+  let next=now+dt;
+  now=next;
+  if(now>=total){now=total;playing=false;stopNarration(true);setPlayUI();}
+  render();
+  if(playing)requestAnimationFrame(tick);
+}
+function play(){
+  if(!started){started=true;bigplay.style.display="none";now=0;cur=-1;capKey=null;}
+  if(now>=total){now=0;capKey=null;narrationSynced=false;}
+  playing=true;render();if(narrate)playNarration();setPlayUI();
+  lastTs=null;requestAnimationFrame(tick);
+}
+function pause(){playing=false;pauseNarration();setPlayUI();}
+function seek(t){if(!started){started=true;bigplay.style.display="none";}now=clamp(t,0,total);capKey=null;render();if(narrate){seekNarrationToVisual(now);if(playing)playNarration();}else narrationSynced=false;setPlayUI();}
+
+playBtn.addEventListener("click",()=>playing?pause():play());
+bigplay.addEventListener("click",play);
+speedBtn.addEventListener("click",()=>{speed=speeds[(speeds.indexOf(speed)+1)%speeds.length];speedBtn.textContent=speed+"×";});
+narrBtn.addEventListener("click",()=>{narrate=!narrate;if(!narrate)stopNarration(true);else{narrationSynced=false;if(playing)playNarration();}setNarrUI();});
+$("fs").addEventListener("click",()=>{const p=$("player");try{if(document.fullscreenElement)document.exitFullscreen();else if(p.requestFullscreen)p.requestFullscreen();}catch(e){}});
+let dragging=false;
+function fromEvent(e){const r=scrub.getBoundingClientRect();return clamp((e.clientX-r.left)/r.width)*total;}
+scrub.addEventListener("pointerdown",e=>{dragging=true;try{scrub.setPointerCapture(e.pointerId);}catch(_){}seek(fromEvent(e));});
+scrub.addEventListener("pointermove",e=>{if(dragging){now=fromEvent(e);capKey=null;render();}});
+scrub.addEventListener("pointerup",()=>{dragging=false;});
+scrub.addEventListener("keydown",e=>{if(e.key==="ArrowRight"){seek(now+5);e.preventDefault();}if(e.key==="ArrowLeft"){seek(now-5);e.preventDefault();}});
+document.addEventListener("keydown",e=>{const tag=(e.target.tagName||"").toLowerCase();if(tag==="button"||tag==="summary"||e.target===scrub)return;
+  if(e.code==="Space"||e.key==="k"){e.preventDefault();playing?pause():play();}
+  else if(e.key==="ArrowRight"){seek(now+5);}else if(e.key==="ArrowLeft"){seek(now-5);}});
+$("copy").addEventListener("click",async()=>{try{await navigator.clipboard.writeText($("codeText").textContent);$("copied").textContent="Copied.";}
+  catch(e){$("copied").textContent="Select the code above and copy it.";}});
+
+/* poster frame */
+now=9.8;render();capEl.textContent="Press play.";now=0;fill.style.width="0%";knob.style.left="0%";timeEl.textContent=fmt(0)+" / "+fmt(total);
+setPlayUI();setNarrUI();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,285 @@
+{
+  "provider": "ElevenLabs",
+  "model_id": "eleven_multilingual_v2",
+  "voice": {
+    "id": "21m00Tcm4TlvDq8ikWAM",
+    "name": "Rachel"
+  },
+  "audio": "week5-narration.mp3",
+  "duration_seconds": 239.073,
+  "cues": {
+    "0:0": {
+      "start": 0.0,
+      "spoken_end": 5.608,
+      "end": 5.631,
+      "caption": "Our fitness app counts steps. Now it has to react: one message below the goal…",
+      "spoken": "Our fitness app counts steps. Now it has to react: one message below the goal..."
+    },
+    "0:1": {
+      "start": 5.631,
+      "spoken_end": 11.773,
+      "end": 12.527,
+      "caption": "…another exactly at the goal, and another above it. The message depends on the data.",
+      "spoken": "...another exactly at the goal, and another above it. The message depends on the data."
+    },
+    "0:2": {
+      "start": 12.527,
+      "spoken_end": 16.509,
+      "end": 17.705,
+      "caption": "Week five: responding to activity goals with conditionals.",
+      "spoken": "Week five: responding to activity goals with conditionals."
+    },
+    "1:0": {
+      "start": 17.705,
+      "spoken_end": 19.992,
+      "end": 20.341,
+      "caption": "Chapter one: comparisons.",
+      "spoken": "Chapter one: comparisons."
+    },
+    "1:1": {
+      "start": 20.341,
+      "spoken_end": 26.912,
+      "end": 27.144,
+      "caption": "Sam has 6200 steps today, and the chosen goal is 6000. A comparison asks a question about two values.",
+      "spoken": "Sam has 6200 steps today, and the chosen goal is 6000. A comparison asks a question about two values."
+    },
+    "1:2": {
+      "start": 27.144,
+      "spoken_end": 34.783,
+      "end": 35.05,
+      "caption": "Greater than or equal to: is 6200 at least 6000? Yes. The answer is a Boolean: True.",
+      "spoken": "Greater than or equal to: is 6200 at least 6000? Yes. The answer is a Boolean: True."
+    },
+    "1:3": {
+      "start": 35.05,
+      "spoken_end": 37.663,
+      "end": 37.918,
+      "caption": "Greater than: is the count above the goal? True.",
+      "spoken": "Greater than: is the count above the goal? True."
+    },
+    "1:4": {
+      "start": 37.918,
+      "spoken_end": 44.397,
+      "end": 44.652,
+      "caption": "Double equals asks: exactly equal? 6200 isn't exactly 6000, so False.",
+      "spoken": "Double equals asks: exactly equal? 6200 isn't exactly 6000, so False."
+    },
+    "1:5": {
+      "start": 44.652,
+      "spoken_end": 47.996,
+      "end": 48.286,
+      "caption": "Less than: is the count below the goal? False.",
+      "spoken": "Less than: is the count below the goal? False."
+    },
+    "1:6": {
+      "start": 48.286,
+      "spoken_end": 55.252,
+      "end": 55.554,
+      "caption": "Six comparison operators, six slightly different questions. Every one of them answers True or False.",
+      "spoken": "Six comparison operators, six slightly different questions. Every one of them answers True or False."
+    },
+    "2:0": {
+      "start": 55.554,
+      "spoken_end": 57.075,
+      "end": 57.4,
+      "caption": "Chapter two: if.",
+      "spoken": "Chapter two: if."
+    },
+    "2:1": {
+      "start": 57.4,
+      "spoken_end": 65.713,
+      "end": 66.096,
+      "caption": "if starts a decision. Python checks the condition before the colon. True runs the indented body; False skips it.",
+      "spoken": "if starts a decision. Python checks the condition before the colon. True runs the indented body; False skips it."
+    },
+    "2:2": {
+      "start": 66.096,
+      "spoken_end": 73.387,
+      "end": 73.665,
+      "caption": "6200 is at least 6000: True. The count travels into the body and prints Step goal reached!",
+      "spoken": "6200 is at least 6000: True. The count travels into the body and prints Step goal reached!"
+    },
+    "2:3": {
+      "start": 73.665,
+      "spoken_end": 78.391,
+      "end": 78.774,
+      "caption": "The last line isn't indented, so it sits outside the if and runs either way.",
+      "spoken": "The last line isn't indented, so it sits outside the if and runs either way."
+    },
+    "2:4": {
+      "start": 78.774,
+      "spoken_end": 86.042,
+      "end": 86.483,
+      "caption": "Now try 4000 steps. The condition is False, the body is skipped, and only Step count checked appears.",
+      "spoken": "Now try 4000 steps. The condition is False, the body is skipped, and only Step count checked appears."
+    },
+    "2:5": {
+      "start": 86.483,
+      "spoken_end": 89.687,
+      "end": 90.175,
+      "caption": "Indentation decides what belongs inside the decision.",
+      "spoken": "Indentation decides what belongs inside the decision."
+    },
+    "3:0": {
+      "start": 90.175,
+      "spoken_end": 91.916,
+      "end": 92.404,
+      "caption": "Chapter three: else.",
+      "spoken": "Chapter three: else."
+    },
+    "3:1": {
+      "start": 92.404,
+      "spoken_end": 98.488,
+      "end": 98.975,
+      "caption": "else is the alternative when the if condition is False. It has a colon, but no condition of its own.",
+      "spoken": "else is the alternative when the if condition is False. It has a colon, but no condition of its own."
+    },
+    "3:2": {
+      "start": 98.975,
+      "spoken_end": 103.956,
+      "end": 104.618,
+      "caption": "4500 is below 6000, so the condition is False and the else body runs instead.",
+      "spoken": "4500 is below 6000, so the condition is False and the else body runs instead."
+    },
+    "3:3": {
+      "start": 104.618,
+      "spoken_end": 109.181,
+      "end": 109.552,
+      "caption": "6000 minus 4500 leaves 1500 steps to go.",
+      "spoken": "6000 minus 4500 leaves 1500 steps to go."
+    },
+    "3:4": {
+      "start": 109.552,
+      "spoken_end": 113.953,
+      "end": 114.394,
+      "caption": "Exactly one of the two bodies runs. Never both, and never neither.",
+      "spoken": "Exactly one of the two bodies runs. Never both, and never neither."
+    },
+    "3:5": {
+      "start": 114.394,
+      "spoken_end": 119.398,
+      "end": 120.675,
+      "caption": "steps_remaining is worked out inside else, because that's the only case that needs it.",
+      "spoken": "steps underscore remaining is worked out inside else, because that's the only case that needs it."
+    },
+    "4:0": {
+      "start": 120.675,
+      "spoken_end": 124.169,
+      "end": 124.553,
+      "caption": "Chapter four: elif, short for else if.",
+      "spoken": "Chapter four: elif, short for else if."
+    },
+    "4:1": {
+      "start": 124.553,
+      "spoken_end": 131.553,
+      "end": 131.995,
+      "caption": "Python checks the conditions from top to bottom and runs the first body whose condition is True. The final else covers whatever is left.",
+      "spoken": "Python checks the conditions from top to bottom and runs the first body whose condition is True. The final else covers whatever is left."
+    },
+    "4:2": {
+      "start": 131.995,
+      "spoken_end": 141.793,
+      "end": 142.235,
+      "caption": "6000 steps. Above the goal? No. Exactly equal? Yes. So we get the exact-match message, and Python stops checking.",
+      "spoken": "6000 steps. Above the goal? No. Exactly equal? Yes. So we get the exact-match message, and Python stops checking."
+    },
+    "4:3": {
+      "start": 142.235,
+      "spoken_end": 145.927,
+      "end": 146.252,
+      "caption": "7200 opens the very first gate: above the goal.",
+      "spoken": "7200 opens the very first gate: above the goal."
+    },
+    "4:4": {
+      "start": 146.252,
+      "spoken_end": 150.78,
+      "end": 151.058,
+      "caption": "4500 fails both checks and falls through to else: below the goal.",
+      "spoken": "4500 fails both checks and falls through to else: below the goal."
+    },
+    "4:5": {
+      "start": 151.058,
+      "spoken_end": 159.278,
+      "end": 160.23,
+      "caption": "Watch out: one equals sign assigns a value. Two equals signs compare two values. A condition needs the double equals.",
+      "spoken": "Watch out: one equals sign assigns a value. Two equals signs compare two values. A condition needs the double equals."
+    },
+    "5:0": {
+      "start": 160.23,
+      "spoken_end": 163.179,
+      "end": 163.562,
+      "caption": "Chapter five: a reusable decision.",
+      "spoken": "Chapter five: a reusable decision."
+    },
+    "5:1": {
+      "start": 163.562,
+      "spoken_end": 171.909,
+      "end": 173.024,
+      "caption": "The app needs this message whenever the count changes, so we put the whole decision inside a function. It returns a label instead of printing.",
+      "spoken": "The app needs this message whenever the count changes, so we put the whole decision inside a function. It returns a label instead of printing."
+    },
+    "5:2": {
+      "start": 173.024,
+      "spoken_end": 179.421,
+      "end": 179.955,
+      "caption": "4500 against 6000: not above, not equal, so the else branch returns Below goal.",
+      "spoken": "4500 against 6000: not above, not equal, so the else branch returns Below goal."
+    },
+    "5:3": {
+      "start": 179.955,
+      "spoken_end": 183.949,
+      "end": 184.576,
+      "caption": "6000 against 6000: the elif matches. Goal reached.",
+      "spoken": "6000 against 6000: the elif matches. Goal reached."
+    },
+    "5:4": {
+      "start": 184.576,
+      "spoken_end": 187.687,
+      "end": 187.942,
+      "caption": "7200: the very first condition is True. Above goal.",
+      "spoken": "7200: the very first condition is True. Above goal."
+    },
+    "5:5": {
+      "start": 187.942,
+      "spoken_end": 193.202,
+      "end": 193.585,
+      "caption": "Same 6000 steps, different goal. Against 7000 it's below; against 5000 it's above.",
+      "spoken": "Same 6000 steps, different goal. Against 7000 it's below; against 5000 it's above."
+    },
+    "5:6": {
+      "start": 193.585,
+      "spoken_end": 202.56,
+      "end": 202.803,
+      "caption": "Watch out: quotes make 6000 text. Comparing text with a number using greater than raises a TypeError, so keep both values as numbers.",
+      "spoken": "Watch out: quotes make 6000 text. Comparing text with a number using greater than raises a type error, so keep both values as numbers."
+    },
+    "6:0": {
+      "start": 202.803,
+      "spoken_end": 205.195,
+      "end": 205.892,
+      "caption": "Let's recap, and then it's your turn.",
+      "spoken": "Let's recap, and then it's your turn."
+    },
+    "6:1": {
+      "start": 205.892,
+      "spoken_end": 217.304,
+      "end": 217.885,
+      "caption": "Comparisons answer True or False. An if, elif, else chain runs exactly one branch. And trying values below, at and above the boundary checks every branch.",
+      "spoken": "Comparisons answer True or False. An if, elif, else chain runs exactly one branch. And trying values below, at and above the boundary checks every branch."
+    },
+    "6:2": {
+      "start": 217.885,
+      "spoken_end": 225.687,
+      "end": 226.07,
+      "caption": "Exercise one: for 4800 steps against a 5000 goal, write an if and else that prints Goal reached or Below goal.",
+      "spoken": "Exercise one: for 4800 steps against a 5000 goal, write an if and else that prints Goal reached or Below goal."
+    },
+    "6:3": {
+      "start": 226.07,
+      "spoken_end": 239.068,
+      "end": 239.073,
+      "caption": "Exercise two: call step_goal_message with a goal of 5000 and counts of 4900, 5000 and 5100. You should see all three labels.",
+      "spoken": "Exercise two: call step underscore goal underscore message with a goal of 5000 and counts of 4900, 5000 and 5100. You should see all three labels."
+    }
+  }
+}

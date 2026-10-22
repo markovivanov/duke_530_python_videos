@@ -1,0 +1,719 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Week 6: Summarise a week of activity with loops</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+  --page:#e9edf1;--ink:#15212c;--muted:#56636f;--line:#c9d1d9;--accent:#1f7ea0;--chip:#dde3e9;--panel:#f6f8fa;}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--page:#0d1116;--ink:#e4e8ec;--muted:#8c98a4;--line:#27303a;--accent:#58C4DD;--chip:#161c23;--panel:#12171d;}}
+:root[data-theme="dark"]{--page:#0d1116;--ink:#e4e8ec;--muted:#8c98a4;--line:#27303a;--accent:#58C4DD;--chip:#161c23;--panel:#12171d;}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--page);color:var(--ink);font-family:"Newsreader",Georgia,"Times New Roman",serif;line-height:1.5}
+.wrap{max-width:1180px;margin:0 auto;padding:clamp(14px,3vw,36px)}
+header{margin:0 0 20px}
+.home{display:inline-block;margin:0 0 10px;color:var(--accent);font:700 12px "JetBrains Mono",ui-monospace,Menlo,monospace;letter-spacing:.08em;text-transform:uppercase;text-decoration:none}
+.home:hover{text-decoration:underline}
+h1{font-size:clamp(34px,5.2vw,58px);font-weight:600;line-height:1.05;margin:0 0 8px;letter-spacing:-.01em}
+.lede{margin:0;color:var(--muted);font-size:clamp(17px,1.9vw,21px);max-width:64ch}
+.player{background:#0e1116;border-radius:14px;overflow:hidden;box-shadow:0 20px 60px -30px rgba(0,0,0,.6);border:1px solid #1d232c}
+.stage{position:relative;aspect-ratio:16/9;width:100%;background:#0b0e12}
+.stage svg{display:block;width:100%;height:100%}
+.stage:fullscreen{aspect-ratio:auto;width:100vw;height:100vh;background:#000}
+.bigplay{position:absolute;left:50%;top:78%;transform:translate(-50%,-50%);display:flex;align-items:center;gap:12px;
+  padding:12px 24px 12px 18px;border-radius:999px;border:2px solid #58C4DD;background:rgba(14,17,22,.85);color:#e9eef2;
+  font:600 clamp(15px,2vw,21px) "Newsreader",Georgia,serif;cursor:pointer;white-space:nowrap}
+.bigplay svg{width:24px;height:24px}
+.bigplay:hover{background:rgba(88,196,221,.15)}
+.controls{display:flex;align-items:center;gap:10px;padding:10px 14px;background:#12161c;color:#c7cfd6;flex-wrap:wrap}
+.controls button{background:none;border:1px solid #2c343f;color:#dfe5ea;border-radius:8px;height:36px;min-width:40px;padding:0 10px;
+  font:inherit;font-size:15px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;white-space:nowrap}
+.controls button:hover{border-color:#58C4DD}
+.controls button[aria-pressed="true"]{border-color:#58C4DD;color:#bfeaf5}
+.controls button svg{width:16px;height:16px}
+button:focus-visible,summary:focus-visible,.scrub:focus-visible{outline:2px solid #58C4DD;outline-offset:2px}
+.scrub{flex:1 1 220px;position:relative;height:30px;cursor:pointer;touch-action:none}
+.track{position:absolute;left:0;right:0;top:13px;height:4px;background:#2a313b;border-radius:2px}
+.fill{position:absolute;left:0;top:0;bottom:0;background:#58C4DD;border-radius:2px}
+.tick{position:absolute;top:-4px;width:2px;height:12px;background:#4a5563}
+.knob{position:absolute;top:8px;width:14px;height:14px;margin-left:-7px;border-radius:50%;background:#e9eef2;box-shadow:0 0 0 3px rgba(88,196,221,.35)}
+.time{font:14px "JetBrains Mono",ui-monospace,Menlo,monospace;color:#9aa6b1;white-space:nowrap}
+.cues{margin-top:14px;background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:10px;padding:14px 18px}
+#cueNow{margin:4px 0 6px;font-size:clamp(18px,2vw,23px);line-height:1.4;max-width:70ch}
+#cueNext{margin:0;color:var(--muted);font-size:16px;max-width:80ch}
+#cueState{margin:6px 0 0;color:var(--accent);font-size:16px;min-height:1em}
+.chapters{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0 0}
+.chapters button{font:inherit;font-size:16px;background:var(--chip);color:var(--ink);border:1px solid var(--line);border-radius:999px;padding:6px 14px;cursor:pointer}
+.chapters button .n{color:var(--accent);margin-right:6px;font-style:italic}
+.chapters button[aria-current="true"]{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+@media (max-width:640px){.time{order:3}.scrub{flex-basis:100%;order:9}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="home" href="index.html">← DesignTech 530</a>
+    <h1>Summarise a week</h1>
+    <p class="lede">Week 6 of Python for a fitness app, animated with optional narration: lists, for loops, a running total, counting with a condition, range, and a loop inside a function.</p>
+  </header>
+  <div class="player">
+    <div class="stage" id="stage">
+      <svg id="svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Animated lesson"></svg>
+      <button class="bigplay" id="bigplay"><svg viewBox="0 0 24 24"><path d="M7 4l13 8-13 8z" fill="#58C4DD"/></svg>Play</button>
+    </div>
+    <div class="controls">
+      <button id="play" aria-label="Play"></button>
+      <div class="scrub" id="scrub" tabindex="0" role="slider" aria-label="Seek" aria-valuemin="0"><div class="track"><div class="fill" id="fill"></div></div><div class="knob" id="knob"></div></div>
+      <span class="time" id="time">0:00</span>
+      <button id="speed" aria-label="Playback speed">0.5×</button>
+      <button id="narr" aria-label="Toggle AI-generated ElevenLabs narration" aria-pressed="true">Narration: on</button>
+      <button id="stopbeats" aria-pressed="false">Stop at each beat: off</button>
+      <button id="cuesBtn" aria-pressed="true">Cues: on</button>
+      <button id="fs" aria-label="Full screen, animation only"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
+    </div>
+  </div>
+  <section class="cues" id="cues" aria-live="polite">
+    <p id="cueNow"></p>
+    <p id="cueNext"></p>
+    <p id="cueState"></p>
+  </section>
+  <nav class="chapters" id="chapters" aria-label="Chapters"></nav>
+</div>
+<script src="assets/week6-narration/week6-narration-data.js"></script>
+<script>
+(function(){
+"use strict";
+const NS="http://www.w3.org/2000/svg";
+const W=1600,H=900;
+const C={bg:"#0e1116",blue:"#58C4DD",gold:"#F0AC5F",brown:"#8C6B4F",tan:"#D8C3A5",green:"#83C167",red:"#FC6255",teal:"#5CD0B3",purple:"#C792EA",yellow:"#FFE38A",white:"#ECE6DA",muted:"#9aa3ad"};
+const MONO="'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace";
+const SERIF="'Newsreader', Georgia, 'Times New Roman', serif";
+const SYN={kw:C.purple,fn:C.blue,num:C.gold,str:C.green,p:C.white,var:C.yellow,out:C.teal,err:C.red};
+/* ---------- tiny helpers ---------- */
+function el(tag,attrs,parent){const e=document.createElementNS(NS,tag);if(attrs)for(const k in attrs)e.setAttribute(k,attrs[k]);if(parent)parent.appendChild(e);return e;}
+function tx(parent,x,y,s,o){const t=el("text",Object.assign({x,y,fill:C.white,"font-family":SERIF,"font-size":32},o||{}),parent);t.textContent=s;return t;}
+const clamp=(v,a=0,b=1)=>Math.min(b,Math.max(a,v));
+const ease=x=>x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2;
+const lin=(t,a,b)=>clamp((t-a)/(b-a));
+const P=(t,a,b)=>ease(lin(t,a,b));
+const lerp=(a,b,p)=>a+(b-a)*p;
+function backOut(p){if(p<=0)return 0;if(p>=1)return 1;const c1=1.70158,c3=c1+1;return 1+c3*Math.pow(p-1,3)+c1*Math.pow(p-1,2);}
+function op(e,v){e.setAttribute("opacity",clamp(v).toFixed(3));}
+function tf(e,x,y,s,r){let str=`translate(${x.toFixed(1)},${y.toFixed(1)})`;if(s!==undefined&&s!==1)str+=` scale(${Math.max(0,s).toFixed(3)})`;if(r)str+=` rotate(${r.toFixed(1)})`;e.setAttribute("transform",str);}
+function overlap(t,runs){let s=0;runs.forEach(([a,b])=>{s+=clamp(t-a,0,b-a);});return s;}
+function inRuns(t,runs){return runs.some(([a,b])=>t>=a&&t<b);}
+
+/* ---------- drawing kit ---------- */
+function code(parent,x,y,lines,size){
+  size=size||36;const g=el("g",{},parent);const lh=size*1.45;const spans=[];let total=0;
+  lines.forEach((line,i)=>{
+    const t=el("text",{x,y:y+i*lh,"font-family":MONO,"font-size":size,style:"white-space:pre"},g);
+    line.forEach(([s,c])=>{const sp=el("tspan",{fill:SYN[c]||c},t);spans.push({sp,s,start:total});total+=s.length;});
+    total+=1;
+  });
+  return {g,total,reveal(n){n=Math.floor(n);spans.forEach(o=>{o.sp.textContent=o.s.slice(0,clamp(n-o.start,0,o.s.length));});}};
+}
+function codeLine(p,x,y,toks,fs,anchor){const t=el("text",{x,y,"font-family":MONO,"font-size":fs||30,"text-anchor":anchor||"start",style:"white-space:pre"},p);toks.forEach(([s,c])=>{const sp=el("tspan",{fill:SYN[c]||c},t);sp.textContent=s;});return t;}
+function token(parent,label,color,kind,r){
+  r=r||40;const g=el("g",{},parent);const fs=kind==="str"?r*.7:r*.85;
+  if(kind==="str"){const w=Math.max(r*2,label.length*fs*.62+36);el("rect",{x:-w/2,y:-r,width:w,height:r*2,rx:r,fill:color,"fill-opacity":.14,stroke:color,"stroke-width":3.5,filter:"url(#glow)"},g);g.halfW=w/2;}
+  else{el("circle",{r,fill:color,"fill-opacity":.14,stroke:color,"stroke-width":3.5,filter:"url(#glow)"},g);g.halfW=r;}
+  tx(g,0,2,label,{"text-anchor":"middle","dominant-baseline":"central","font-family":MONO,"font-size":fs,fill:color,"font-weight":700});
+  op(g,0);return g;
+}
+function nameTag(parent,name){
+  const g=el("g",{},parent);const fs=32;const w=name.length*fs*.62+44;
+  el("path",{d:`M0 -28 H${w} L${w+26} 0 L${w} 28 H0 Z`,fill:"#241c14",stroke:C.tan,"stroke-width":3,"stroke-linejoin":"round"},g);
+  el("circle",{cx:w+4,cy:0,r:6,fill:C.bg,stroke:C.tan,"stroke-width":2},g);
+  tx(g,w/2,2,name,{"text-anchor":"middle","dominant-baseline":"central","font-family":MONO,"font-size":fs,fill:C.yellow});
+  g.hole=w+4;op(g,0);return g;
+}
+function rope(parent){
+  const p=el("path",{fill:"none",stroke:C.tan,"stroke-width":3,"stroke-linecap":"round",pathLength:1,"stroke-dasharray":"1 1"},parent);
+  return {el:p,set(ax,ay,bx,by,draw,sag){sag=sag===undefined?40:sag;const dx=bx-ax;
+    p.setAttribute("d",`M${ax.toFixed(1)} ${ay.toFixed(1)} C${(ax+dx*.35).toFixed(1)} ${(ay+sag).toFixed(1)} ${(bx-dx*.35).toFixed(1)} ${(by+sag).toFixed(1)} ${bx.toFixed(1)} ${by.toFixed(1)}`);
+    p.setAttribute("stroke-dashoffset",(1-draw).toFixed(3));op(p,draw>0.001?1:0);}};
+}
+function cube(p,x,y,s,color){s=s||46;color=color||C.gold;const g=el("g",{},p);
+  el("rect",{x:0,y:0,width:s,height:s,rx:5,fill:color,"fill-opacity":.18,stroke:color,"stroke-width":3},g);
+  el("line",{x1:7,y1:8,x2:s-12,y2:8,stroke:color,"stroke-opacity":.6,"stroke-width":2,"stroke-linecap":"round"},g);
+  tf(g,x,y);return g;}
+function gearPath(r,n){const ri=r*.8,s=2*Math.PI/n;const pts=[];for(let i=0;i<n;i++){const a=i*s;pts.push([ri,a],[r,a+s*.15],[r,a+s*.45],[ri,a+s*.6]);}
+  return "M"+pts.map(([rr,a])=>`${(rr*Math.cos(a)).toFixed(1)} ${(rr*Math.sin(a)).toFixed(1)}`).join(" L")+" Z";}
+function gear(p,r,n,color){const g=el("g",{},p);el("path",{d:gearPath(r,n),fill:"#1c222c",stroke:color,"stroke-width":3,"stroke-linejoin":"round"},g);el("circle",{r:r*.28,fill:"none",stroke:color,"stroke-width":3},g);return g;}
+function belt(p,x1,x2,y){const g=el("g",{},p);
+  el("rect",{x:x1,y,width:x2-x1,height:16,rx:8,fill:"#1a1f27",stroke:"#3a424f","stroke-width":2},g);
+  const l=el("line",{x1:x1+8,x2:x2-8,y1:y+8,y2:y+8,stroke:"#4b5563","stroke-width":3,"stroke-dasharray":"14 12"},g);
+  return {g,update(t){l.setAttribute("stroke-dashoffset",(-t*50).toFixed(1));}};}
+function factory(p,name,param,color){
+  const g=el("g",{},p);
+  const smoke=[0,1,2,3].map(()=>el("circle",{fill:"#8a94a3"},g));
+  el("rect",{x:330,y:-118,width:44,height:90,fill:"#1a1f27",stroke:C.brown,"stroke-width":3},g);
+  let d="M0 0";for(let i=0;i<4;i++){const x=i*105;d+=` L${x} -45 L${x+105} 0`;}d+=" Z";
+  el("path",{d,fill:"#1a1f27",stroke:C.brown,"stroke-width":3,"stroke-linejoin":"round"},g);
+  el("path",{d:"M28 -122 L132 -122 L102 -30 L58 -30 Z",fill:"#20262f",stroke:color,"stroke-width":3,"stroke-linejoin":"round"},g);
+  tx(g,80,-82,param,{"text-anchor":"middle","dominant-baseline":"central","font-family":MONO,"font-size":param.length>2?24:30,fill:C.yellow});
+  el("rect",{x:0,y:0,width:420,height:260,rx:6,fill:"#151a21",stroke:C.brown,"stroke-width":4},g);
+  el("rect",{x:420,y:192,width:62,height:60,fill:"#151a21",stroke:C.brown,"stroke-width":4},g);
+  tx(g,451,180,"return",{"text-anchor":"middle","font-style":"italic","font-size":22,fill:C.muted});
+  el("rect",{x:36,y:24,width:348,height:92,rx:10,fill:"#07090c",stroke:color,"stroke-width":2},g);
+  const disp=tx(g,210,72,"",{"text-anchor":"middle","dominant-baseline":"central","font-family":MONO,"font-size":30,fill:color});
+  const g1=gear(g,48,12,color),g2=gear(g,36,9,C.gold),g3=gear(g,28,8,color);
+  const light=el("circle",{cx:394,cy:150,r:9},g);
+  return {g,update(t,running,ang,text,tc){
+    tf(g1,130,190,1,ang);tf(g2,206,190,1,-ang*48/36+10);tf(g3,264,190,1,ang*48/28);
+    light.setAttribute("fill",running?C.green:"#5a2a2a");
+    disp.textContent=text;disp.setAttribute("fill",tc||color);
+    smoke.forEach((c,i)=>{const ph=(t*.45+i/4)%1;c.setAttribute("cx",(352+14*Math.sin(ph*6+i)).toFixed(1));c.setAttribute("cy",(-128-ph*110).toFixed(1));
+      c.setAttribute("r",(9+18*ph).toFixed(1));op(c,(1-ph)*(running?.5:.25));});
+  }};
+}
+function feedPos(p,sx,sy,hx,hy){
+  if(p<.4){const q=ease(p/.4);return [lerp(sx,hx-200,q),sy,1,1];}
+  if(p<.8){const q=ease((p-.4)/.4);const x0=hx-200,y0=sy,cx=hx-120,cy=hy-170,ex=hx,ey=hy-30;
+    return [(1-q)*(1-q)*x0+2*(1-q)*q*cx+q*q*ex,(1-q)*(1-q)*y0+2*(1-q)*q*cy+q*q*ey,1,1];}
+  const q=ease((p-.8)/.2);return [hx,lerp(hy-30,hy+60,q),1-.6*q,1-q];
+}
+function chapter(g,num,name,sub){
+  const big=el("g",{},g);
+  tx(big,0,-100,num,{"text-anchor":"middle","font-size":38,"font-style":"italic",fill:C.blue});
+  const line=el("line",{y1:-70,y2:-70,stroke:C.blue,"stroke-width":2},big);
+  tx(big,0,20,name,{"text-anchor":"middle","font-size":116,"font-weight":600});
+  tx(big,0,88,sub,{"text-anchor":"middle","font-size":38,"font-style":"italic",fill:C.muted});
+  const small=el("g",{},g);
+  tx(small,70,92,num,{"font-size":34,"font-style":"italic",fill:C.blue});
+  tx(small,104,92,name,{"font-size":34,"font-style":"italic",fill:C.muted});
+  return t=>{const a=P(t,0,.8),b=P(t,2.2,3);op(big,a*(1-b));tf(big,800,430-b*60,1-.15*b);op(small,b);
+    line.setAttribute("x1",(-150*a).toFixed(1));line.setAttribute("x2",(150*a).toFixed(1));};
+}
+
+/* ---------- extra kit ---------- */
+function spanSet(parts,n){let k=0;parts.forEach(([sp,s])=>{sp.textContent=s.slice(0,clamp(n-k,0,s.length));k+=s.length;});}
+function hlRect(p,x0,y,fs,a,b,color){const cw=fs*.6;const r=el("rect",{x:x0+a*cw-4,y:y-fs*.9,width:(b-a)*cw+8,height:fs*1.25,rx:7,fill:color,"fill-opacity":.16,stroke:color,"stroke-opacity":.7,"stroke-width":1.5},p);op(r,0);return r;}
+function phone(p,title){const g=el("g",{},p);
+  el("rect",{x:0,y:0,width:380,height:600,rx:44,fill:"#0b0e12",stroke:"#3a424f","stroke-width":4},g);
+  el("rect",{x:150,y:18,width:80,height:10,rx:5,fill:"#2a313b"},g);
+  tx(g,32,82,title,{"font-size":30,"font-weight":600});
+  el("line",{x1:30,x2:350,y1:104,y2:104,stroke:"#262c35","stroke-width":2},g);return g;}
+function bubble(p,text,color){const g=el("g",{},p);const w=text.length*10.6+36;
+  el("rect",{x:0,y:-26,width:w,height:52,rx:14,fill:color,"fill-opacity":.12,stroke:color,"stroke-width":2},g);
+  tx(g,18,1,text,{"dominant-baseline":"central","font-size":23});g.w=w;op(g,0);return g;}
+function chip(p,x,y,text,color){const g=el("g",{},p);const w=text.length*14.4+32;
+  el("rect",{x,y:y-30,width:w,height:44,rx:22,fill:color,"fill-opacity":.12,stroke:color,"stroke-width":2},g);
+  tx(g,x+16,y,text,{"font-family":MONO,"font-size":24,fill:color});op(g,0);return g;}
+function blankTag(p,w){const g=el("g",{},p);
+  el("path",{d:`M0 -28 H${w} L${w+26} 0 L${w} 28 H0 Z`,fill:"#15191f",stroke:C.tan,"stroke-width":2.5,"stroke-dasharray":"8 7","stroke-linejoin":"round"},g);
+  tx(g,w/2,2,"?",{"text-anchor":"middle","dominant-baseline":"central","font-family":MONO,"font-size":32,fill:C.yellow});g.hole=w+4;return g;}
+function numberLine(p,x0,y,ppk,max){const g=el("g",{},p);
+  el("line",{x1:x0-10,x2:x0+ppk*max+20,y1:y,y2:y,stroke:C.muted,"stroke-width":2.5},g);
+  for(let k=0;k<=max;k++){el("line",{x1:x0+k*ppk,x2:x0+k*ppk,y1:y-9,y2:y+9,stroke:C.muted,"stroke-width":2},g);
+    tx(g,x0+k*ppk,y+38,String(k),{"text-anchor":"middle","font-family":MONO,"font-size":22,fill:C.muted});}
+  tx(g,x0+ppk*max+34,y+7,"km",{"font-family":MONO,"font-size":22,fill:C.muted});return g;}
+function shakeX(t,a){return t>a?10*Math.sin((t-a)*40)*(1-lin(t,a,a+.7)):0;}
+
+/* ---------- episode 2 kit ---------- */
+function machine(p,o){
+  const w=o.w||520,color=o.color||C.blue,g=el("g",{},p);
+  const smoke=[0,1,2,3].map(()=>el("circle",{fill:"#8a94a3"},g));
+  const chx=o.params.length===2?w/2-22:w-110;
+  el("rect",{x:chx,y:-118,width:44,height:90,fill:"#1a1f27",stroke:C.brown,"stroke-width":3},g);
+  const n=Math.max(2,Math.round(w/105)),tw=w/n;let d="M0 0";for(let i=0;i<n;i++){const x=i*tw;d+=` L${x.toFixed(1)} -45 L${(x+tw).toFixed(1)} 0`;}d+=" Z";
+  el("path",{d,fill:"#1a1f27",stroke:C.brown,"stroke-width":3,"stroke-linejoin":"round"},g);
+  const cxs=o.params.length===2?[w*.17,w*.77]:[w*.2];
+  const hoppers=o.params.map((pn,i)=>{const cx=cxs[i];
+    const h=el("path",{d:`M${cx-52} -122 L${cx+52} -122 L${cx+22} -30 L${cx-22} -30 Z`,fill:"#20262f",stroke:color,"stroke-width":3,"stroke-linejoin":"round"},g);
+    if(o.labels!==false)tx(g,cx,-140,pn,{"text-anchor":"middle","font-family":MONO,"font-size":o.lfs||24,fill:C.yellow});
+    return h;});
+  el("rect",{x:0,y:0,width:w,height:260,rx:6,fill:"#151a21",stroke:C.brown,"stroke-width":4},g);
+  const chute=el("rect",{x:w,y:192,width:62,height:60,fill:"#151a21",stroke:C.brown,"stroke-width":4},g);
+  tx(g,w+31,180,"return",{"text-anchor":"middle","font-style":"italic","font-size":22,fill:C.muted});
+  const dispR=el("rect",{x:36,y:24,width:w-72,height:92,rx:10,fill:"#07090c",stroke:color,"stroke-width":2},g);
+  const disp=tx(g,w/2,72,"",{"text-anchor":"middle","dominant-baseline":"central","font-family":MONO,"font-size":o.dfs||28,fill:color,style:"white-space:pre"});
+  const gg=el("g",{},g);const g1=gear(gg,48,12,color),g2=gear(gg,36,9,C.gold),g3=gear(gg,28,8,color);
+  const light=el("circle",{cx:w-26,cy:150,r:9},g);
+  return {g,hoppers,dispR,gg,chute,
+    hop(i,X,Y,s){return [X+cxs[i]*s,Y-122*s];},
+    exit(X,Y,s){return [X+(w+62)*s,Y+222*s];},
+    update(t,running,ang,text,tc){
+      tf(g1,130,190,1,ang);tf(g2,206,190,1,-ang*48/36+10);tf(g3,264,190,1,ang*48/28);
+      light.setAttribute("fill",running?C.green:"#5a2a2a");disp.textContent=text;disp.setAttribute("fill",tc||color);
+      smoke.forEach((c,i)=>{const ph=(t*.45+i/4)%1;c.setAttribute("cx",(chx+22+14*Math.sin(ph*6+i)).toFixed(1));c.setAttribute("cy",(-128-ph*110).toFixed(1));
+        c.setAttribute("r",(9+18*ph).toFixed(1));op(c,(1-ph)*(running?.5:.25));});}};
+}
+function glow(e,on,w0){e.setAttribute("filter",on?"url(#glow)":"none");e.setAttribute("stroke-width",on?6:(w0||3));}
+function arcDrop(p,sx,sy,hx,hy){
+  if(p<.8){const q=ease(p/.8);const cx=(sx+hx)/2,cy=Math.min(sy,hy)-150,ey=hy-26;
+    return [(1-q)*(1-q)*sx+2*(1-q)*q*cx+q*q*hx,(1-q)*(1-q)*sy+2*(1-q)*q*cy+q*q*ey,1,1];}
+  const q=ease((p-.8)/.2);return [hx,lerp(hy-26,hy+50,q),1-.6*q,1-q];}
+function exitArc(p,ex,ey,dx,dy){
+  if(p<.3){const q=ease(p/.3);return [lerp(ex-30,ex+50,q),ey,lerp(.6,1,q)];}
+  const q=ease((p-.3)/.7);const sx=ex+50,cx=(sx+dx)/2,cy=Math.min(ey,dy)-120;
+  return [(1-q)*(1-q)*sx+2*(1-q)*q*cx+q*q*dx,(1-q)*(1-q)*ey+2*(1-q)*q*cy+q*q*dy,1];}
+function pie(cx,cy,r,f){f=clamp(f);if(f<=0)return "M0 0";
+  if(f>=.999)return `M${cx-r} ${cy} a${r} ${r} 0 1 0 ${2*r} 0 a${r} ${r} 0 1 0 ${-2*r} 0`;
+  const a=-Math.PI/2+f*2*Math.PI;return `M${cx} ${cy} L${cx} ${cy-r} A${r} ${r} 0 ${f>.5?1:0} 1 ${(cx+r*Math.cos(a)).toFixed(1)} ${(cy+r*Math.sin(a)).toFixed(1)} Z`;}
+function bins(p,n){const g=el("g",{},p);const bw=170,gap=20,x0=800-(n*bw+(n-1)*gap)/2;const bx=[];
+  for(let i=0;i<n;i++){const x=x0+i*(bw+gap);bx.push(x);
+    el("path",{d:`M${x} 390 V710 H${x+bw} V390`,fill:"none",stroke:"#3a424f","stroke-width":3},g);
+    tx(g,x+bw/2,748,"km "+(i+1),{"text-anchor":"middle","font-family":MONO,"font-size":24,fill:C.muted});}
+  const labels=bx.map(x=>tx(g,x+bw/2,374,"",{"text-anchor":"middle","font-family":MONO,"font-size":28,fill:C.gold}));
+  return {g,bx,labels};}
+function minuteTile(p){const t=el("g",{},p);el("rect",{x:0,y:0,width:140,height:30,rx:5,fill:C.gold,"fill-opacity":.2,stroke:C.gold,"stroke-width":2},t);
+  tx(t,70,16,"1 min",{"text-anchor":"middle","dominant-baseline":"central","font-family":MONO,"font-size":16,fill:C.gold});op(t,0);return t;}
+function noneToken(p,r){const k=token(p,"None",C.muted,"str",r||34);k.firstChild.setAttribute("stroke-dasharray","8 6");k.firstChild.setAttribute("filter","none");return k;}
+function stepText(t,t0,steps,idle,idleC){for(const [a,b,s,c] of steps)if(t>=t0+a&&t<t0+b)return [s,c];return [idle,idleC];}
+
+/* ---------- series kit: axes, gates, routes, lists, bar charts ---------- */
+function axis(p,o){const g=el("g",{},p);const X=v=>o.x0+(v-o.min)/(o.max-o.min)*(o.x1-o.x0);
+  el("line",{x1:o.x0-12,x2:o.x1+12,y1:o.y,y2:o.y,stroke:C.muted,"stroke-width":2.5},g);
+  (o.ticks||[]).forEach(v=>{el("line",{x1:X(v),x2:X(v),y1:o.y-9,y2:o.y+9,stroke:C.muted,"stroke-width":2},g);
+    tx(g,X(v),o.y+36,o.fmt?o.fmt(v):String(v),{"text-anchor":"middle","font-family":MONO,"font-size":o.fs||20,fill:C.muted});});
+  return {g,X};}
+function gate(p,x,y,text,o){o=o||{};const fs=o.fs||20,w=o.w||text.length*fs*.6+48;const g=el("g",{},p);
+  const r=el("rect",{x:x-w/2,y:y-30,width:w,height:60,rx:30,fill:"#141a22",stroke:C.blue,"stroke-width":2.5},g);
+  tx(g,x,y+1,text,{"text-anchor":"middle","dominant-baseline":"central","font-family":MONO,"font-size":fs,fill:C.white});
+  const vx=o.vside==="right"?x+w/2+14:x-w/2-14;
+  const v=tx(g,vx,y+1,"",{"text-anchor":o.vside==="right"?"start":"end","dominant-baseline":"central","font-family":MONO,"font-size":22,"font-weight":700});
+  return {g,w,set(s){const c=s>0?C.green:s<0?C.red:C.blue;r.setAttribute("stroke",c);r.setAttribute("stroke-width",s?4:2.5);r.setAttribute("filter",s?"url(#glow)":"none");
+    v.textContent=s>0?"True":s<0?"False":"";v.setAttribute("fill",c);}};}
+function boxNode(p,x,y,w,h,text,o){o=o||{};const g=el("g",{},p);const c=o.c||C.tan;
+  const r=el("rect",{x,y,width:w,height:h,rx:10,fill:"#12171e",stroke:c,"stroke-width":2.5},g);
+  const t=tx(g,x+w/2,y+h/2+1,text,{"text-anchor":"middle","dominant-baseline":"central","font-family":MONO,"font-size":o.fs||18,fill:o.tc||C.white,style:"white-space:pre"});
+  return {g,t,lit(on,col){r.setAttribute("stroke",on?(col||C.yellow):c);r.setAttribute("stroke-width",on?4:2.5);r.setAttribute("filter",on?"url(#glow)":"none");},
+    text(s,col){t.textContent=s;if(col)t.setAttribute("fill",col);}};}
+function track(p,d,c){return el("path",{d,fill:"none",stroke:c||"#3a424f","stroke-width":3,"stroke-linecap":"round","stroke-linejoin":"round"},p);}
+function route(tok,t,keys,s){if(t<keys[0][0]){op(tok,0);return;}op(tok,1);const L=keys[keys.length-1];let x=L[1],y=L[2];
+  for(let i=1;i<keys.length;i++){if(t<keys[i][0]){const a=keys[i-1],b=keys[i];const q=ease(lin(t,a[0],b[0]));x=lerp(a[1],b[1],q);y=lerp(a[2],b[2],q);break;}}
+  tf(tok,x,y,(s||1)*backOut(lin(t,keys[0][0],keys[0][0]+.35)));}
+function listBoxes(p,x,y,vals,o){o=o||{};const bw=o.bw||104,gap=o.gap||14,g=el("g",{},p);const bx=[],vt=[],it=[];
+  vals.forEach((v,i)=>{const X=x+i*(bw+gap);bx.push(el("rect",{x:X,y,width:bw,height:o.bh||70,rx:10,fill:"#12171e",stroke:C.blue,"stroke-width":2.5},g));
+    vt.push(tx(g,X+bw/2,y+(o.bh||70)/2+1,v,{"text-anchor":"middle","dominant-baseline":"central","font-family":MONO,"font-size":o.fs||28,fill:o.vc||C.gold}));
+    if(o.labels)tx(g,X+bw/2,y-16,o.labels[i],{"text-anchor":"middle","font-size":24,"font-style":"italic",fill:C.muted});
+    if(o.index!==false)it.push(tx(g,X+bw/2,y+(o.bh||70)+30,String(i),{"text-anchor":"middle","font-family":MONO,"font-size":20,fill:C.muted}));});
+  return {g,bx,vt,it,cx:i=>x+i*(bw+gap)+bw/2,w:vals.length*(bw+gap)-gap,
+    hl(i,c){bx.forEach((b,k)=>{const on=k===i;b.setAttribute("stroke",on?(c||C.yellow):C.blue);b.setAttribute("stroke-width",on?4:2.5);b.setAttribute("filter",on?"url(#glow)":"none");});},
+    dim(i,d){op(bx[i],d?.35:1);op(vt[i],d?.35:1);}};}
+function barChart(p,o){const g=el("g",{},p);const n=o.labels.length,slot=o.w/n,bw=slot*.6;const Y=v=>o.y+o.h-v/o.max*o.h;
+  const frame=el("g",{},g);
+  for(let v=0;v<=o.max;v+=o.step){if(v>0)el("line",{x1:o.x,x2:o.x+o.w,y1:Y(v),y2:Y(v),stroke:"#222932","stroke-width":1},frame);
+    el("line",{x1:o.x-7,x2:o.x,y1:Y(v),y2:Y(v),stroke:C.muted,"stroke-width":2},frame);
+    tx(frame,o.x-14,Y(v)+7,String(v),{"text-anchor":"end","font-family":MONO,"font-size":18,fill:C.muted});}
+  el("line",{x1:o.x,x2:o.x,y1:o.y-10,y2:o.y+o.h,stroke:C.muted,"stroke-width":2},frame);
+  el("line",{x1:o.x,x2:o.x+o.w,y1:o.y+o.h,y2:o.y+o.h,stroke:C.muted,"stroke-width":2},frame);
+  const xl=o.labels.map((l,i)=>tx(frame,o.x+slot*(i+.5),o.y+o.h+30,l,{"text-anchor":"middle","font-family":MONO,"font-size":o.lfs||20,fill:C.muted}));
+  const bars=o.labels.map((l,i)=>el("rect",{x:o.x+slot*(i+.5)-bw/2,width:bw,rx:3},g));
+  const vl=o.labels.map((l,i)=>tx(g,o.x+slot*(i+.5),0,"",{"text-anchor":"middle","font-family":MONO,"font-size":18}));
+  const title=tx(g,o.x+o.w/2,o.y-30,o.title||"",{"text-anchor":"middle","font-size":o.tfs||30,"font-weight":600});
+  const xlab=tx(g,o.x+o.w/2,o.y+o.h+70,o.xlabel||"Day",{"text-anchor":"middle","font-size":24});
+  const ylab=tx(g,0,0,o.ylabel||"Distance (km)",{"text-anchor":"middle","font-size":24,transform:`translate(${o.x-60},${o.y+o.h/2}) rotate(-90)`});
+  return {g,frame,title,xlab,ylab,xl,bars,vl,Y,slot,bx:i=>o.x+slot*(i+.5),
+    update(vals,grow,color,showVals){bars.forEach((b,i)=>{const gp=clamp(Array.isArray(grow)?grow[i]:grow);const top=Y(vals[i]*gp);
+      b.setAttribute("y",top.toFixed(1));b.setAttribute("height",Math.max(0,o.y+o.h-top).toFixed(1));b.setAttribute("fill",color||C.blue);b.setAttribute("fill-opacity",.78);
+      vl[i].setAttribute("y",(top-10).toFixed(1));vl[i].textContent=vals[i].toFixed(1);vl[i].setAttribute("fill",color||C.blue);op(vl[i],showVals?gp:0);});}};}
+function outPanel(p,x,y,w,h,title){const g=el("g",{},p);el("rect",{x,y,width:w,height:h,rx:12,fill:"#07090c",stroke:"#2a313b","stroke-width":2},g);
+  tx(g,x+20,y+34,title||"Output",{"font-size":22,"font-style":"italic",fill:C.muted});
+  return {g,line(i,s,c,fs){const t=tx(g,x+20,y+74+i*(fs||24)*1.5,s,{"font-family":MONO,"font-size":fs||24,fill:c||C.white,style:"white-space:pre"});op(t,0);return t;}};}
+function titleCard(g,wk,title,sub,fs){const ttl=el("g",{},g);op(ttl,0);
+  tx(ttl,800,330,wk,{"text-anchor":"middle","font-size":40,"font-style":"italic",fill:C.blue});
+  const rule=el("line",{y1:360,y2:360,stroke:C.blue,"stroke-width":2},ttl);
+  tx(ttl,800,462,title,{"text-anchor":"middle","font-size":fs||100,"font-weight":600});
+  const s=tx(ttl,800,532,sub,{"text-anchor":"middle","font-size":40,"font-style":"italic",fill:C.muted});
+  return t=>{const q=P(t,7.8,8.8);op(ttl,q);tf(ttl,0,20*(1-q));rule.setAttribute("x1",(800-170*q).toFixed(1));rule.setAttribute("x2",(800+170*q).toFixed(1));op(s,P(t,8.6,9.4));};}
+function exPanel(p,x,title,foot){const g=el("g",{},p);el("rect",{x,y:190,width:680,height:600,rx:18,fill:"#10141a",stroke:C.blue,"stroke-opacity":.6,"stroke-width":2},g);
+  tx(g,x+40,250,title,{"font-size":34,"font-weight":600});tx(g,x+40,752,foot,{"font-size":25,"font-style":"italic",fill:C.muted});op(g,0);return g;}
+function recapCols(g,items){const cx=[300,800,1300];return items.map(([h,subs,draw],i)=>{const c=el("g",{},g);if(draw)draw(c,cx[i]);
+  tx(c,cx[i],400,h,{"text-anchor":"middle","font-size":42,"font-weight":600});
+  subs.forEach((s,j)=>tx(c,cx[i],450+j*36,s,{"text-anchor":"middle","font-size":28,"font-style":"italic",fill:C.muted}));op(c,0);return c;});}
+function recapAnim(t,cols,e1,e2){const rout=1-P(t,9.5,10.2);cols.forEach((c,i)=>{const q=P(t,3+i*1.2,3.8+i*1.2);op(c,q*rout);tf(c,0,24*(1-q));});
+  let q=P(t,10.4,11.2);op(e1,q);tf(e1,0,20*(1-q));q=P(t,13.5,14.3);op(e2,q);tf(e2,0,20*(1-q));}
+const RECAP_BEAT=[0,"Let's recap, and then it's your turn."];
+/* ---------- episode 6 helpers ---------- */
+const WEEK=[3,0,5,2,0,4,6],DAYS=["Mon","Tue","Wed","Thu","Fri","Sat","Sun"],f1=v=>v.toFixed(1);
+function hopIdx(t,ts,mv){let i=-1;for(let k=0;k<ts.length;k++)if(t>=ts[k])i=k;if(i<0)return -1;return i>0?lerp(i-1,i,ease(lin(t,ts[i],ts[i]+(mv||.45)))):0;}
+function loopTag(p,L,bottom,label,tx0,ty){const r=rope(p);const tag=nameTag(p,label);op(tag,1);tf(tag,tx0,ty);
+  return {tag,set(f,vis){op(tag,vis);if(f<0||vis<=0){r.set(0,0,0,0,0);return;}const pitch=L.cx(1)-L.cx(0);r.set(tx0+tag.hole,ty,L.cx(0)+f*pitch,bottom,vis,30);}};}
+
+/* ---------- scenes ---------- */
+const scenes=[];
+
+/* 0: cold open */
+scenes.push({name:"Cold open",dur:12,beats:[
+  [0,"The app has a distance for every day of Sam's week. To summarise it, Python has to visit every single day."],
+  [4,"Add them all up: 20 kilometres. Count the days with a run: five."],
+  [7.6,"Week six: summarising a week of activity with loops."]
+],build(g){
+  const A=el("g",{},g);const L=listBoxes(A,332,330,WEEK.map(f1),{labels:DAYS,bw:120,gap:16,index:false});
+  const tot=tx(A,560,560,"0.0 km",{"text-anchor":"middle","font-family":MONO,"font-size":64,fill:C.blue});
+  tx(A,560,610,"total distance",{"text-anchor":"middle","font-size":26,"font-style":"italic",fill:C.muted});
+  const days=tx(A,1040,560,"0",{"text-anchor":"middle","font-family":MONO,"font-size":64,fill:C.green});
+  tx(A,1040,610,"days with a run",{"text-anchor":"middle","font-size":26,"font-style":"italic",fill:C.muted});
+  const title=titleCard(g,"Week 6","Summarise a week","with loops",104);
+  return t=>{const f=hopIdx(t,[0,1,2,3,4,5,6].map(i=>.8+i*.75),.3);const i=Math.round(f);
+    L.hl(t>.8&&t<6.4?i:-1,C.yellow);let s=0,n=0;for(let k=0;k<7;k++)if(t>=1.05+k*.75){s+=WEEK[k];if(WEEK[k]>0)n++;}
+    tot.textContent=f1(s)+" km";days.textContent=String(n);op(A,P(t,0,.5)*(1-P(t,7,7.8)));title(t);};
+}});
+
+/* 1: the list */
+scenes.push({name:"The week's data",dur:16,beats:[
+  [0,"Chapter one: meet the week's data."],
+  [3,"A list stores items in order, inside square brackets. Seven distances, Monday to Sunday."],
+  [6.5,"Each item has a position, called an index, and Python counts from zero. Monday is index 0; Sunday is index 6."],
+  [10,"A zero just means no run was recorded that day. len tells us there are seven items."]
+],build(g){
+  const ch=chapter(g,"1","The Week's Data","seven distances in a list");
+  const cb=code(g,110,220,[[["daily_distances_km","var"],[" = [","p"],["3.0","num"],[", ","p"],["0.0","num"],[", ","p"],["5.0","num"],[", ","p"],["2.0","num"],[", ","p"],["0.0","num"],[", ","p"],["4.0","num"],[", ","p"],["6.0","num"],["]","p"]]],28);
+  const L=listBoxes(g,332,400,WEEK.map(f1),{labels:DAYS,bw:120,gap:16});
+  const zero=tx(g,800,580,"0.0 = no run recorded",{"text-anchor":"middle","font-size":28,"font-style":"italic",fill:C.muted});
+  const out=codeLine(g,800,700,[["len","fn"],["(daily_distances_km)","p"],["  →  ","p"],["7","num"]],32,"middle");
+  return t=>{ch(t);cb.reveal(70*lin(t,3,4.6));
+    L.bx.forEach((b,i)=>{const q=P(t,4.4+i*.15,4.8+i*.15);op(b,q);op(L.vt[i],q);});L.it.forEach((e,i)=>op(e,P(t,6.8+i*.2,7.1+i*.2)));
+    const z=t>10&&t<13;if(z){L.dim(1,1);L.dim(4,1);}op(zero,P(t,10,10.4)*(1-P(t,13,13.4)));
+    op(out,P(t,12.5,13));L.hl(t>6.8&&t<8.4?Math.min(6,Math.floor((t-6.8)/.2)):-1);};
+}});
+
+/* 2: for loop */
+scenes.push({name:"for loop",dur:22,beats:[
+  [0,"Chapter two: the for loop."],
+  [3,"A for loop takes one item at a time from the list. distance_km is a name we choose; in connects it to our list."],
+  [5.5,"On each pass, the name is tied to the next value, and the indented body runs with it."],
+  [16.7,"After Sunday, there's nothing left, so the loop stops."],
+  [18,"The print is written once, but the loop ran it seven times."]
+],build(g){
+  const ch=chapter(g,"2","The for Loop","one item at a time");
+  const cb=code(g,110,200,[[["for ","kw"],["distance_km","var"],[" in ","kw"],["daily_distances_km","var"],[":","p"]],
+    [["    print","fn"],["(","p"],["\"Recorded run distance:\"","str"],[", ","p"],["distance_km","var"],[", ","p"],["\"km\"","str"],[")","p"]]],24);
+  const L=listBoxes(g,110,330,WEEK.map(f1),{labels:DAYS,bw:104,gap:14});
+  const T=loopTag(g,L,400,"distance_km",300,540);
+  const O=outPanel(g,1000,300,540,330);const lines=WEEK.map((v,i)=>O.line(i,"Recorded run distance: "+f1(v)+" km",C.white,19));
+  const ts=WEEK.map((_,i)=>5.5+1.6*i);
+  const cnt=tx(g,1090,240,"",{"font-size":30,"font-style":"italic",fill:C.yellow});
+  const stop=tx(g,560,700,"no items left: the loop stops",{"text-anchor":"middle","font-size":30,"font-style":"italic",fill:C.muted});
+  const body=hlRect(g,110,238,24,4,56,C.yellow);
+  return t=>{ch(t);cb.reveal(130*lin(t,3,4.6));op(L.g,P(t,3,3.6));op(O.g,P(t,3,3.6));
+    const f=hopIdx(t,ts);T.set(f,P(t,5.2,5.5)*(1-P(t,16.6,17)));L.hl(f>=0&&t<16.7?Math.round(f):-1);
+    lines.forEach((e,i)=>op(e,P(t,ts[i]+.6,ts[i]+.9)));
+    const runs=ts.filter(s=>t>=s+.6).length;cnt.textContent=runs?"print ran ×"+runs:"";op(cnt,runs?1:0);
+    op(body,ts.some(s=>t>s+.45&&t<s+1.1)?1:0);op(stop,P(t,16.7,17.2));};
+}});
+
+/* 3: accumulator */
+scenes.push({name:"Running total",dur:28,beats:[
+  [0,"Chapter three: building a total, one item at a time."],
+  [3,"An accumulator is a variable that holds a running total. It starts at zero, before the loop."],
+  [6,"Each pass reads the old total, adds the current distance, and stores the new total under the same name. 0 plus 3 is 3."],
+  [7.8,"Tuesday's zero adds nothing. Wednesday's 5 makes 8."],
+  [11.4,"The bar grows day by day…"],
+  [18.6,"…to 20 kilometres. The final print sits outside the loop, so it runs just once."],
+  [21,"Watch out: put the reset inside the loop and every pass starts over from zero. You'd end up with just Sunday's 6."]
+],build(g){
+  const ch=chapter(g,"3","Running Total","an accumulator");
+  const cb=code(g,110,190,[[["total_km","var"],[" = ","p"],["0.0","num"]],[["for ","kw"],["distance_km","var"],[" in ","kw"],["daily_distances_km","var"],[":","p"]],
+    [["    total_km","var"],[" = ","p"],["total_km","var"],[" + ","p"],["distance_km","var"]],[["    print","fn"],["(","p"],["\"Total so far:\"","str"],[", ","p"],["total_km","var"],[", ","p"],["\"km\"","str"],[")","p"]],
+    [["print","fn"],["(","p"],["\"Weekly total:\"","str"],[", ","p"],["total_km","var"],[", ","p"],["\"km\"","str"],[")","p"]]],22);
+  const L=listBoxes(g,110,400,WEEK.map(f1),{labels:DAYS,bw:90,gap:12,fs:24});
+  const eq=codeLine(g,110,560,[["total_km","var"],[" = ","p"]],28);const eqv=el("tspan",{fill:C.white},eq);
+  const ax=axis(g,{x0:110,x1:990,y:700,min:0,max:22,ticks:[0,5,10,15,20]});
+  const segs=WEEK.map((v,i)=>el("rect",{y:670,height:22,rx:3,fill:i%2?C.teal:C.blue,"fill-opacity":.7},g));
+  const final=tx(g,110,620,"› Weekly total: 20.0 km",{"font-family":MONO,"font-size":26,fill:C.teal});
+  const TB=el("g",{},g);["current","before","after"].forEach((h,j)=>tx(TB,1100+j*150,380,h,{"text-anchor":"middle","font-size":24,"font-style":"italic",fill:C.muted}));
+  el("line",{x1:1030,x2:1540,y1:395,y2:395,stroke:"#2a313b","stroke-width":2},TB);
+  let acc=0;const rows=WEEK.map((v,i)=>{const r=el("g",{},TB);const b=acc;acc+=v;[f1(v),f1(b),f1(acc)].forEach((s,j)=>tx(r,1100+j*150,430+i*40,s,{"text-anchor":"middle","font-family":MONO,"font-size":22,fill:j===2?C.teal:j===0?C.gold:C.white}));op(r,0);return r;});
+  const ts=WEEK.map((_,i)=>6+1.8*i);
+  const W=el("g",{},g);op(W,0);const wb=el("rect",{x:110,y:780,height:22,rx:3,fill:C.red,"fill-opacity":.7},W);
+  const wl=tx(W,110,840,"total_km = 0.0 inside the loop → starts over every pass",{"font-size":26,"font-style":"italic",fill:C.red});
+  const wv=tx(W,0,798,"",{"font-family":MONO,"font-size":22,fill:C.red});
+  return t=>{ch(t);cb.reveal(200*lin(t,3,5.5));op(L.g,P(t,3,3.6));op(ax.g,P(t,3,3.6));op(TB,P(t,3,3.6));
+    const f=hopIdx(t,ts,.3);L.hl(f>=0&&t<18.6?Math.round(f):-1);
+    let s=0,cur="0.0";segs.forEach((r,i)=>{const q=P(t,ts[i]+.3,ts[i]+1);r.setAttribute("x",ax.X(s));r.setAttribute("width",Math.max(0,ax.X(s+WEEK[i]*q)-ax.X(s)));
+      if(t>=ts[i]){cur=t<ts[i]+1?f1(s)+" + "+f1(WEEK[i])+"  →  "+f1(s+WEEK[i]):f1(s+WEEK[i]);}s+=WEEK[i];op(rows[i],P(t,ts[i]+1,ts[i]+1.3));});
+    eqv.textContent=cur;op(eq,P(t,4.5,5));op(final,P(t,18.8,19.2));
+    op(W,P(t,21,21.5));const k=Math.min(6,Math.floor(lin(t,21.6,25)*7));const ww=t<21.6?0:ax.X(WEEK[k]*P(t,21.6+k*.49,21.9+k*.49))-ax.X(0);
+    wb.setAttribute("width",Math.max(0,ww));wv.setAttribute("x",110+ww+12);wv.textContent=t>25?"6.0 ✗":"";};
+}});
+
+/* 4: counter with if */
+scenes.push({name:"Count run days",dur:24,beats:[
+  [0,"Chapter four: counting the days with a run."],
+  [3,"The loop still visits every day. Inside it, an if asks: is this distance greater than zero?"],
+  [6,"Only when the answer is True does the counter go up by one."],
+  [9,"Zero days fail the check, so they're skipped."],
+  [17.5,"Five days with a recorded run."],
+  [19.5,"One loop, containing one decision. The if is indented inside the for, and the counter update is indented again inside the if."]
+],build(g){
+  const ch=chapter(g,"4","Count Run Days","a decision inside a loop");
+  const hF=el("rect",{x:104,y:190+31.9-22,width:46*13.2+12,height:31.9*2+28,rx:8,fill:C.blue,"fill-opacity":.08,stroke:C.blue,"stroke-opacity":.6,"stroke-width":1.5},g);
+  const hI=el("rect",{x:104+4*13.2,y:190+2*31.9-22,width:30*13.2+12,height:31.9+28,rx:8,fill:C.green,"fill-opacity":.1,stroke:C.green,"stroke-opacity":.7,"stroke-width":1.5},g);
+  const cb=code(g,110,190,[[["run_days","var"],[" = ","p"],["0","num"]],[["for ","kw"],["distance_km","var"],[" in ","kw"],["daily_distances_km","var"],[":","p"]],
+    [["    if ","kw"],["distance_km","var"],[" > ","p"],["0","num"],[":","p"]],[["        run_days","var"],[" = ","p"],["run_days","var"],[" + ","p"],["1","num"]],
+    [["print","fn"],["(","p"],["\"Days with a recorded run:\"","str"],[", ","p"],["run_days","var"],[")","p"]]],22);
+  const L=listBoxes(g,110,420,WEEK.map(f1),{labels:DAYS,bw:90,gap:12,fs:24});
+  const T=loopTag(g,L,490,"distance_km",200,620);
+  const G=gate(g,1260,330,"distance_km > 0 ?",{vside:"right"});
+  const cnt=tx(g,1260,500,"run_days = 0",{"text-anchor":"middle","font-family":MONO,"font-size":40,fill:C.yellow});
+  const TL=el("g",{},g);const ticks=[0,1,2,3,4].map(k=>el("line",{x1:1150+k*36,x2:1150+k*36,y1:560,y2:640,stroke:C.green,"stroke-width":6,"stroke-linecap":"round"},TL));
+  const slash=el("line",{x1:1130,x2:1310,y1:630,y2:570,stroke:C.green,"stroke-width":6,"stroke-linecap":"round"},TL);
+  const out=tx(g,110,760,"› Days with a recorded run: 5",{"font-family":MONO,"font-size":26,fill:C.teal});
+  const ts=WEEK.map((_,i)=>6+1.6*i);
+  return t=>{ch(t);cb.reveal(200*lin(t,3,5.5));op(L.g,P(t,3,3.6));
+    const f=hopIdx(t,ts,.35);T.set(f,P(t,5.7,6)*(1-P(t,17.3,17.6)));const i=Math.round(f);const live=f>=0&&t<17.2;
+    L.hl(live?i:-1,live&&WEEK[i]>0?C.green:C.red);
+    let n=0;WEEK.forEach((v,k)=>{if(t>=ts[k]+.9&&v>0)n++;L.dim(k,t>=ts[k]+.6&&v===0);});
+    G.set(live&&t>ts[i]+.4?(WEEK[i]>0?1:-1):0);op(G.g,P(t,3.5,4));
+    cnt.textContent="run_days = "+n;op(cnt,P(t,3.8,4.3));
+    ticks.forEach((e,k)=>op(e,k<Math.min(n,4)||(k===4&&false)?1:0));op(slash,n>=5?1:0);
+    op(out,P(t,17.5,17.9));const nest=P(t,19.5,20)*(1-P(t,23.4,23.8));op(hF,nest);op(hI,nest);};
+}});
+
+/* 5: range */
+scenes.push({name:"range",dur:15,beats:[
+  [0,"Chapter five: counting with range."],
+  [3,"Sometimes the app needs whole numbers. range(1, 4) supplies numbers from 1 up to, but not including, 4."],
+  [4.6,"Will session 4 appear? Predict before it runs."],
+  [6,"Session 1, session 2, session 3…"],
+  [10.4,"…and then it stops. The stop value itself is never included."]
+],build(g){
+  const ch=chapter(g,"5","range","a run of whole numbers");
+  const cb=code(g,110,220,[[["for ","kw"],["session_number","var"],[" in ","kw"],["range","fn"],["(","p"],["1","num"],[", ","p"],["4","num"],["):","p"]],
+    [["    print","fn"],["(","p"],["\"Workout session\"","str"],[", ","p"],["session_number","var"],[")","p"]]],26);
+  const ax=axis(g,{x0:200,x1:1000,y:520,min:0,max:5,ticks:[0,1,2,3,4,5],fs:26});
+  const dots=[1,2,3].map(v=>el("circle",{cx:ax.X(v),cy:520,r:16,fill:C.gold,filter:"url(#glow)"},g));
+  const stop=el("circle",{cx:ax.X(4),cy:520,r:16,fill:C.bg,stroke:C.red,"stroke-width":3,"stroke-dasharray":"5 4"},g);
+  const lab=el("g",{},g);tx(lab,ax.X(1),460,"start",{"text-anchor":"middle","font-size":26,"font-style":"italic",fill:C.gold});
+  tx(lab,ax.X(4),460,"stop (excluded)",{"text-anchor":"middle","font-size":26,"font-style":"italic",fill:C.red});
+  const q=tx(g,600,660,"Will session 4 appear?",{"text-anchor":"middle","font-size":34,"font-style":"italic",fill:C.yellow});
+  const O=outPanel(g,1080,380,440,220);const ls=[1,2,3].map(i=>O.line(i-1,"Workout session "+i,C.white,22));
+  const no=tx(g,600,660,"No: range stops before 4",{"text-anchor":"middle","font-size":34,"font-style":"italic",fill:C.red});
+  return t=>{ch(t);cb.reveal(90*lin(t,3,4.5));op(ax.g,P(t,3,3.5));op(lab,P(t,3.6,4.1));op(stop,P(t,3.6,4.1));op(O.g,P(t,3,3.5));
+    op(q,P(t,4.6,5)*(1-P(t,10.2,10.4)));dots.forEach((d,i)=>op(d,P(t,6+i*1.3,6.3+i*1.3)));ls.forEach((e,i)=>op(e,P(t,6.3+i*1.3,6.6+i*1.3)));
+    op(no,P(t,10.4,10.8));stop.setAttribute("stroke-width",t>10.4&&t<13?5:3);};
+}});
+
+/* 6: function */
+scenes.push({name:"Reuse it",dur:28,beats:[
+  [0,"Chapter six: reusing the weekly calculation."],
+  [3,"Put the loop inside a function. The parameter receives whichever list we supply, and the total starts fresh on every call."],
+  [6.5,"This week's list goes in. The loop adds up all seven days, and return sends back 20.0."],
+  [12.5,"Same machine, different week: the previous week's distances total 14.0."],
+  [19,"Watch out: return belongs outside the loop. Indent it inside, and the function returns after the very first item: 3.0."]
+],build(g){
+  const ch=chapter(g,"6","Reuse It","a loop inside a function");
+  const hRet=hlRect(g,110,190+4*31.9,22,4,19,C.teal);
+  const cb=code(g,110,190,[[["def ","kw"],["weekly_distance","fn"],["(","p"],["distances_km","var"],["):","p"]],[["    total_km","var"],[" = ","p"],["0.0","num"]],
+    [["    for ","kw"],["distance_km","var"],[" in ","kw"],["distances_km","var"],[":","p"]],[["        total_km","var"],[" = ","p"],["total_km","var"],[" + ","p"],["distance_km","var"]],
+    [["    return ","kw"],["total_km","var"]]],22);
+  const MX=940,MY=470,MS=.72;const m=machine(g,{params:["distances_km"],color:C.blue,w:440,dfs:30,lfs:26});const [ex,ey]=m.exit(MX,MY,MS);const [hx,hy]=m.hop(0,MX,MY,MS);
+  const c1=code(g,110,400,[[["this_week_km","var"],[" = ","p"],["weekly_distance","fn"],["(","p"],["daily_distances_km","var"],[")","p"]]],22);
+  const c2=code(g,110,440,[[["previous_week_km","var"],[" = ","p"],["weekly_distance","fn"],["(","p"],["previous_distances_km","var"],[")","p"]]],22);
+  const lists=[token(g,"[3.0, 0.0, 5.0, …]",C.gold,"str",26),token(g,"[2.0, 0.0, 4.0, …]",C.gold,"str",26)];
+  const outs=[token(g,"20.0",C.blue,"num",34),token(g,"14.0",C.blue,"num",34)];
+  const tags=[nameTag(g,"this_week_km"),nameTag(g,"previous_week_km")];const ropes=[rope(g),rope(g)];
+  const PREV=[2,0,4,0,3,5,0];
+  const W=el("g",{},g);op(W,0);
+  const wc=code(W,110,620,[[["    for ","kw"],["distance_km","var"],[" in ","kw"],["distances_km","var"],[":","p"]],[["        total_km","var"],[" = ","p"],["total_km","var"],[" + ","p"],["distance_km","var"]],[["        return ","kw"],["total_km","var"]]],22);wc.reveal(999);
+  hlRect(W,110,620+2*31.9,22,8,23,C.red).setAttribute("opacity",1);
+  tx(W,430,684,"← inside the loop",{"font-size":24,"font-style":"italic",fill:C.red});
+  const bad=token(W,"3.0 ✗",C.red,"str",30);op(bad,1);tf(bad,760,684);
+  return t=>{ch(t);cb.reveal(160*lin(t,3,5.5));const q=P(t,4.5,5.6);op(m.g,q);tf(m.g,MX,MY+30*(1-q),MS);
+    let disp="weekly_distance",dc="#4d6b78";const runs=[[8,10.2],[14,16.2]];
+    [[6.5,WEEK,c1,0],[12.5,PREV,c2,1]].forEach(([t0,arr,c,i])=>{c.reveal(60*lin(t,t0,t0+.8));
+      const f=arcDrop(lin(t,t0+.9,t0+1.5),i?330:310,i?432:392,hx,hy);tf(lists[i],f[0],f[1],backOut(lin(t,t0+.6,t0+.9))*f[2]);op(lists[i],t>t0+.6?f[3]:0);
+      if(t>=t0+1.5&&t<t0+3.8){const k=Math.min(7,Math.floor(lin(t,t0+1.5,t0+3.5)*7)+1);let s=0;for(let j=0;j<k;j++)s+=arr[j];disp="total_km = "+f1(s);dc=C.teal;}
+      const o=exitArc(lin(t,t0+3.7,t0+4.6),ex,ey,1460,730+i*80);tf(outs[i],o[0],o[1],o[2]);op(outs[i],P(t,t0+3.7,t0+3.85));
+      const a=P(t,t0+4.7,t0+5.1);op(tags[i],a);const tx0=1000;tf(tags[i],tx0,730+i*80);ropes[i].set(tx0+tags[i].hole,730+i*80,1460-34,730+i*80,a,10);});
+    m.update(t,inRuns(t,runs),t*10+420*overlap(t,runs),disp,dc);
+    op(hRet,P(t,19,19.4)*(1-P(t,27.4,27.8)));op(W,P(t,20,20.6));tf(W,shakeX(t,22),0);};
+}});
+
+/* 7: modify */
+scenes.push({name:"Predict & modify",dur:15,beats:[
+  [0,"Chapter seven: predict, then modify."],
+  [3,"Square brackets with an index pick out one item. Index 1 is Tuesday, so this records a 2 kilometre run."],
+  [6.5,"Predict the new total before running it."],
+  [9,"The function recomputes from the current list every time: 22.0 kilometres."]
+],build(g){
+  const ch=chapter(g,"7","Predict & Modify","change one day, recompute");
+  const cb=code(g,110,200,[[["daily_distances_km","var"],["[","p"],["1","num"],["] = ","p"],["2.0","num"]],
+    [["updated_total_km","var"],[" = ","p"],["weekly_distance","fn"],["(","p"],["daily_distances_km","var"],[")","p"]]],26);
+  const A=el("g",{},g);const L=listBoxes(A,332,360,WEEK.map(f1),{labels:DAYS,bw:120,gap:16});
+  const old=tx(A,L.cx(1),396,"0.0",{"text-anchor":"middle","dominant-baseline":"central","font-family":MONO,"font-size":28,fill:C.gold});
+  const ax=axis(A,{x0:200,x1:1400,y:640,min:0,max:24,ticks:[0,5,10,15,20]});
+  const bar=el("rect",{x:200,y:610,height:24,rx:4,fill:C.blue,"fill-opacity":.7},A);const add=el("rect",{y:610,height:24,rx:4,fill:C.green,"fill-opacity":.8},A);
+  const bl=tx(A,0,596,"",{"text-anchor":"middle","font-family":MONO,"font-size":26});
+  const pq=tx(g,800,760,"New total? Predict first.",{"text-anchor":"middle","font-size":34,"font-style":"italic",fill:C.yellow});
+  const out=tx(g,800,760,"› Updated weekly distance: 22.0 km",{"text-anchor":"middle","font-family":MONO,"font-size":30,fill:C.teal});
+  return t=>{ch(t);op(A,P(t,2.6,3.2));cb.reveal(30*lin(t,3,4)+60*lin(t,8.6,9.6));L.hl(t>4&&t<7?1:-1);
+    L.vt[1].textContent=t<4.6?"0.0":"2.0";op(L.vt[1],P(t,4.6,5));op(old,t<4.4?1:1-P(t,4.4,4.8));tf(old,0,60*P(t,4.4,4.8));
+    bar.setAttribute("width",ax.X(20)-200);add.setAttribute("x",ax.X(20));add.setAttribute("width",(ax.X(22)-ax.X(20))*P(t,9.8,10.6));
+    const tot=t<9.8?20:22;bl.setAttribute("x",ax.X(tot));bl.textContent=f1(tot);bl.setAttribute("fill",t<9.8?C.blue:C.green);
+    op(pq,P(t,6.5,7)*(1-P(t,9,9.3)));op(out,P(t,10.6,11));};
+}});
+
+/* 8: recap */
+scenes.push({name:"Your turn",dur:24,beats:[
+  RECAP_BEAT,
+  [3,"A for loop applies its body to every item. A total or a counter starts before the loop and changes inside it. And a condition can decide which items count."],
+  [10.4,"Exercise one: total a new week. Start at zero in your own cell, add each distance in a loop, and print after the loop. You should get 14.0."],
+  [13.5,"Exercise two: count the days with a distance greater than zero in another fresh week. There should be three."]
+],build(g){
+  const ch=chapter(g,"✦","Recap","and then, your turn");
+  const cols=recapCols(g,[["for loops",["visit every item,","one at a time"],(c,x)=>{const L=listBoxes(c,x-170,240,["3.0","0.0","5.0"],{bw:100,gap:20,index:false,fs:24});L.hl(1);}],
+    ["Totals & counters",["start before the loop,","change inside it"],(c,x)=>codeLine(c,x,290,[["total","var"],[" = ","p"],["total","var"],[" + ","p"],["d","var"]],28,"middle")],
+    ["Conditions inside",["decide which items","count"],(c,x)=>gate(c,x,280,"distance_km > 0 ?").set(1)]]);
+  const e1=exPanel(g,100,"Exercise 1: total a new week","Start at zero, loop, print after the loop");
+  listBoxes(e1,140,340,["2.0","0.0","3.0","4.0","0.0","5.0","0.0"],{bw:78,gap:8,fs:22,labels:DAYS});
+  codeLine(e1,140,540,[["total","var"],["  →  ","p"],["?","num"],[" km","p"]],36);
+  const e2=exPanel(g,820,"Exercise 2: count run days","Add one inside an if body");
+  listBoxes(e2,860,340,["0.0","2.0","0.0","3.0","0.0","4.0","0.0"],{bw:78,gap:8,fs:22,labels:DAYS});
+  codeLine(e2,860,540,[["run days","var"],["  →  ","p"],["?","num"]],36);
+  return t=>{ch(t);recapAnim(t,cols,e1,e2);};
+}});
+/* ---------- player ---------- */
+const svg=document.getElementById("svg");
+const defs=el("defs",{},svg);
+defs.innerHTML='<filter id="glow" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="7" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>'+
+ '<radialGradient id="vig" cx="50%" cy="45%" r="75%"><stop offset="0%" stop-color="#161b23"/><stop offset="100%" stop-color="#090b0f"/></radialGradient>'+
+ '<marker id="arrY" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#FFE38A"/></marker><pattern id="bp" width="28" height="28" patternUnits="userSpaceOnUse"><path d="M28 0H0V28" fill="none" stroke="#58C4DD" stroke-opacity=".14" stroke-width="1"/></pattern>'+
+ '<marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#58C4DD"/></marker>';
+el("rect",{width:W,height:H,fill:"url(#vig)"},svg);
+const layer=el("g",{},svg);
+
+const offs=[];let total=0;scenes.forEach(s=>{offs.push(total);total+=s.dur;});
+const bounds=[];scenes.forEach((s,i)=>s.beats.forEach(b=>{if(offs[i]+b[0]>0)bounds.push(offs[i]+b[0]);}));bounds.push(total);bounds.sort((a,b)=>a-b);
+const nextBoundary=t=>{for(const b of bounds)if(b>t+1e-4)return b;return total;};
+const narration=window.TUTORIAL_NARRATION||null;
+
+const $=id=>document.getElementById(id);
+const playBtn=$("play"),fill=$("fill"),knob=$("knob"),timeEl=$("time"),scrub=$("scrub"),bigplay=$("bigplay"),chapNav=$("chapters");
+const speedBtn=$("speed"),narrBtn=$("narr"),stopBtn=$("stopbeats"),cuesBtn=$("cuesBtn"),cuesEl=$("cues"),cueNow=$("cueNow"),cueNext=$("cueNext"),cueState=$("cueState");
+const ICON_PLAY='<svg viewBox="0 0 24 24"><path d="M7 4l13 8-13 8z" fill="currentColor"/></svg>';
+const ICON_PAUSE='<svg viewBox="0 0 24 24"><path d="M6 4h4v16H6zM14 4h4v16h-4z" fill="currentColor"/></svg>';
+const ICON_REPLAY='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M4 12a8 8 0 1 0 2.4-5.7"/><path d="M4 4v5h5"/></svg>';
+
+let now=0,playing=false,cur=-1,upd=null,beatKey=null,lastTs=null,started=false;
+let speed=.5,stopBeats=false,heldAt=-1,cuesOn=true;
+let narrate=!!narration,narrationSynced=false,narrationDriving=false,audioCueIndex=0,lastAudioTime=0;
+const speeds=[.25,.5,.75,1,1.25,1.5];
+const narrationAudio=narration?new Audio(narration.audio):null;
+if(narrationAudio)narrationAudio.preload="auto";
+if(narrationAudio)narrationAudio.addEventListener("ended",()=>{if(playing&&narrate)finishNarratedPlayback();});
+
+function sceneAt(t){for(let i=scenes.length-1;i>=0;i--)if(t>=offs[i])return i;return 0;}
+function fmt(s){s=Math.max(0,Math.floor(s));return Math.floor(s/60)+":"+String(s%60).padStart(2,"0");}
+function cueWindow(key){
+  const parts=key.split(":").map(Number),i=parts[0],k=parts[1],beats=scenes[i].beats;
+  const start=offs[i]+(k>=0?beats[k][0]:0);
+  const end=k+1<beats.length?offs[i]+beats[k+1][0]:offs[i]+scenes[i].dur;
+  return [start,end];
+}
+const narrationTimeline=[];
+if(narration)scenes.forEach((scene,i)=>scene.beats.forEach((_,k)=>{
+  const key=i+":"+k,timing=narration.cues[key];if(!timing)return;
+  const visual=cueWindow(key);narrationTimeline.push({index:narrationTimeline.length,key,playStart:timing[0],audioStart:timing[1],audioEnd:timing[2],visualStart:visual[0],visualEnd:visual[1]});
+}));
+function pauseNarration(){if(narrationAudio)narrationAudio.pause();narrationDriving=false;}
+function stopNarration(reset){pauseNarration();if(reset){narrationSynced=false;audioCueIndex=0;lastAudioTime=0;}}
+function visualEntryAt(t){for(let i=narrationTimeline.length-1;i>=0;i--)if(t>=narrationTimeline[i].visualStart-1e-4)return narrationTimeline[i];return narrationTimeline[0];}
+function audioEntryAt(t){
+  while(audioCueIndex+1<narrationTimeline.length&&t>=narrationTimeline[audioCueIndex+1].playStart)audioCueIndex++;
+  while(audioCueIndex>0&&t<narrationTimeline[audioCueIndex].playStart)audioCueIndex--;
+  return narrationTimeline[audioCueIndex];
+}
+function seekNarrationToVisual(t){
+  if(!narrationAudio||!narrationTimeline.length)return;
+  const entry=visualEntryAt(t),span=Math.max(.001,entry.visualEnd-entry.visualStart);
+  const progress=clamp((t-entry.visualStart)/span);
+  const target=progress<.0001?entry.playStart:lerp(entry.audioStart,entry.audioEnd,progress);
+  pauseNarration();try{narrationAudio.currentTime=target;}catch(_){}
+  audioCueIndex=entry.index;lastAudioTime=target;narrationSynced=true;
+}
+function playNarration(){
+  if(!narrate||!narrationAudio||!playing)return;
+  if(!narrationSynced)seekNarrationToVisual(now);
+  narrationDriving=true;const promise=narrationAudio.play();
+  if(promise)promise.catch(()=>{narrationDriving=false;});
+}
+function finishNarratedPlayback(){pauseNarration();now=total;playing=false;narrationSynced=true;render();setPlayUI();}
+function syncVisualToNarration(){
+  const current=narrationAudio.currentTime;
+  if(stopBeats){const crossed=narrationTimeline.find(entry=>entry.visualEnd<total&&entry.audioEnd>lastAudioTime+.001&&entry.audioEnd<=current&&Math.abs(entry.visualEnd-heldAt)>1e-6);
+    if(crossed){narrationAudio.pause();try{narrationAudio.currentTime=crossed.audioEnd;}catch(_){}audioCueIndex=crossed.index;lastAudioTime=crossed.audioEnd;narrationSynced=true;narrationDriving=false;now=crossed.visualEnd-.001;heldAt=crossed.visualEnd;playing=false;render();setPlayUI();return false;}}
+  const entry=audioEntryAt(current),span=Math.max(.001,entry.audioEnd-entry.audioStart);
+  const progress=clamp((current-entry.audioStart)/span);now=lerp(entry.visualStart,entry.visualEnd-.001,progress);lastAudioTime=current;
+  if(entry.index===narrationTimeline.length-1&&current>=entry.audioEnd){finishNarratedPlayback();return false;}
+  render();return true;
+}
+
+const chapBtns=scenes.map((s,i)=>{const b=document.createElement("button");b.innerHTML=`<span class="n">${i===0?"▸":i===scenes.length-1?"✦":i}</span>${s.name}`;
+  b.addEventListener("click",()=>seek(offs[i]));chapNav.appendChild(b);return b;});
+scenes.forEach((s,i)=>{if(i===0)return;const d=document.createElement("div");d.className="tick";d.style.left=(offs[i]/total*100)+"%";scrub.querySelector(".track").appendChild(d);});
+scrub.setAttribute("aria-valuemax",String(Math.round(total)));
+
+function render(){
+  const tt=Math.min(now,total-1e-4);const i=sceneAt(tt);
+  if(i!==cur){cur=i;while(layer.firstChild)layer.removeChild(layer.firstChild);const g=el("g",{},layer);upd=scenes[i].build(g);
+    chapBtns.forEach((b,j)=>b.setAttribute("aria-current",j===i?"true":"false"));}
+  const lt=tt-offs[i];upd(lt);
+  const bs=scenes[i].beats;let k=0;for(let j=0;j<bs.length;j++)if(lt>=bs[j][0])k=j;
+  const key=i+":"+k;
+  if(key!==beatKey){beatKey=key;cueNow.textContent=bs[k][1];
+    const nxt=k+1<bs.length?bs[k+1][1]:(scenes[i+1]?scenes[i+1].beats[0][1]:"End of episode.");cueNext.textContent="Next: "+nxt;}
+  const pct=now/total*100;fill.style.width=pct+"%";knob.style.left=pct+"%";
+  timeEl.textContent=fmt(now)+" / "+fmt(total);scrub.setAttribute("aria-valuenow",String(Math.round(now)));
+}
+function setState(){
+  cueState.textContent=(!playing&&stopBeats&&heldAt>0&&Math.abs(now-heldAt)<.01)?"Held at the end of this beat. Press Space to continue.":"";
+}
+function setPlayUI(){playBtn.innerHTML=playing?ICON_PAUSE:(now>=total?ICON_REPLAY:ICON_PLAY);playBtn.setAttribute("aria-label",playing?"Pause":"Play");setState();}
+function setNarrUI(){narrBtn.textContent=narrate?"Narration: on":"Narration: off";narrBtn.setAttribute("aria-pressed",String(narrate));
+  speedBtn.setAttribute("aria-label",narrate?"Animation speed when narration is off":"Animation speed");
+  speedBtn.title=narrate?"Narration is the timing master; this speed applies when narration is off.":"Animation playback speed";
+  if(!narration){narrBtn.disabled=true;narrBtn.textContent="Narration unavailable";}}
+function tick(ts){
+  if(!playing){lastTs=null;return;}
+  if(narrate&&narrationAudio&&narrationDriving){lastTs=ts;if(syncVisualToNarration()&&playing)requestAnimationFrame(tick);return;}
+  if(lastTs==null)lastTs=ts;const dt=Math.min(.1,(ts-lastTs)/1000)*speed;lastTs=ts;
+  let next=now+dt;
+  if(stopBeats){const nb=nextBoundary(now);if(next>=nb&&nb<total&&Math.abs(nb-heldAt)>1e-6){now=nb-.001;heldAt=nb;playing=false;pauseNarration();render();setPlayUI();return;}}
+  now=next;
+  if(now>=total){now=total;playing=false;stopNarration(true);setPlayUI();}
+  render();
+  if(playing)requestAnimationFrame(tick);
+}
+function play(){
+  if(!started){started=true;bigplay.style.display="none";now=0;cur=-1;beatKey=null;}
+  if(now>=total){now=0;beatKey=null;narrationSynced=false;}
+  playing=true;render();if(narrate)playNarration();setPlayUI();lastTs=null;requestAnimationFrame(tick);
+}
+function pause(){playing=false;pauseNarration();setPlayUI();}
+function seek(t){if(!started){started=true;bigplay.style.display="none";}now=clamp(t,0,total);heldAt=-1;beatKey=null;render();if(narrate){seekNarrationToVisual(now);if(playing)playNarration();}else narrationSynced=false;setPlayUI();}
+
+playBtn.addEventListener("click",()=>playing?pause():play());
+bigplay.addEventListener("click",play);
+speedBtn.addEventListener("click",()=>{speed=speeds[(speeds.indexOf(speed)+1)%speeds.length];speedBtn.textContent=speed+"×";});
+narrBtn.addEventListener("click",()=>{narrate=!narrate;if(!narrate)stopNarration(true);else{narrationSynced=false;if(playing)playNarration();}setNarrUI();});
+stopBtn.addEventListener("click",()=>{stopBeats=!stopBeats;stopBtn.setAttribute("aria-pressed",String(stopBeats));stopBtn.textContent=stopBeats?"Stop at each beat: on":"Stop at each beat: off";setState();});
+cuesBtn.addEventListener("click",()=>{cuesOn=!cuesOn;cuesBtn.setAttribute("aria-pressed",String(cuesOn));cuesBtn.textContent=cuesOn?"Cues: on":"Cues: off";cuesEl.hidden=!cuesOn;});
+$("fs").addEventListener("click",()=>{const s=$("stage");try{if(document.fullscreenElement)document.exitFullscreen();else if(s.requestFullscreen)s.requestFullscreen();}catch(e){}});
+let dragging=false;
+function fromEvent(e){const r=scrub.getBoundingClientRect();return clamp((e.clientX-r.left)/r.width)*total;}
+scrub.addEventListener("pointerdown",e=>{dragging=true;try{scrub.setPointerCapture(e.pointerId);}catch(_){}seek(fromEvent(e));});
+scrub.addEventListener("pointermove",e=>{if(dragging)seek(fromEvent(e));});
+scrub.addEventListener("pointerup",()=>{dragging=false;});
+document.addEventListener("keydown",e=>{const tag=(e.target.tagName||"").toLowerCase();if(tag==="button"||tag==="summary")return;
+  if(e.code==="Space"||e.key==="k"){e.preventDefault();playing?pause():play();}
+  else if(e.key==="ArrowRight"){e.preventDefault();seek(now+5);}else if(e.key==="ArrowLeft"){e.preventDefault();seek(now-5);}
+  else if(e.key==="Home"){e.preventDefault();seek(0);}});
+
+/* poster frame */
+now=9.6;render();now=0;cueNow.textContent=scenes[0].beats[0][1];cueNext.textContent="Next: "+scenes[0].beats[1][1];
+fill.style.width="0%";knob.style.left="0%";timeEl.textContent=fmt(0)+" / "+fmt(total);
+setPlayUI();setNarrUI();
+})();
+</script>
+</body>
+</html>

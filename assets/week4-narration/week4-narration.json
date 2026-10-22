@@ -1,0 +1,341 @@
+{
+  "provider": "ElevenLabs",
+  "model_id": "eleven_multilingual_v2",
+  "voice": {
+    "id": "21m00Tcm4TlvDq8ikWAM",
+    "name": "Rachel"
+  },
+  "audio": "week4-narration.mp3",
+  "duration_seconds": 285.652,
+  "cues": {
+    "0:0": {
+      "start": 0.0,
+      "spoken_end": 5.108,
+      "end": 5.55,
+      "caption": "This is our workout app's folder, the way you usually see it: icons you click.",
+      "spoken": "This is our workout app's folder, the way you usually see it: icons you click."
+    },
+    "0:1": {
+      "start": 5.55,
+      "spoken_end": 10.716,
+      "end": 11.227,
+      "caption": "Here's the very same folder in the terminal. Same files, but you type instead of click.",
+      "spoken": "Here's the very same folder in the terminal. Same files, but you type instead of click."
+    },
+    "0:2": {
+      "start": 11.227,
+      "spoken_end": 15.476,
+      "end": 15.987,
+      "caption": "Week four: finding your way around the command line.",
+      "spoken": "Week four: finding your way around the command line."
+    },
+    "1:0": {
+      "start": 15.987,
+      "spoken_end": 18.657,
+      "end": 19.168,
+      "caption": "Chapter one: reading the prompt.",
+      "spoken": "Chapter one: reading the prompt."
+    },
+    "1:1": {
+      "start": 19.168,
+      "spoken_end": 25.553,
+      "end": 25.577,
+      "caption": "The prompt tells you who and where you are. sam is the user, laptop is the computer…",
+      "spoken": "The prompt tells you who and where you are. sam is the user, laptop is the computer..."
+    },
+    "1:2": {
+      "start": 25.577,
+      "spoken_end": 31.382,
+      "end": 31.823,
+      "caption": "…the tilde is the folder you're in right now, and the percent sign means: ready for a command.",
+      "spoken": "...the tilde is the folder you're in right now, and the percent sign means: ready for a command."
+    },
+    "1:3": {
+      "start": 31.823,
+      "spoken_end": 40.879,
+      "end": 41.32,
+      "caption": "Type a command, press Enter, and the output appears underneath. pwd means print working directory: where am I?",
+      "spoken": "Type a command, press Enter, and the output appears underneath. P W D means print working directory: where am I?"
+    },
+    "1:4": {
+      "start": 41.32,
+      "spoken_end": 49.006,
+      "end": 49.284,
+      "caption": "We're in /Users/sam. Follow the path down the tree: the top of everything, then Users, then sam.",
+      "spoken": "We're in slash Users slash sam. Follow the path down the tree: the top of everything, then Users, then sam."
+    },
+    "1:5": {
+      "start": 49.284,
+      "spoken_end": 51.85,
+      "end": 52.965,
+      "caption": "The tilde is just a nickname for that home folder.",
+      "spoken": "The tilde is just a nickname for that home folder."
+    },
+    "2:0": {
+      "start": 52.965,
+      "spoken_end": 55.484,
+      "end": 55.867,
+      "caption": "Chapter two: looking around.",
+      "spoken": "Chapter two: looking around."
+    },
+    "2:1": {
+      "start": 55.867,
+      "spoken_end": 62.543,
+      "end": 62.868,
+      "caption": "ls lists what's in the current folder. Right now: three folders, Desktop, Documents and Downloads.",
+      "spoken": "L S lists what's in the current folder. Right now: three folders, Desktop, Documents and Downloads."
+    },
+    "2:2": {
+      "start": 62.868,
+      "spoken_end": 68.836,
+      "end": 69.95,
+      "caption": "Give ls a folder name to peek inside without going there. Documents holds our workout_app.",
+      "spoken": "Give L S a folder name to peek inside without going there. Documents holds our workout underscore app."
+    },
+    "3:0": {
+      "start": 69.95,
+      "spoken_end": 72.238,
+      "end": 72.516,
+      "caption": "Chapter three: walking in.",
+      "spoken": "Chapter three: walking in."
+    },
+    "3:1": {
+      "start": 72.516,
+      "spoken_end": 78.519,
+      "end": 78.797,
+      "caption": "cd means change directory. It walks you through a door, and the prompt updates to show where you are.",
+      "spoken": "C D means change directory. It walks you through a door, and the prompt updates to show where you are."
+    },
+    "3:2": {
+      "start": 78.797,
+      "spoken_end": 86.169,
+      "end": 86.541,
+      "caption": "Tab completion: type the first few letters, press Tab, and the terminal finishes the name. Fewer typos.",
+      "spoken": "Tab completion: type the first few letters, press Tab, and the terminal finishes the name. Fewer typos."
+    },
+    "3:3": {
+      "start": 86.541,
+      "spoken_end": 93.739,
+      "end": 94.006,
+      "caption": "Inside workout_app, ls shows the project: a README, two Python scripts and a data folder.",
+      "spoken": "Inside workout underscore app, L S shows the project: a read me, two Python scripts and a data folder."
+    },
+    "3:4": {
+      "start": 94.006,
+      "spoken_end": 98.162,
+      "end": 98.592,
+      "caption": "And pwd gives the full address, all the way from the top.",
+      "spoken": "And P W D gives the full address, all the way from the top."
+    },
+    "4:0": {
+      "start": 98.592,
+      "spoken_end": 101.436,
+      "end": 101.75,
+      "caption": "Chapter four: walking out, and paths.",
+      "spoken": "Chapter four: walking out, and paths."
+    },
+    "4:1": {
+      "start": 101.75,
+      "spoken_end": 107.276,
+      "end": 107.706,
+      "caption": "Step into data and look around: one file, runs.csv.",
+      "spoken": "Step into data and look around: one file, runs dot C S V."
+    },
+    "4:2": {
+      "start": 107.706,
+      "spoken_end": 115.624,
+      "end": 115.937,
+      "caption": "Two dots always mean the folder one level up: the door you came in through. cd .. takes us back to workout_app.",
+      "spoken": "Two dots always mean the folder one level up: the door you came in through. C D .. takes us back to workout underscore app."
+    },
+    "4:3": {
+      "start": 115.937,
+      "spoken_end": 121.893,
+      "end": 122.172,
+      "caption": "Chain them with a slash. cd ../.. climbs two levels, all the way to home.",
+      "spoken": "Chain them with a slash. C D .. slash .. climbs two levels, all the way to home."
+    },
+    "4:4": {
+      "start": 122.172,
+      "spoken_end": 128.696,
+      "end": 129.207,
+      "caption": "A path can also go down several steps at once: Documents, then workout_app, then data.",
+      "spoken": "A path can also go down several steps at once: Documents, then workout underscore app, then data."
+    },
+    "4:5": {
+      "start": 129.207,
+      "spoken_end": 132.295,
+      "end": 133.247,
+      "caption": "cd with a tilde takes you home from anywhere.",
+      "spoken": "C D with a tilde takes you home from anywhere."
+    },
+    "4:6": {
+      "start": 133.247,
+      "spoken_end": 141.05,
+      "end": 141.653,
+      "caption": "A path that starts with a slash is absolute: a full address from the very top. It works no matter where you are.",
+      "spoken": "A path that starts with a slash is absolute: a full address from the very top. It works no matter where you are."
+    },
+    "5:0": {
+      "start": 141.653,
+      "spoken_end": 143.987,
+      "end": 144.312,
+      "caption": "Chapter five: open dot.",
+      "spoken": "Chapter five: open dot."
+    },
+    "5:1": {
+      "start": 144.312,
+      "spoken_end": 148.921,
+      "end": 149.13,
+      "caption": "A single dot means right here. open dot shows the current folder in Finder.",
+      "spoken": "A single dot means right here. open dot shows the current folder in Finder."
+    },
+    "5:2": {
+      "start": 149.13,
+      "spoken_end": 154.436,
+      "end": 154.878,
+      "caption": "Same folder, same files: the terminal and Finder are two views of one place.",
+      "spoken": "Same folder, same files: the terminal and Finder are two views of one place."
+    },
+    "6:0": {
+      "start": 154.878,
+      "spoken_end": 157.977,
+      "end": 158.79,
+      "caption": "Chapter six: reading and running a script.",
+      "spoken": "Chapter six: reading and running a script."
+    },
+    "6:1": {
+      "start": 158.79,
+      "spoken_end": 163.632,
+      "end": 164.235,
+      "caption": "clear wipes the screen. Nothing is deleted, and you're still in the same folder.",
+      "spoken": "clear wipes the screen. Nothing is deleted, and you're still in the same folder."
+    },
+    "6:2": {
+      "start": 164.235,
+      "spoken_end": 174.649,
+      "end": 175.09,
+      "caption": "cat prints a file's contents, so we can read a script before running it. Here's pace.py, with the calculate_pace function from week two.",
+      "spoken": "cat prints a file's contents, so we can read a script before running it. Here's pace dot P Y, with the calculate underscore pace function from week two."
+    },
+    "6:3": {
+      "start": 175.09,
+      "spoken_end": 184.912,
+      "end": 185.191,
+      "caption": "python3, then the file name, runs it. Python reads the script from top to bottom: define the function, call it, print the result.",
+      "spoken": "python3, then the file name, runs it. Python reads the script from top to bottom: define the function, call it, print the result."
+    },
+    "6:4": {
+      "start": 185.191,
+      "spoken_end": 190.067,
+      "end": 190.578,
+      "caption": "The up arrow brings back your last command. Press Enter and it runs again.",
+      "spoken": "The up arrow brings back your last command. Press Enter and it runs again."
+    },
+    "7:0": {
+      "start": 190.578,
+      "spoken_end": 193.086,
+      "end": 193.597,
+      "caption": "Chapter seven: when it goes wrong.",
+      "spoken": "Chapter seven: when it goes wrong."
+    },
+    "7:1": {
+      "start": 193.597,
+      "spoken_end": 203.476,
+      "end": 203.918,
+      "caption": "Run pace.py from the home folder and Python can't find it. It only looks in the folder you're in, and pace.py lives in workout_app.",
+      "spoken": "Run pace dot P Y from the home folder and Python can't find it. It only looks in the folder you're in, and pace dot P Y lives in workout underscore app."
+    },
+    "7:2": {
+      "start": 203.918,
+      "spoken_end": 208.84,
+      "end": 209.223,
+      "caption": "A typo gives the same kind of error. There's no folder called workuot_app.",
+      "spoken": "A typo gives the same kind of error. There's no folder called workuot underscore app."
+    },
+    "7:3": {
+      "start": 209.223,
+      "spoken_end": 212.857,
+      "end": 213.182,
+      "caption": "Tab completion fills in the real name, so there's nothing to misspell.",
+      "spoken": "Tab completion fills in the real name, so there's nothing to misspell."
+    },
+    "7:4": {
+      "start": 213.182,
+      "spoken_end": 221.913,
+      "end": 222.238,
+      "caption": "Right folder, same command: it works. When a file can't be found, check where you are with pwd and ls.",
+      "spoken": "Right folder, same command: it works. When a file can't be found, check where you are with P W D and L S."
+    },
+    "8:0": {
+      "start": 222.238,
+      "spoken_end": 224.259,
+      "end": 224.537,
+      "caption": "Chapter eight: making something.",
+      "spoken": "Chapter eight: making something."
+    },
+    "8:1": {
+      "start": 224.537,
+      "spoken_end": 229.204,
+      "end": 229.53,
+      "caption": "mkdir, make directory, builds a new folder. We'll call it logs.",
+      "spoken": "mkdir, make directory, builds a new folder. We'll call it logs."
+    },
+    "8:2": {
+      "start": 229.53,
+      "spoken_end": 231.468,
+      "end": 231.677,
+      "caption": "ls confirms it's there.",
+      "spoken": "L S confirms it's there."
+    },
+    "8:3": {
+      "start": 231.677,
+      "spoken_end": 242.985,
+      "end": 243.589,
+      "caption": "log_run.py works out Sam's pace and saves it as a file inside logs. Scripts can't save into a folder that doesn't exist yet, which is why we made it first.",
+      "spoken": "log underscore run dot P Y works out Sam's pace and saves it as a file inside logs. Scripts can't save into a folder that doesn't exist yet, which is why we made it first."
+    },
+    "8:4": {
+      "start": 243.589,
+      "spoken_end": 246.097,
+      "end": 246.132,
+      "caption": "ls logs shows the new file…",
+      "spoken": "L S logs shows the new file..."
+    },
+    "8:5": {
+      "start": 246.132,
+      "spoken_end": 248.639,
+      "end": 249.754,
+      "caption": "…and cat shows what the script wrote.",
+      "spoken": "...and cat shows what the script wrote."
+    },
+    "9:0": {
+      "start": 249.754,
+      "spoken_end": 252.552,
+      "end": 253.364,
+      "caption": "Let's recap, and then it's your turn.",
+      "spoken": "Let's recap, and then it's your turn."
+    },
+    "9:1": {
+      "start": 253.364,
+      "spoken_end": 265.334,
+      "end": 265.845,
+      "caption": "Here's everything in one place: where am I, look around, move, open, read, run, make, and tidy up. Plus Tab to finish names and the up arrow for history.",
+      "spoken": "Here's everything in one place: where am I, look around, move, open, read, run, make, and tidy up. Plus Tab to finish names and the up arrow for history."
+    },
+    "9:2": {
+      "start": 265.845,
+      "spoken_end": 274.599,
+      "end": 275.551,
+      "caption": "Exercise one: from your home folder, get to data with a single cd. Then come back up to workout_app with dot dot.",
+      "spoken": "Exercise one: from your home folder, get to data with a single C D. Then come back up to workout underscore app with dot dot."
+    },
+    "9:3": {
+      "start": 275.551,
+      "spoken_end": 285.647,
+      "end": 285.652,
+      "caption": "Exercise two: run log_run.py from your home folder. Read the error, then fix it by moving to the right folder first.",
+      "spoken": "Exercise two: run log underscore run dot P Y from your home folder. Read the error, then fix it by moving to the right folder first."
+    }
+  }
+}

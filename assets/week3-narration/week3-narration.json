@@ -1,0 +1,362 @@
+{
+  "provider": "ElevenLabs",
+  "model_id": "eleven_multilingual_v2",
+  "voice": {
+    "id": "21m00Tcm4TlvDq8ikWAM",
+    "name": "Rachel"
+  },
+  "audio": "week3-narration.mp3",
+  "duration_seconds": 365.854,
+  "cues": {
+    "0:0": {
+      "start": 0.0,
+      "spoken_end": 3.17,
+      "end": 3.495,
+      "caption": "Our fitness app needs a separate profile for each person.",
+      "spoken": "Our fitness app needs a separate profile for each person."
+    },
+    "0:1": {
+      "start": 3.495,
+      "spoken_end": 10.112,
+      "end": 10.553,
+      "caption": "Each profile keeps a name, a height and a weight together, and can calculate a BMI from its own values.",
+      "spoken": "Each profile keeps a name, a height and a weight together, and can calculate a B M I from its own values."
+    },
+    "0:2": {
+      "start": 10.553,
+      "spoken_end": 14.663,
+      "end": 15.778,
+      "caption": "Week three: creating a fitness profile with a class.",
+      "spoken": "Week three: creating a fitness profile with a class."
+    },
+    "1:0": {
+      "start": 15.778,
+      "spoken_end": 18.971,
+      "end": 19.412,
+      "caption": "Chapter one: start with a familiar function.",
+      "spoken": "Chapter one: start with a familiar function."
+    },
+    "1:1": {
+      "start": 19.412,
+      "spoken_end": 27.295,
+      "end": 27.736,
+      "caption": "BMI is weight in kilograms divided by height in metres, squared. Squared means height times itself.",
+      "spoken": "B M I is weight in kilograms divided by height in meters, squared. Squared means height times itself."
+    },
+    "1:2": {
+      "start": 27.736,
+      "spoken_end": 36.711,
+      "end": 37.036,
+      "caption": "Picture it as a square: 1.75 metres on each side gives an area of 3.0625 square metres.",
+      "spoken": "Picture it as a square: one point seven five meters on each side gives an area of three point zero six two five square meters."
+    },
+    "1:3": {
+      "start": 37.036,
+      "spoken_end": 43.259,
+      "end": 43.7,
+      "caption": "Share 70 kilograms over that area: 22.86. That's Sam's BMI.",
+      "spoken": "Share 70 kilograms over that area: twenty two point eight six. That's Sam's B M I."
+    },
+    "1:4": {
+      "start": 43.7,
+      "spoken_end": 50.167,
+      "end": 50.55,
+      "caption": "But the app has to keep every person's measurements. As loose variables, which height belongs to whom?",
+      "spoken": "But the app has to keep every person's measurements. As loose variables, which height belongs to whom?"
+    },
+    "1:5": {
+      "start": 50.55,
+      "spoken_end": 55.032,
+      "end": 55.473,
+      "caption": "What we want is to keep each person's values together, in one profile.",
+      "spoken": "What we want is to keep each person's values together, in one profile."
+    },
+    "2:0": {
+      "start": 55.473,
+      "spoken_end": 58.503,
+      "end": 58.712,
+      "caption": "Chapter two: a class and its objects.",
+      "spoken": "Chapter two: a class and its objects."
+    },
+    "2:1": {
+      "start": 58.712,
+      "spoken_end": 66.769,
+      "end": 67.094,
+      "caption": "A class defines a kind of object. FitnessProfile is the template: which values a profile holds, and what it can do.",
+      "spoken": "A class defines a kind of object. FitnessProfile is the template: which values a profile holds, and what it can do."
+    },
+    "2:2": {
+      "start": 67.094,
+      "spoken_end": 75.442,
+      "end": 75.686,
+      "caption": "An object, also called an instance, is one particular example made from that class. This one is Sam's profile.",
+      "spoken": "An object, also called an instance, is one particular example made from that class. This one is Sam's profile."
+    },
+    "2:3": {
+      "start": 75.686,
+      "spoken_end": 79.587,
+      "end": 80.028,
+      "caption": "An attribute is a value stored on an object, like Sam's height.",
+      "spoken": "An attribute is a value stored on an object, like Sam's height."
+    },
+    "2:4": {
+      "start": 80.028,
+      "spoken_end": 88.294,
+      "end": 88.724,
+      "caption": "A method is a function defined inside the class. calculate_bmi works with this profile's own values.",
+      "spoken": "A method is a function defined inside the class. calculate underscore B M I works with this profile's own values."
+    },
+    "2:5": {
+      "start": 88.724,
+      "spoken_end": 93.333,
+      "end": 93.762,
+      "caption": "One class, as many objects as we need, each holding its own values.",
+      "spoken": "One class, as many objects as we need, each holding its own values."
+    },
+    "3:0": {
+      "start": 93.762,
+      "spoken_end": 97.814,
+      "end": 98.244,
+      "caption": "Chapter three: reading the class, one part at a time.",
+      "spoken": "Chapter three: reading the class, one part at a time."
+    },
+    "3:1": {
+      "start": 98.244,
+      "spoken_end": 105.268,
+      "end": 105.709,
+      "caption": "class FitnessProfile names the class. Capital letters set class names apart from variable names.",
+      "spoken": "class FitnessProfile names the class. Capital letters set class names apart from variable names."
+    },
+    "3:2": {
+      "start": 105.709,
+      "spoken_end": 113.708,
+      "end": 114.219,
+      "caption": "__init__, with two underscores on each side, is the initialisation method. Python calls it whenever we create a profile.",
+      "spoken": "dunder init, with two underscores on each side, is the initialisation method. Python calls it whenever we create a profile."
+    },
+    "3:3": {
+      "start": 114.219,
+      "spoken_end": 123.867,
+      "end": 124.378,
+      "caption": "self refers to the particular object being set up or used. self.height_m means the height stored on this profile.",
+      "spoken": "self refers to the particular object being set up or used. self dot height underscore meters means the height stored on this profile."
+    },
+    "3:4": {
+      "start": 124.378,
+      "spoken_end": 133.271,
+      "end": 133.701,
+      "caption": "self.name = name stores the value we pass in as an attribute on the new object. Same for height and weight.",
+      "spoken": "self dot name equals name stores the value we pass in as an attribute on the new object. Same for height and weight."
+    },
+    "3:5": {
+      "start": 133.701,
+      "spoken_end": 142.618,
+      "end": 142.943,
+      "caption": "calculate_bmi is a method, because it sits inside the class. It reads this object's attributes and returns a result.",
+      "spoken": "calculate underscore B M I is a method, because it sits inside the class. It reads this object's attributes and returns a result."
+    },
+    "3:6": {
+      "start": 142.943,
+      "spoken_end": 149.467,
+      "end": 150.419,
+      "caption": "Watch the two indentation levels: methods sit four spaces in, and their instructions another four.",
+      "spoken": "Watch the two indentation levels: methods sit four spaces in, and their instructions another four."
+    },
+    "4:0": {
+      "start": 150.419,
+      "spoken_end": 153.554,
+      "end": 153.879,
+      "caption": "Chapter four: creating one profile.",
+      "spoken": "Chapter four: creating one profile."
+    },
+    "4:1": {
+      "start": 153.879,
+      "spoken_end": 159.475,
+      "end": 159.789,
+      "caption": "Calling the class name creates an object. A fresh profile is stamped out from the template.",
+      "spoken": "Calling the class name creates an object. A fresh profile is stamped out from the template."
+    },
+    "4:2": {
+      "start": 159.789,
+      "spoken_end": 167.184,
+      "end": 167.858,
+      "caption": "Python runs __init__ and supplies self automatically: self is this brand-new profile.",
+      "spoken": "Python runs dunder init and supplies self automatically: self is this brand-new profile."
+    },
+    "4:3": {
+      "start": 167.858,
+      "spoken_end": 172.943,
+      "end": 173.268,
+      "caption": "Our three arguments line up with the parameters after self: name, height, weight.",
+      "spoken": "Our three arguments line up with the parameters after self: name, height, weight."
+    },
+    "4:4": {
+      "start": 173.268,
+      "spoken_end": 181.639,
+      "end": 182.022,
+      "caption": "self.name = name stores Sam on this profile. Then the height, 1.75, and the weight, 70.0.",
+      "spoken": "self dot name equals name stores Sam on this profile. Then the height, one point seven five, and the weight, seventy point zero."
+    },
+    "4:5": {
+      "start": 182.022,
+      "spoken_end": 187.688,
+      "end": 188.071,
+      "caption": "The variable sam_profile now refers to one complete object.",
+      "spoken": "The variable sam underscore profile now refers to one complete object."
+    },
+    "5:0": {
+      "start": 188.071,
+      "spoken_end": 191.717,
+      "end": 191.995,
+      "caption": "Chapter five: dot notation and methods.",
+      "spoken": "Chapter five: dot notation and methods."
+    },
+    "5:1": {
+      "start": 191.995,
+      "spoken_end": 202.363,
+      "end": 202.804,
+      "caption": "A dot connects an object to one of its attributes. sam_profile.name follows the tag to this profile and reads the name stored there.",
+      "spoken": "A dot connects an object to one of its attributes. sam underscore profile dot name follows the tag to this profile and reads the name stored there."
+    },
+    "5:2": {
+      "start": 202.804,
+      "spoken_end": 210.42,
+      "end": 210.931,
+      "caption": "sam_profile.height_m reads the height: 1.75 metres.",
+      "spoken": "sam underscore profile dot height underscore meters reads the height: one point seven five meters."
+    },
+    "5:3": {
+      "start": 210.931,
+      "spoken_end": 219.801,
+      "end": 219.917,
+      "caption": "Add parentheses and the dot calls a method instead. calculate_bmi runs with self set to Sam's profile…",
+      "spoken": "Add parentheses and the dot calls a method instead. calculate underscore B M I runs with self set to Sam's profile..."
+    },
+    "5:4": {
+      "start": 219.917,
+      "spoken_end": 233.361,
+      "end": 233.803,
+      "caption": "…so self.weight_kg and self.height_m are Sam's own stored values. 70 divided by 1.75 squared: 22.86.",
+      "spoken": "...so self dot weight underscore kilograms and self dot height underscore meters are Sam's own stored values. 70 divided by one point seven five squared: twenty two point eight six."
+    },
+    "5:5": {
+      "start": 233.803,
+      "spoken_end": 239.074,
+      "end": 239.515,
+      "caption": "Notice the call needs no measurement arguments. They're already stored in the object.",
+      "spoken": "Notice the call needs no measurement arguments. They're already stored in the object."
+    },
+    "6:0": {
+      "start": 239.515,
+      "spoken_end": 242.87,
+      "end": 243.149,
+      "caption": "Chapter six: a second profile, and an update.",
+      "spoken": "Chapter six: a second profile, and an update."
+    },
+    "6:1": {
+      "start": 243.149,
+      "spoken_end": 250.033,
+      "end": 250.475,
+      "caption": "Same class, second object. Alex's profile follows the same definition but stores its own values.",
+      "spoken": "Same class, second object. Alex's profile follows the same definition but stores its own values."
+    },
+    "6:2": {
+      "start": 250.475,
+      "spoken_end": 256.082,
+      "end": 256.523,
+      "caption": "The same method on Alex's object uses Alex's measurements: 25.0.",
+      "spoken": "The same method on Alex's object uses Alex's measurements: twenty five point zero."
+    },
+    "6:3": {
+      "start": 256.523,
+      "spoken_end": 263.036,
+      "end": 263.419,
+      "caption": "Update one profile by assigning to its attribute. Sam's weight becomes 72.0.",
+      "spoken": "Update one profile by assigning to its attribute. Sam's weight becomes seventy two point zero."
+    },
+    "6:4": {
+      "start": 263.419,
+      "spoken_end": 270.443,
+      "end": 270.954,
+      "caption": "And Alex's weight? Still 64.0. Each object keeps its own values.",
+      "spoken": "And Alex's weight? Still sixty four point zero. Each object keeps its own values."
+    },
+    "6:5": {
+      "start": 270.954,
+      "spoken_end": 277.177,
+      "end": 277.618,
+      "caption": "The method reads the stored values every time it runs, so recalculating gives 23.51.",
+      "spoken": "The method reads the stored values every time it runs, so recalculating gives twenty three point five one."
+    },
+    "6:6": {
+      "start": 277.618,
+      "spoken_end": 289.252,
+      "end": 290.366,
+      "caption": "But sam_bmi, calculated earlier, still holds 22.86. The new result lives in updated_sam_bmi.",
+      "spoken": "But sam underscore B M I, calculated earlier, still holds twenty two point eight six. The new result lives in updated underscore sam underscore B M I."
+    },
+    "7:0": {
+      "start": 290.366,
+      "spoken_end": 293.791,
+      "end": 294.174,
+      "caption": "Chapter seven: a profile summary, and a common error.",
+      "spoken": "Chapter seven: a profile summary, and a common error."
+    },
+    "7:1": {
+      "start": 294.174,
+      "spoken_end": 298.853,
+      "end": 299.294,
+      "caption": "Read the attributes, call the method, and we have a small profile card as text.",
+      "spoken": "Read the attributes, call the method, and we have a small profile card as text."
+    },
+    "7:2": {
+      "start": 299.294,
+      "spoken_end": 311.775,
+      "end": 312.158,
+      "caption": "Change sam_profile to alex_profile on every line, and the same code summarises Alex instead. Note that 1.60 prints as 1.6.",
+      "spoken": "Change sam underscore profile to alex underscore profile on every line, and the same code summarises Alex instead. Note that one point six zero prints as one point six."
+    },
+    "7:3": {
+      "start": 312.158,
+      "spoken_end": 322.735,
+      "end": 323.118,
+      "caption": "Watch out: the name after the dot must exist on the object. sam_profile.weight looks for a weight slot, but there's only weight_kg.",
+      "spoken": "Watch out: the name after the dot must exist on the object. sam underscore profile dot weight looks for a weight slot, but there's only weight underscore kilograms."
+    },
+    "7:4": {
+      "start": 323.118,
+      "spoken_end": 330.27,
+      "end": 330.711,
+      "caption": "That's an AttributeError. Check the spelling against the class definition. Python even suggests the right name.",
+      "spoken": "That's an attribute error. Check the spelling against the class definition. Python even suggests the right name."
+    },
+    "8:0": {
+      "start": 330.711,
+      "spoken_end": 332.859,
+      "end": 333.462,
+      "caption": "Let's recap, and then it's your turn.",
+      "spoken": "Let's recap, and then it's your turn."
+    },
+    "8:1": {
+      "start": 333.462,
+      "spoken_end": 343.099,
+      "end": 343.424,
+      "caption": "A class groups related data and behaviour. Each profile object has its own attributes. And a method uses self to work with the object it was called on.",
+      "spoken": "A class groups related data and behaviour. Each profile object has its own attributes. And a method uses self to work with the object it was called on."
+    },
+    "8:2": {
+      "start": 343.424,
+      "spoken_end": 357.112,
+      "end": 357.286,
+      "caption": "Exercise one: add two profiles. Create Jordan, 1.80 metres and 81 kilos, and Casey, 1.60 and 64. Call each one's BMI method.",
+      "spoken": "Exercise one: add two profiles. Create Jordan, one point eight zero meters and 81 kilos, and Casey, one point six zero and 64. Call each one's B M I method."
+    },
+    "8:3": {
+      "start": 357.286,
+      "spoken_end": 365.849,
+      "end": 365.854,
+      "caption": "Exercise two: correct a measurement. Taylor's weight was entered as 80. Update it to 81, then calculate the BMI again.",
+      "spoken": "Exercise two: correct a measurement. Taylor's weight was entered as 80. Update it to 81, then calculate the B M I again."
+    }
+  }
+}

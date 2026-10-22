@@ -1,0 +1,306 @@
+{
+  "provider": "ElevenLabs",
+  "model_id": "eleven_multilingual_v2",
+  "voice": {
+    "id": "21m00Tcm4TlvDq8ikWAM",
+    "name": "Rachel"
+  },
+  "audio": "episode1-narration.mp3",
+  "duration_seconds": 222.633,
+  "cues": {
+    "0:0": {
+      "start": 0.0,
+      "spoken_end": 6.745,
+      "end": 6.954,
+      "caption": "Every program, whether it's a calculator, a chat app or a video game, is really a story about data.",
+      "spoken": "Every program, whether it's a calculator, a chat app or a video game, is really a story about data."
+    },
+    "0:1": {
+      "start": 6.954,
+      "spoken_end": 10.53,
+      "end": 10.809,
+      "caption": "Where the data lives. What it's made of. How it changes.",
+      "spoken": "Where the data lives. What it's made of. How it changes."
+    },
+    "0:2": {
+      "start": 10.809,
+      "spoken_end": 16.985,
+      "end": 18.1,
+      "caption": "Today we'll draw three big ideas as pictures: variables, data types, and functions.",
+      "spoken": "Today we'll draw three big ideas as pictures: variables, data types, and functions."
+    },
+    "1:0": {
+      "start": 18.1,
+      "spoken_end": 20.271,
+      "end": 20.422,
+      "caption": "Chapter one: variables.",
+      "spoken": "Chapter one: variables."
+    },
+    "1:1": {
+      "start": 20.422,
+      "spoken_end": 24.95,
+      "end": 24.973,
+      "caption": "When Python runs age = 12, it first makes the value 12…",
+      "spoken": "When Python runs age equals 12, it first makes the value 12..."
+    },
+    "1:2": {
+      "start": 24.973,
+      "spoken_end": 30.418,
+      "end": 30.743,
+      "caption": "…then ties a name tag to it. A variable isn't a box. It's a label on a string.",
+      "spoken": "...then ties a name tag to it. A variable isn't a box. It's a label on a string."
+    },
+    "1:3": {
+      "start": 30.743,
+      "spoken_end": 36.908,
+      "end": 37.291,
+      "caption": "Now: age = age + 1. Python always works out the right-hand side first.",
+      "spoken": "Now: age equals age plus 1. Python always works out the right-hand side first."
+    },
+    "1:4": {
+      "start": 37.291,
+      "spoken_end": 43.085,
+      "end": 43.526,
+      "caption": "12 plus 1 makes a brand-new value, 13. Then the tag's string moves over to it.",
+      "spoken": "12 plus 1 makes a brand-new value, 13. Then the tag's string moves over to it."
+    },
+    "1:5": {
+      "start": 43.526,
+      "spoken_end": 47.473,
+      "end": 47.856,
+      "caption": "Nothing is tied to the 12 anymore, so Python quietly recycles it.",
+      "spoken": "Nothing is tied to the 12 anymore, so Python quietly recycles it."
+    },
+    "1:6": {
+      "start": 47.856,
+      "spoken_end": 53.255,
+      "end": 53.429,
+      "caption": "nickname = age doesn't copy anything. It ties a second tag to the very same 13.",
+      "spoken": "nickname equals age doesn't copy anything. It ties a second tag to the very same 13."
+    },
+    "1:7": {
+      "start": 53.429,
+      "spoken_end": 59.327,
+      "end": 59.838,
+      "caption": "Names are cheap. Values are the real things. Keep this picture; it explains a lot of Python.",
+      "spoken": "Names are cheap. Values are the real things. Keep this picture; it explains a lot of Python."
+    },
+    "2:0": {
+      "start": 59.838,
+      "spoken_end": 63.716,
+      "end": 64.227,
+      "caption": "Chapter two: data types, or what a value is made of.",
+      "spoken": "Chapter two: data types, or what a value is made of."
+    },
+    "2:1": {
+      "start": 64.227,
+      "spoken_end": 70.125,
+      "end": 70.554,
+      "caption": "int: whole numbers. Countable, like bricks. There's no such thing as half a brick.",
+      "spoken": "integer: whole numbers. Countable, like bricks. There's no such thing as half a brick."
+    },
+    "2:2": {
+      "start": 70.554,
+      "spoken_end": 75.581,
+      "end": 76.023,
+      "caption": "float: numbers with a decimal point. Measured, like water in a beaker.",
+      "spoken": "float: numbers with a decimal point. Measured, like water in a beaker."
+    },
+    "2:3": {
+      "start": 76.023,
+      "spoken_end": 83.673,
+      "end": 84.115,
+      "caption": "str: text. A string is literally a string of characters, like beads on a thread, numbered from zero.",
+      "spoken": "S T R: text. A string is literally a string of characters, like beads on a thread, numbered from zero."
+    },
+    "2:4": {
+      "start": 84.115,
+      "spoken_end": 89.594,
+      "end": 89.838,
+      "caption": "bool: a light switch. Just two settings, True or False.",
+      "spoken": "Boolean: a light switch. Just two settings, True or False."
+    },
+    "2:5": {
+      "start": 89.838,
+      "spoken_end": 94.146,
+      "end": 94.285,
+      "caption": "So why care? Watch the same plus sign work on two different materials.",
+      "spoken": "So why care? Watch the same plus sign work on two different materials."
+    },
+    "2:6": {
+      "start": 94.285,
+      "spoken_end": 97.338,
+      "end": 97.605,
+      "caption": "Bricks plus bricks: 3 and 4 stack into 7.",
+      "spoken": "Bricks plus bricks: 3 and 4 stack into 7."
+    },
+    "2:7": {
+      "start": 97.605,
+      "spoken_end": 103.445,
+      "end": 103.805,
+      "caption": "Beads plus beads: the threads get tied end to end, so \"3\" + \"4\" becomes \"34\".",
+      "spoken": "Beads plus beads: the threads get tied end to end, so \"3\" plus \"4\" becomes \"34\"."
+    },
+    "2:8": {
+      "start": 103.805,
+      "spoken_end": 111.003,
+      "end": 111.7,
+      "caption": "Mix materials, a number plus text, and Python refuses with a TypeError. It won't guess how to glue a brick to a bead.",
+      "spoken": "Mix materials, a number plus text, and Python refuses with a type error. It won't guess how to glue a brick to a bead."
+    },
+    "3:0": {
+      "start": 111.7,
+      "spoken_end": 115.299,
+      "end": 115.903,
+      "caption": "Chapter three: functions, the little factories.",
+      "spoken": "Chapter three: functions, the little factories."
+    },
+    "3:1": {
+      "start": 115.903,
+      "spoken_end": 121.185,
+      "end": 121.429,
+      "caption": "def builds a machine called double. Nothing runs yet. It's a blueprint with a name.",
+      "spoken": "def builds a machine called double. Nothing runs yet. It's a blueprint with a name."
+    },
+    "3:2": {
+      "start": 121.429,
+      "spoken_end": 127.13,
+      "end": 127.455,
+      "caption": "The machine has one input slot, labelled x, and one job: multiply by two.",
+      "spoken": "The machine has one input slot, labelled x, and one job: multiply by two."
+    },
+    "3:3": {
+      "start": 127.455,
+      "spoken_end": 130.531,
+      "end": 130.647,
+      "caption": "Calling double(3) drops a 3 into the hopper…",
+      "spoken": "Calling double(3) drops a 3 into the hopper..."
+    },
+    "3:4": {
+      "start": 130.647,
+      "spoken_end": 136.835,
+      "end": 136.859,
+      "caption": "…where it gets a temporary name tag, x. The gears turn: x times 2…",
+      "spoken": "...where it gets a temporary name tag, x. The gears turn: x times 2..."
+    },
+    "3:5": {
+      "start": 136.859,
+      "spoken_end": 142.524,
+      "end": 142.838,
+      "caption": "…and return sends the result out of the chute. double(3) gives back 6.",
+      "spoken": "...and return sends the result out of the chute. double(3) gives back 6."
+    },
+    "3:6": {
+      "start": 142.838,
+      "spoken_end": 146.924,
+      "end": 147.18,
+      "caption": "Same machine, different material. Let's feed it the string \"ha\".",
+      "spoken": "Same machine, different material. Let's feed it the string \"ha\"."
+    },
+    "3:7": {
+      "start": 147.18,
+      "spoken_end": 151.487,
+      "end": 151.893,
+      "caption": "A string times 2 repeats the text. Out comes \"haha\".",
+      "spoken": "A string times 2 repeats the text. Out comes \"haha\"."
+    },
+    "3:8": {
+      "start": 151.893,
+      "spoken_end": 156.514,
+      "end": 157.211,
+      "caption": "Write the recipe once, use it forever. That's the whole point of a function.",
+      "spoken": "Write the recipe once, use it forever. That's the whole point of a function."
+    },
+    "4:0": {
+      "start": 157.211,
+      "spoken_end": 159.509,
+      "end": 159.66,
+      "caption": "Chapter four: assembly lines.",
+      "spoken": "Chapter four: assembly lines."
+    },
+    "4:1": {
+      "start": 159.66,
+      "spoken_end": 165.268,
+      "end": 165.651,
+      "caption": "Here's a second machine. shout takes a word, makes it uppercase, and adds an exclamation mark.",
+      "spoken": "Here's a second machine. shout takes a word, makes it uppercase, and adds an exclamation mark."
+    },
+    "4:2": {
+      "start": 165.651,
+      "spoken_end": 171.258,
+      "end": 171.537,
+      "caption": "Now nest them. Python works inside out: the innermost call runs first.",
+      "spoken": "Now nest them. Python works inside out: the innermost call runs first."
+    },
+    "4:3": {
+      "start": 171.537,
+      "spoken_end": 174.532,
+      "end": 174.648,
+      "caption": "\"hi\" goes into double and comes out as \"hihi\"…",
+      "spoken": "\"hi\" goes into double and comes out as \"hihi\"..."
+    },
+    "4:4": {
+      "start": 174.648,
+      "spoken_end": 179.223,
+      "end": 179.826,
+      "caption": "…which rolls straight into shout. Out comes \"HIHI!\"",
+      "spoken": "...which rolls straight into shout. Out comes \"hi hi!\""
+    },
+    "4:5": {
+      "start": 179.826,
+      "spoken_end": 185.91,
+      "end": 186.235,
+      "caption": "Finally, result = ties a name tag to the finished product. We're back at chapter one.",
+      "spoken": "Finally, result equals ties a name tag to the finished product. We're back at chapter one."
+    },
+    "4:6": {
+      "start": 186.235,
+      "spoken_end": 193.341,
+      "end": 193.782,
+      "caption": "That's secretly what every big program is: small, well-named machines, wired into assembly lines.",
+      "spoken": "That's secretly what every big program is: small, well-named machines, wired into assembly lines."
+    },
+    "5:0": {
+      "start": 193.782,
+      "spoken_end": 194.722,
+      "end": 195.233,
+      "caption": "Let's recap.",
+      "spoken": "Let's recap."
+    },
+    "5:1": {
+      "start": 195.233,
+      "spoken_end": 198.031,
+      "end": 198.472,
+      "caption": "Variables are name tags tied to values.",
+      "spoken": "Variables are name tags tied to values."
+    },
+    "5:2": {
+      "start": 198.472,
+      "spoken_end": 203.047,
+      "end": 203.558,
+      "caption": "Types are the material a value is made of, and the material decides the rules.",
+      "spoken": "Types are the material a value is made of, and the material decides the rules."
+    },
+    "5:3": {
+      "start": 203.558,
+      "spoken_end": 209.398,
+      "end": 209.839,
+      "caption": "Functions are machines: values go in, get transformed, and come out.",
+      "spoken": "Functions are machines: values go in, get transformed, and come out."
+    },
+    "5:4": {
+      "start": 209.839,
+      "spoken_end": 217.943,
+      "end": 218.639,
+      "caption": "Your turn: build a machine called greet that turns \"Ada\" into \"Hello, Ada!\". You already know every piece you need.",
+      "spoken": "Your turn: build a machine called greet that turns \"Ada\" into \"Hello, Ada!\". You already know every piece you need."
+    },
+    "5:5": {
+      "start": 218.639,
+      "spoken_end": 222.628,
+      "end": 222.633,
+      "caption": "Next episode: loops and decisions. See you there.",
+      "spoken": "Next episode: loops and decisions. See you there."
+    }
+  }
+}

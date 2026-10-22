@@ -1,0 +1,334 @@
+{
+  "provider": "ElevenLabs",
+  "model_id": "eleven_multilingual_v2",
+  "voice": {
+    "id": "21m00Tcm4TlvDq8ikWAM",
+    "name": "Rachel"
+  },
+  "audio": "week2-narration.mp3",
+  "duration_seconds": 332.649,
+  "cues": {
+    "0:0": {
+      "start": 0.0,
+      "spoken_end": 5.271,
+      "end": 5.596,
+      "caption": "Every time a runner saves a workout, the app needs one more number: the average pace.",
+      "spoken": "Every time a runner saves a workout, the app needs one more number: the average pace."
+    },
+    "0:1": {
+      "start": 5.596,
+      "spoken_end": 11.122,
+      "end": 11.564,
+      "caption": "We could retype the same calculation for every run. Instead, we'll give it a name and reuse it.",
+      "spoken": "We could retype the same calculation for every run. Instead, we'll give it a name and reuse it."
+    },
+    "0:2": {
+      "start": 11.564,
+      "spoken_end": 15.499,
+      "end": 16.614,
+      "caption": "Week two: calculating running pace with functions.",
+      "spoken": "Week two: calculating running pace with functions."
+    },
+    "1:0": {
+      "start": 16.614,
+      "spoken_end": 19.644,
+      "end": 19.923,
+      "caption": "Chapter one: start with one run.",
+      "spoken": "Chapter one: start with one run."
+    },
+    "1:1": {
+      "start": 19.923,
+      "spoken_end": 24.59,
+      "end": 24.741,
+      "caption": "Pace is duration divided by distance. Here's a 5 km run…",
+      "spoken": "Pace is duration divided by distance. Here's a 5 kilometer run..."
+    },
+    "1:2": {
+      "start": 24.741,
+      "spoken_end": 26.273,
+      "end": 26.552,
+      "caption": "…that took 30 minutes.",
+      "spoken": "...that took 30 minutes."
+    },
+    "1:3": {
+      "start": 26.552,
+      "spoken_end": 29.64,
+      "end": 29.965,
+      "caption": "Dividing shares the minutes out evenly across the kilometres.",
+      "spoken": "Dividing shares the minutes out evenly across the kilometers."
+    },
+    "1:4": {
+      "start": 29.965,
+      "spoken_end": 38.22,
+      "end": 38.824,
+      "caption": "duration_minutes divided by distance_km: 6 minutes for every kilometre. 6.0 min/km.",
+      "spoken": "duration underscore minutes divided by distance underscore kilometers: 6 minutes for every kilometer. six point zero minutes per kilometer."
+    },
+    "1:5": {
+      "start": 38.824,
+      "spoken_end": 47.834,
+      "end": 48.345,
+      "caption": "We'll write pace in decimal minutes. 6.5 means 6 minutes and 30 seconds per kilometre, because half a minute is 30 seconds.",
+      "spoken": "We'll write pace in decimal minutes. six point five means 6 minutes and 30 seconds per kilometer, because half a minute is 30 seconds."
+    },
+    "2:0": {
+      "start": 48.345,
+      "spoken_end": 51.491,
+      "end": 52.095,
+      "caption": "Chapter two: give the calculation a name.",
+      "spoken": "Chapter two: give the calculation a name."
+    },
+    "2:1": {
+      "start": 52.095,
+      "spoken_end": 57.249,
+      "end": 57.493,
+      "caption": "def introduces a function definition. Think of it as the blueprint for a machine.",
+      "spoken": "def introduces a function definition. Think of it as the blueprint for a machine."
+    },
+    "2:2": {
+      "start": 57.493,
+      "spoken_end": 63.878,
+      "end": 64.319,
+      "caption": "A colon starts the body, and indentation, four spaces, groups the instructions that belong inside.",
+      "spoken": "A colon starts the body, and indentation, four spaces, groups the instructions that belong inside."
+    },
+    "2:3": {
+      "start": 64.319,
+      "spoken_end": 68.487,
+      "end": 68.929,
+      "caption": "calculate_pace is the name of the reusable operation.",
+      "spoken": "calculate underscore pace is the name of the reusable operation."
+    },
+    "2:4": {
+      "start": 68.929,
+      "spoken_end": 77.311,
+      "end": 77.636,
+      "caption": "distance_km and duration_minutes are parameters: named input slots for the values the function will receive.",
+      "spoken": "distance underscore kilometers and duration underscore minutes are parameters: named input slots for the values the function will receive."
+    },
+    "2:5": {
+      "start": 77.636,
+      "spoken_end": 82.907,
+      "end": 83.511,
+      "caption": "The indented lines are the body. They run every time we call the function.",
+      "spoken": "The indented lines are the body. They run every time we call the function."
+    },
+    "2:6": {
+      "start": 83.511,
+      "spoken_end": 87.516,
+      "end": 88.027,
+      "caption": "return pace sends the result back to the code that called it.",
+      "spoken": "return pace sends the result back to the code that called it."
+    },
+    "2:7": {
+      "start": 88.027,
+      "spoken_end": 94.18,
+      "end": 95.48,
+      "caption": "Running this cell only builds the machine. Nothing is calculated yet, so there's no output.",
+      "spoken": "Running this cell only builds the machine. Nothing is calculated yet, so there's no output."
+    },
+    "3:0": {
+      "start": 95.48,
+      "spoken_end": 98.383,
+      "end": 98.987,
+      "caption": "Chapter three: calling the function.",
+      "spoken": "Chapter three: calling the function."
+    },
+    "3:1": {
+      "start": 98.987,
+      "spoken_end": 107.276,
+      "end": 107.601,
+      "caption": "A call is the function's name with parentheses holding actual values. Sam ran 5.0 km in 30 minutes.",
+      "spoken": "A call is the function's name with parentheses holding actual values. Sam ran five point zero kilometers in 30 minutes."
+    },
+    "3:2": {
+      "start": 107.601,
+      "spoken_end": 122.032,
+      "end": 122.473,
+      "caption": "Each value drops into its slot. Inside, distance_km is 5.0 and duration_minutes is 30. 30 divided by 5 is 6.0, and return hands it back to sam_pace.",
+      "spoken": "Each value drops into its slot. Inside, distance underscore kilometers is five point zero and duration underscore minutes is 30. 30 divided by 5 is six point zero, and return hands it back to sam underscore pace."
+    },
+    "3:3": {
+      "start": 122.473,
+      "spoken_end": 127.373,
+      "end": 127.698,
+      "caption": "The values we supply are called arguments. The named slots they fill are parameters.",
+      "spoken": "The values we supply are called arguments. The named slots they fill are parameters."
+    },
+    "3:4": {
+      "start": 127.698,
+      "spoken_end": 135.5,
+      "end": 135.779,
+      "caption": "Same machine, new values. Alex ran 4 km in 28 minutes: 7.0 min/km.",
+      "spoken": "Same machine, new values. Alex ran 4 kilometers in 28 minutes: seven point zero minutes per kilometer."
+    },
+    "3:5": {
+      "start": 135.779,
+      "spoken_end": 144.614,
+      "end": 144.892,
+      "caption": "Watch out: order matters. Swap the arguments and 30 lands in the distance slot. 5 divided by 30 is not a pace.",
+      "spoken": "Watch out: order matters. Swap the arguments and 30 lands in the distance slot. 5 divided by 30 is not a pace."
+    },
+    "3:6": {
+      "start": 144.892,
+      "spoken_end": 154.808,
+      "end": 155.249,
+      "caption": "Variables work as arguments too. The call receives the values they hold at that moment: 21 divided by 3.0 is 7.0.",
+      "spoken": "Variables work as arguments too. The call receives the values they hold at that moment: 21 divided by three point zero is seven point zero."
+    },
+    "4:0": {
+      "start": 155.249,
+      "spoken_end": 158.964,
+      "end": 159.289,
+      "caption": "Chapter four: returning and displaying do different jobs.",
+      "spoken": "Chapter four: returning and displaying do different jobs."
+    },
+    "4:1": {
+      "start": 159.289,
+      "spoken_end": 165.512,
+      "end": 165.791,
+      "caption": "calculate_pace returns its result. The value comes back out of the chute, and we can store it.",
+      "spoken": "calculate underscore pace returns its result. The value comes back out of the chute, and we can store it."
+    },
+    "4:2": {
+      "start": 165.791,
+      "spoken_end": 172.327,
+      "end": 172.362,
+      "caption": "display_pace calculates the same pace, but only prints it. The text appears on screen…",
+      "spoken": "display underscore pace calculates the same pace, but only prints it. The text appears on screen..."
+    },
+    "4:3": {
+      "start": 172.362,
+      "spoken_end": 177.958,
+      "end": 178.399,
+      "caption": "…and what comes back is None, Python's value for 'no value here'.",
+      "spoken": "...and what comes back is None, Python's value for 'no value here'."
+    },
+    "4:4": {
+      "start": 178.399,
+      "spoken_end": 187.943,
+      "end": 189.057,
+      "caption": "A returned 6.0 can go on to another calculation: times 60 is 360 seconds per km. None can't be used that way.",
+      "spoken": "A returned six point zero can go on to another calculation: times 60 is 360 seconds per kilometer. None can't be used that way."
+    },
+    "5:0": {
+      "start": 189.057,
+      "spoken_end": 191.82,
+      "end": 192.099,
+      "caption": "Chapter five: a readable pace summary.",
+      "spoken": "Chapter five: a readable pace summary."
+    },
+    "5:1": {
+      "start": 192.099,
+      "spoken_end": 208.922,
+      "end": 209.166,
+      "caption": "Sam's original run: 5.4 km in 32 minutes. The function returns 5.925925925925926. That's a lot of decimals.",
+      "spoken": "Sam's original run: five point four kilometers in 32 minutes. The function returns five point nine two five nine two five nine two five nine two five nine two six. That's a lot of decimals."
+    },
+    "5:2": {
+      "start": 209.166,
+      "spoken_end": 218.291,
+      "end": 218.616,
+      "caption": "round is a built-in function. round of the value, 2 keeps two decimal places. The next digit is a 5, so 5.92 rounds up to 5.93.",
+      "spoken": "round is a built-in function. round of the value, 2 keeps two decimal places. The next digit is a 5, so five point nine two rounds up to five point nine three."
+    },
+    "5:3": {
+      "start": 218.616,
+      "spoken_end": 224.537,
+      "end": 225.048,
+      "caption": "Now the summary reads nicely: Sam ran at 5.93 min/km.",
+      "spoken": "Now the summary reads nicely: Sam ran at five point nine three minutes per kilometer."
+    },
+    "5:4": {
+      "start": 225.048,
+      "spoken_end": 232.037,
+      "end": 232.641,
+      "caption": "One more idea. While a function runs, its parameters and the variables it creates exist only inside that call.",
+      "spoken": "One more idea. While a function runs, its parameters and the variables it creates exist only inside that call."
+    },
+    "5:5": {
+      "start": 232.641,
+      "spoken_end": 242.974,
+      "end": 243.415,
+      "caption": "return is how the result gets out. When the call finishes, the local names disappear. Only the returned value survives, stored in run_pace.",
+      "spoken": "return is how the result gets out. When the call finishes, the local names disappear. Only the returned value survives, stored in run underscore pace."
+    },
+    "6:0": {
+      "start": 243.415,
+      "spoken_end": 246.596,
+      "end": 246.979,
+      "caption": "Chapter six: predict, then modify.",
+      "spoken": "Chapter six: predict, then modify."
+    },
+    "6:1": {
+      "start": 246.979,
+      "spoken_end": 254.328,
+      "end": 254.839,
+      "caption": "Distance stays at 5 km. Duration is 40 minutes. Before running: what will the pace be?",
+      "spoken": "Distance stays at 5 kilometers. Duration is 40 minutes. Before running: what will the pace be?"
+    },
+    "6:2": {
+      "start": 254.839,
+      "spoken_end": 260.864,
+      "end": 261.143,
+      "caption": "Share 40 minutes across 5 kilometres: 8 minutes each. 8.0 min/km.",
+      "spoken": "Share 40 minutes across 5 kilometers: 8 minutes each. eight point zero minutes per kilometer."
+    },
+    "6:3": {
+      "start": 261.143,
+      "spoken_end": 268.597,
+      "end": 269.038,
+      "caption": "Now change the duration to 20 and rerun. Less time for the same distance means a faster pace: 4.0.",
+      "spoken": "Now change the duration to 20 and rerun. Less time for the same distance means a faster pace: four point zero."
+    },
+    "6:4": {
+      "start": 269.038,
+      "spoken_end": 276.689,
+      "end": 277.014,
+      "caption": "Watch out for indentation. The lines inside a function need four spaces. Without them, Python raises an IndentationError.",
+      "spoken": "Watch out for indentation. The lines inside a function need four spaces. Without them, Python raises an IndentationError."
+    },
+    "6:5": {
+      "start": 277.014,
+      "spoken_end": 282.401,
+      "end": 282.645,
+      "caption": "Indent the body and it's back inside the function. The first unindented line is outside.",
+      "spoken": "Indent the body and it's back inside the function. The first unindented line is outside."
+    },
+    "6:6": {
+      "start": 282.645,
+      "spoken_end": 289.309,
+      "end": 289.634,
+      "caption": "And if Python can't find calculate_pace at all, run its definition cell first.",
+      "spoken": "And if Python can't find calculate underscore pace at all, run its definition cell first."
+    },
+    "7:0": {
+      "start": 289.634,
+      "spoken_end": 291.875,
+      "end": 292.316,
+      "caption": "Let's recap, and then it's your turn.",
+      "spoken": "Let's recap, and then it's your turn."
+    },
+    "7:1": {
+      "start": 292.316,
+      "spoken_end": 303.903,
+      "end": 304.344,
+      "caption": "A function packages a calculation behind a name. Parameters describe the inputs; arguments supply the values. And return makes the result reusable, while print only displays it.",
+      "spoken": "A function packages a calculation behind a name. Parameters describe the inputs; arguments supply the values. And return makes the result reusable, while print only displays it."
+    },
+    "7:2": {
+      "start": 304.344,
+      "spoken_end": 316.001,
+      "end": 316.384,
+      "caption": "Exercise one: compare two runs. Call calculate_pace for 4 km in 24 minutes, and 3 km in 21 minutes. Store and print both.",
+      "spoken": "Exercise one: compare two runs. Call calculate underscore pace for 4 kilometers in 24 minutes, and 3 kilometers in 21 minutes. Store and print both."
+    },
+    "7:3": {
+      "start": 316.384,
+      "spoken_end": 332.644,
+      "end": 332.649,
+      "caption": "Exercise two: build your own machine. kilometers_to_miles takes one input, multiplies it by 0.621371, and returns the result. Round it to two places for display.",
+      "spoken": "Exercise two: build your own machine. kilometers underscore to underscore miles takes one input, multiplies it by zero point six two one three seven one, and returns the result. Round it to two places for display."
+    }
+  }
+}

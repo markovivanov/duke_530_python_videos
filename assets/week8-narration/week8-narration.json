@@ -1,0 +1,299 @@
+{
+  "provider": "ElevenLabs",
+  "model_id": "eleven_multilingual_v2",
+  "voice": {
+    "id": "21m00Tcm4TlvDq8ikWAM",
+    "name": "Rachel"
+  },
+  "audio": "week8-narration.mp3",
+  "duration_seconds": 246.735,
+  "cues": {
+    "0:0": {
+      "start": 0.0,
+      "spoken_end": 3.553,
+      "end": 3.831,
+      "caption": "Seven numbers in a list are accurate, but they're hard to take in at a glance.",
+      "spoken": "Seven numbers in a list are accurate, but they're hard to take in at a glance."
+    },
+    "0:1": {
+      "start": 3.831,
+      "spoken_end": 10.937,
+      "end": 11.61,
+      "caption": "Turn each number into a bar, and the week's shape jumps out: a big Wednesday, an even bigger Sunday.",
+      "spoken": "Turn each number into a bar, and the week's shape jumps out: a big Wednesday, an even bigger Sunday."
+    },
+    "0:2": {
+      "start": 11.61,
+      "spoken_end": 15.696,
+      "end": 16.625,
+      "caption": "Week eight: charting weekly activity with a library.",
+      "spoken": "Week eight: charting weekly activity with a library."
+    },
+    "1:0": {
+      "start": 16.625,
+      "spoken_end": 20.271,
+      "end": 21.35,
+      "caption": "Chapter one: bringing in a library.",
+      "spoken": "Chapter one: bringing in a library."
+    },
+    "1:1": {
+      "start": 21.35,
+      "spoken_end": 27.713,
+      "end": 28.084,
+      "caption": "A library is reusable code that someone else has written for a set of tasks. Python can use many of them.",
+      "spoken": "A library is reusable code that someone else has written for a set of tasks. Python can use many of them."
+    },
+    "1:2": {
+      "start": 28.084,
+      "spoken_end": 30.859,
+      "end": 31.172,
+      "caption": "Matplotlib is a library for making charts.",
+      "spoken": "Matplotlib is a library for making charts."
+    },
+    "1:3": {
+      "start": 31.172,
+      "spoken_end": 37.105,
+      "end": 37.593,
+      "caption": "Inside it are modules, importable units of code. pyplot holds the plotting functions we need.",
+      "spoken": "Inside it are modules, importable units of code. pyplot holds the plotting functions we need."
+    },
+    "1:4": {
+      "start": 37.593,
+      "spoken_end": 44.071,
+      "end": 44.501,
+      "caption": "import brings pyplot onto our desk, and as plt gives it a short nickname, called an alias.",
+      "spoken": "import brings pyplot onto our desk, and as P L T gives it a short nickname, called an alias."
+    },
+    "1:5": {
+      "start": 44.501,
+      "spoken_end": 54.509,
+      "end": 54.95,
+      "caption": "Now every tool is reached through that name: plt dot figure, plt dot bar, plt dot title, plt dot show.",
+      "spoken": "Now every tool is reached through that name: P L T dot figure, P L T dot bar, P L T dot title, P L T dot show."
+    },
+    "1:6": {
+      "start": 54.95,
+      "spoken_end": 58.886,
+      "end": 59.838,
+      "caption": "Importing makes the tools available. It doesn't draw anything yet.",
+      "spoken": "Importing makes the tools available. It doesn't draw anything yet."
+    },
+    "2:0": {
+      "start": 59.838,
+      "spoken_end": 62.984,
+      "end": 63.425,
+      "caption": "Chapter two: preparing the chart's data.",
+      "spoken": "Chapter two: preparing the chart's data."
+    },
+    "2:1": {
+      "start": 63.425,
+      "spoken_end": 68.267,
+      "end": 68.545,
+      "caption": "Two lists: the day labels in order, and the distance for each day in the same order.",
+      "spoken": "Two lists: the day labels in order, and the distance for each day in the same order."
+    },
+    "2:2": {
+      "start": 68.545,
+      "spoken_end": 74.699,
+      "end": 75.082,
+      "caption": "They pair up by position. The first label matches the first distance, the second the second, and so on.",
+      "spoken": "They pair up by position. The first label matches the first distance, the second the second, and so on."
+    },
+    "2:3": {
+      "start": 75.082,
+      "spoken_end": 82.385,
+      "end": 82.826,
+      "caption": "So both lists must be the same length: seven and seven. Tuesday and Friday will be bars of zero height.",
+      "spoken": "So both lists must be the same length: seven and seven. Tuesday and Friday will be bars of zero height."
+    },
+    "3:0": {
+      "start": 82.826,
+      "spoken_end": 85.647,
+      "end": 86.03,
+      "caption": "Chapter three: drawing a first bar chart.",
+      "spoken": "Chapter three: drawing a first bar chart."
+    },
+    "3:1": {
+      "start": 86.03,
+      "spoken_end": 89.664,
+      "end": 90.105,
+      "caption": "plt.figure starts a fresh, empty figure.",
+      "spoken": "P L T dot figure starts a fresh, empty figure."
+    },
+    "3:2": {
+      "start": 90.105,
+      "spoken_end": 95.573,
+      "end": 95.956,
+      "caption": "plt.bar draws one bar per day, using the matching distance for its height.",
+      "spoken": "P L T dot bar draws one bar per day, using the matching distance for its height."
+    },
+    "3:3": {
+      "start": 95.956,
+      "spoken_end": 98.487,
+      "end": 98.812,
+      "caption": "A title says what the chart is about.",
+      "spoken": "A title says what the chart is about."
+    },
+    "3:4": {
+      "start": 98.812,
+      "spoken_end": 106.591,
+      "end": 107.032,
+      "caption": "The x-axis runs horizontally and names the days. The y-axis runs vertically and measures distance, with its unit.",
+      "spoken": "The x-axis runs horizontally and names the days. The y-axis runs vertically and measures distance, with its unit."
+    },
+    "3:5": {
+      "start": 107.032,
+      "spoken_end": 111.212,
+      "end": 111.815,
+      "caption": "plt.show displays the finished chart in the notebook.",
+      "spoken": "P L T dot show displays the finished chart in the notebook."
+    },
+    "3:6": {
+      "start": 111.815,
+      "spoken_end": 117.69,
+      "end": 118.015,
+      "caption": "Now read it. The tallest bar is Sunday, at 6.0 kilometres.",
+      "spoken": "Now read it. The tallest bar is Sunday, at six point zero kilometers."
+    },
+    "3:7": {
+      "start": 118.015,
+      "spoken_end": 120.546,
+      "end": 120.72,
+      "caption": "Tuesday and Friday have no recorded run.",
+      "spoken": "Tuesday and Friday have no recorded run."
+    },
+    "3:8": {
+      "start": 120.72,
+      "spoken_end": 124.389,
+      "end": 124.83,
+      "caption": "A chart only helps if its labels make the values understandable.",
+      "spoken": "A chart only helps if its labels make the values understandable."
+    },
+    "4:0": {
+      "start": 124.83,
+      "spoken_end": 128.058,
+      "end": 128.302,
+      "caption": "Chapter four: a small presentation change.",
+      "spoken": "Chapter four: a small presentation change."
+    },
+    "4:1": {
+      "start": 128.302,
+      "spoken_end": 135.117,
+      "end": 135.396,
+      "caption": "Some functions accept optional settings. A keyword argument names the setting, then an equals sign, then a value.",
+      "spoken": "Some functions accept optional settings. A keyword argument names the setting, then an equals sign, then a value."
+    },
+    "4:2": {
+      "start": 135.396,
+      "spoken_end": 142.873,
+      "end": 143.198,
+      "caption": "color equals teal is an argument to plt.bar, not a separate variable. The bars change colour.",
+      "spoken": "color equals teal is an argument to P L T dot bar, not a separate variable. The bars change colour."
+    },
+    "4:3": {
+      "start": 143.198,
+      "spoken_end": 150.802,
+      "end": 151.081,
+      "caption": "plt.ylim with bottom equals 0 keeps the distance axis starting at zero, so bar heights compare fairly.",
+      "spoken": "P L T dot ylim with bottom equals 0 keeps the distance axis starting at zero, so bar heights compare fairly."
+    },
+    "4:4": {
+      "start": 151.081,
+      "spoken_end": 159.904,
+      "end": 161.205,
+      "caption": "plt.tight_layout adjusts the spacing so every label fits. And a more specific title helps too.",
+      "spoken": "P L T dot tight underscore layout adjusts the spacing so every label fits. And a more specific title helps too."
+    },
+    "5:0": {
+      "start": 161.205,
+      "spoken_end": 164.235,
+      "end": 164.618,
+      "caption": "Chapter five: updating a recorded run.",
+      "spoken": "Chapter five: updating a recorded run."
+    },
+    "5:1": {
+      "start": 164.618,
+      "spoken_end": 170.481,
+      "end": 170.655,
+      "caption": "Sam adds a 2 kilometre Tuesday run. Index 1 is the second item, so that's Tuesday.",
+      "spoken": "Sam adds a 2 kilometer Tuesday run. Index 1 is the second item, so that's Tuesday."
+    },
+    "5:2": {
+      "start": 170.655,
+      "spoken_end": 176.866,
+      "end": 177.563,
+      "caption": "But look at the chart from before: it hasn't changed. It's a saved output from an earlier run of the cell.",
+      "spoken": "But look at the chart from before: it hasn't changed. It's a saved output from an earlier run of the cell."
+    },
+    "5:3": {
+      "start": 177.563,
+      "spoken_end": 183.577,
+      "end": 183.856,
+      "caption": "Updating the list doesn't redraw anything. Run the plotting cell again to build a new chart.",
+      "spoken": "Updating the list doesn't redraw anything. Run the plotting cell again to build a new chart."
+    },
+    "5:4": {
+      "start": 183.856,
+      "spoken_end": 188.813,
+      "end": 189.254,
+      "caption": "And the total that matches this chart: 22.0 kilometres.",
+      "spoken": "And the total that matches this chart: twenty two point zero kilometers."
+    },
+    "6:0": {
+      "start": 189.254,
+      "spoken_end": 192.679,
+      "end": 193.062,
+      "caption": "Chapter six: when the chart won't cooperate.",
+      "spoken": "Chapter six: when the chart won't cooperate."
+    },
+    "6:1": {
+      "start": 193.062,
+      "spoken_end": 198.391,
+      "end": 198.716,
+      "caption": "If Python can't find plt, the import cell hasn't run. Run it first.",
+      "spoken": "If Python can't find P L T, the import cell hasn't run. Run it first."
+    },
+    "6:2": {
+      "start": 198.716,
+      "spoken_end": 204.812,
+      "end": 205.195,
+      "caption": "If the inputs have incompatible shapes, the lists aren't the same length. Compare len of each.",
+      "spoken": "If the inputs have incompatible shapes, the lists aren't the same length. Compare len of each."
+    },
+    "6:3": {
+      "start": 205.195,
+      "spoken_end": 211.615,
+      "end": 212.219,
+      "caption": "And if old bars seem to mix with new ones, make sure the plotting cell starts with plt.figure.",
+      "spoken": "And if old bars seem to mix with new ones, make sure the plotting cell starts with P L T dot figure."
+    },
+    "7:0": {
+      "start": 212.219,
+      "spoken_end": 214.413,
+      "end": 214.924,
+      "caption": "Let's recap, and then it's your turn.",
+      "spoken": "Let's recap, and then it's your turn."
+    },
+    "7:1": {
+      "start": 214.924,
+      "spoken_end": 223.898,
+      "end": 224.34,
+      "caption": "An import lets us use a library's code. A bar chart pairs each label with a value. And titles, units and matching lists make a chart readable.",
+      "spoken": "An import lets us use a library's code. A bar chart pairs each label with a value. And titles, units and matching lists make a chart readable."
+    },
+    "7:2": {
+      "start": 224.34,
+      "spoken_end": 236.24,
+      "end": 236.565,
+      "caption": "Exercise one: plot three runs, Monday, Wednesday and Friday, with a title and axis labels that include kilometres. Wednesday should be tallest at 4.0.",
+      "spoken": "Exercise one: plot three runs, Monday, Wednesday and Friday, with a title and axis labels that include kilometers. Wednesday should be tallest at four point zero."
+    },
+    "7:3": {
+      "start": 236.565,
+      "spoken_end": 246.73,
+      "end": 246.735,
+      "caption": "Exercise two: change Friday to 5.0, title the chart Updated run log, and pick a named colour. Friday should end up tallest.",
+      "spoken": "Exercise two: change Friday to five point zero, title the chart Updated run log, and pick a named colour. Friday should end up tallest."
+    }
+  }
+}

@@ -1,0 +1,355 @@
+{
+  "provider": "ElevenLabs",
+  "model_id": "eleven_multilingual_v2",
+  "voice": {
+    "id": "21m00Tcm4TlvDq8ikWAM",
+    "name": "Rachel"
+  },
+  "audio": "week7-narration.mp3",
+  "duration_seconds": 285.838,
+  "cues": {
+    "0:0": {
+      "start": 0.0,
+      "spoken_end": 6.374,
+      "end": 6.815,
+      "caption": "Everything Python calculates lives in its memory, and that memory is wiped the moment Python stops.",
+      "spoken": "Everything Python calculates lives in its memory, and that memory is wiped the moment Python stops."
+    },
+    "0:1": {
+      "start": 6.815,
+      "spoken_end": 13.305,
+      "end": 13.688,
+      "caption": "A file lives on disk. Write the weekly summary there, and it's still waiting after Python has gone.",
+      "spoken": "A file lives on disk. Write the weekly summary there, and it's still waiting after Python has gone."
+    },
+    "0:2": {
+      "start": 13.688,
+      "spoken_end": 17.473,
+      "end": 18.077,
+      "caption": "Week seven: saving and reloading a workout log.",
+      "spoken": "Week seven: saving and reloading a workout log."
+    },
+    "1:0": {
+      "start": 18.077,
+      "spoken_end": 21.003,
+      "end": 21.247,
+      "caption": "Chapter one: finding the workout log.",
+      "spoken": "Chapter one: finding the workout log."
+    },
+    "1:1": {
+      "start": 21.247,
+      "spoken_end": 25.925,
+      "end": 26.436,
+      "caption": "A file stores information on disk. A path is directions for finding it.",
+      "spoken": "A file stores information on disk. A path is directions for finding it."
+    },
+    "1:2": {
+      "start": 26.436,
+      "spoken_end": 32.648,
+      "end": 32.973,
+      "caption": "This is a relative path. It starts from Python's working folder: the folder the notebook sits in.",
+      "spoken": "This is a relative path. It starts from Python's working folder: the folder the notebook sits in."
+    },
+    "1:3": {
+      "start": 32.973,
+      "spoken_end": 40.554,
+      "end": 41.03,
+      "caption": "data slash means go into the data folder. Then find run_distances_km.txt.",
+      "spoken": "data slash means go into the data folder. Then find run underscore distances underscore kilometers dot text."
+    },
+    "1:4": {
+      "start": 41.03,
+      "spoken_end": 44.641,
+      "end": 45.848,
+      "caption": "Inside, one distance per line, Monday to Sunday.",
+      "spoken": "Inside, one distance per line, Monday to Sunday."
+    },
+    "2:0": {
+      "start": 45.848,
+      "spoken_end": 48.577,
+      "end": 48.832,
+      "caption": "Chapter two: opening and reading the file.",
+      "spoken": "Chapter two: opening and reading the file."
+    },
+    "2:1": {
+      "start": 48.832,
+      "spoken_end": 52.118,
+      "end": 52.35,
+      "caption": "open opens the file. The mode r means read.",
+      "spoken": "open opens the file. The mode r means read."
+    },
+    "2:2": {
+      "start": 52.35,
+      "spoken_end": 60.64,
+      "end": 61.336,
+      "caption": "encoding equals utf-8 is a keyword argument: the input's name is written before the equals sign. It says how to interpret the characters.",
+      "spoken": "encoding equals utf-8 is a keyword argument: the input's name is written before the equals sign. It says how to interpret the characters."
+    },
+    "2:3": {
+      "start": 61.336,
+      "spoken_end": 66.677,
+      "end": 67.188,
+      "caption": "as log_file gives the open file a name we can use inside the indented block.",
+      "spoken": "as log underscore file gives the open file a name we can use inside the indented block."
+    },
+    "2:4": {
+      "start": 67.188,
+      "spoken_end": 71.983,
+      "end": 72.587,
+      "caption": "The read method pulls out the whole file as one long string, newlines and all.",
+      "spoken": "The read method pulls out the whole file as one long string, newlines and all."
+    },
+    "2:5": {
+      "start": 72.587,
+      "spoken_end": 76.279,
+      "end": 76.72,
+      "caption": "When the with block finishes, the file is closed automatically.",
+      "spoken": "When the with block finishes, the file is closed automatically."
+    },
+    "2:6": {
+      "start": 76.72,
+      "spoken_end": 79.947,
+      "end": 80.331,
+      "caption": "Printing the string turns each newline into a line break.",
+      "spoken": "Printing the string turns each newline into a line break."
+    },
+    "2:7": {
+      "start": 80.331,
+      "spoken_end": 88.19,
+      "end": 89.096,
+      "caption": "These digits came from a text file, so for now they're text. type confirms it: a str.",
+      "spoken": "These digits came from a text file, so for now they're text. type confirms it: a S T R."
+    },
+    "3:0": {
+      "start": 89.096,
+      "spoken_end": 92.451,
+      "end": 92.823,
+      "caption": "Chapter three: turning numeric text into a number.",
+      "spoken": "Chapter three: turning numeric text into a number."
+    },
+    "3:1": {
+      "start": 92.823,
+      "spoken_end": 95.829,
+      "end": 96.189,
+      "caption": "float converts suitable text into a decimal number.",
+      "spoken": "float converts suitable text into a decimal number."
+    },
+    "3:2": {
+      "start": 96.189,
+      "spoken_end": 101.309,
+      "end": 101.635,
+      "caption": "In goes the text \"3.0\"; out comes the number 3.0.",
+      "spoken": "In goes the text \"three point zero\"; out comes the number three point zero."
+    },
+    "3:3": {
+      "start": 101.635,
+      "spoken_end": 109.378,
+      "end": 109.889,
+      "caption": "type now says float, and the number works in arithmetic: 3.0 plus 1.0 is 4.0.",
+      "spoken": "type now says float, and the number works in arithmetic: three point zero plus one point zero is four point zero."
+    },
+    "3:4": {
+      "start": 109.889,
+      "spoken_end": 117.83,
+      "end": 118.945,
+      "caption": "The opposite direction exists too: str turns a number back into text. We'll need that when we write a file.",
+      "spoken": "The opposite direction exists too: S T R turns a number back into text. We'll need that when we write a file."
+    },
+    "4:0": {
+      "start": 118.945,
+      "spoken_end": 121.708,
+      "end": 122.219,
+      "caption": "Chapter four: reading a list of lines.",
+      "spoken": "Chapter four: reading a list of lines."
+    },
+    "4:1": {
+      "start": 122.219,
+      "spoken_end": 125.737,
+      "end": 126.12,
+      "caption": "readlines gives back a list of strings, one per line.",
+      "spoken": "readlines gives back a list of strings, one per line."
+    },
+    "4:2": {
+      "start": 126.12,
+      "spoken_end": 131.008,
+      "end": 131.391,
+      "caption": "Picture the whole file as one string, cut after every newline character.",
+      "spoken": "Picture the whole file as one string, cut after every newline character."
+    },
+    "4:3": {
+      "start": 131.391,
+      "spoken_end": 138.519,
+      "end": 138.844,
+      "caption": "Seven pieces, seven list items. Each still ends with its newline, written backslash n.",
+      "spoken": "Seven pieces, seven list items. Each still ends with its newline, written backslash n."
+    },
+    "4:4": {
+      "start": 138.844,
+      "spoken_end": 144.127,
+      "end": 145.241,
+      "caption": "That's fine: float accepts the trailing newline, so every line converts cleanly.",
+      "spoken": "That's fine: float accepts the trailing newline, so every line converts cleanly."
+    },
+    "5:0": {
+      "start": 145.241,
+      "spoken_end": 148.33,
+      "end": 148.504,
+      "caption": "Chapter five: calculating the weekly distance.",
+      "spoken": "Chapter five: calculating the weekly distance."
+    },
+    "5:1": {
+      "start": 148.504,
+      "spoken_end": 154.68,
+      "end": 154.924,
+      "caption": "Three familiar moves: loop through the lines, convert each one to a number, and add it to a running total.",
+      "spoken": "Three familiar moves: loop through the lines, convert each one to a number, and add it to a running total."
+    },
+    "5:2": {
+      "start": 154.924,
+      "spoken_end": 158.082,
+      "end": 158.465,
+      "caption": "Text in, number out, onto the total.",
+      "spoken": "Text in, number out, onto the total."
+    },
+    "5:3": {
+      "start": 158.465,
+      "spoken_end": 163.236,
+      "end": 163.747,
+      "caption": "Seven lines read, converted and added: 20.0 kilometres.",
+      "spoken": "Seven lines read, converted and added: twenty point zero kilometers."
+    },
+    "6:0": {
+      "start": 163.747,
+      "spoken_end": 167.161,
+      "end": 167.486,
+      "caption": "Chapter six: preparing the summary as text.",
+      "spoken": "Chapter six: preparing the summary as text."
+    },
+    "6:1": {
+      "start": 167.486,
+      "spoken_end": 172.815,
+      "end": 173.198,
+      "caption": "A text file holds text, so first convert the total with str.",
+      "spoken": "A text file holds text, so first convert the total with S T R."
+    },
+    "6:2": {
+      "start": 173.198,
+      "spoken_end": 179.815,
+      "end": 180.14,
+      "caption": "For strings, plus joins pieces together: a label, the total, and the units, with a newline on the end.",
+      "spoken": "For strings, plus joins pieces together: a label, the total, and the units, with a newline on the end."
+    },
+    "6:3": {
+      "start": 180.14,
+      "spoken_end": 182.253,
+      "end": 182.532,
+      "caption": "Preview it with print before saving.",
+      "spoken": "Preview it with print before saving."
+    },
+    "6:4": {
+      "start": 182.532,
+      "spoken_end": 187.165,
+      "end": 188.465,
+      "caption": "Forget str, and joining text to a number raises a TypeError.",
+      "spoken": "Forget S T R, and joining text to a number raises a type error."
+    },
+    "7:0": {
+      "start": 188.465,
+      "spoken_end": 192.226,
+      "end": 192.668,
+      "caption": "Chapter seven: saving the summary, then reading it back.",
+      "spoken": "Chapter seven: saving the summary, then reading it back."
+    },
+    "7:1": {
+      "start": 192.668,
+      "spoken_end": 200.098,
+      "end": 201.05,
+      "caption": "Mode w means write. It creates the file, or, if the file already exists, replaces everything in it.",
+      "spoken": "Mode w means write. It creates the file, or, if the file already exists, replaces everything in it."
+    },
+    "7:2": {
+      "start": 201.05,
+      "spoken_end": 203.198,
+      "end": 203.233,
+      "caption": "The old contents are wiped first…",
+      "spoken": "The old contents are wiped first..."
+    },
+    "7:3": {
+      "start": 203.233,
+      "spoken_end": 206.716,
+      "end": 207.157,
+      "caption": "…then the write method puts our summary text on disk.",
+      "spoken": "...then the write method puts our summary text on disk."
+    },
+    "7:4": {
+      "start": 207.157,
+      "spoken_end": 213.566,
+      "end": 214.077,
+      "caption": "To check, open the same path in r mode and read it back. What's on disk matches the preview.",
+      "spoken": "To check, open the same path in r mode and read it back. What's on disk matches the preview."
+    },
+    "7:5": {
+      "start": 214.077,
+      "spoken_end": 221.867,
+      "end": 222.471,
+      "caption": "Now stop Python. The variables are gone, but the summary file is still on disk, ready for next time.",
+      "spoken": "Now stop Python. The variables are gone, but the summary file is still on disk, ready for next time."
+    },
+    "8:0": {
+      "start": 222.471,
+      "spoken_end": 226.001,
+      "end": 226.279,
+      "caption": "Chapter eight: reading the error messages as clues.",
+      "spoken": "Chapter eight: reading the error messages as clues."
+    },
+    "8:1": {
+      "start": 226.279,
+      "spoken_end": 234.012,
+      "end": 235.312,
+      "caption": "FileNotFoundError: check the working folder, the data folder and the exact filename. Here, one letter is missing.",
+      "spoken": "file not found error: check the working folder, the data folder and the exact filename. Here, one letter is missing."
+    },
+    "8:2": {
+      "start": 235.312,
+      "spoken_end": 244.832,
+      "end": 245.343,
+      "caption": "ValueError from float: a line isn't plain numeric text. This log has no units and no blank lines, and it needs to stay that way.",
+      "spoken": "ValueError from float: a line isn't plain numeric text. This log has no units and no blank lines, and it needs to stay that way."
+    },
+    "8:3": {
+      "start": 245.343,
+      "spoken_end": 250.393,
+      "end": 250.834,
+      "caption": "TypeError when joining: convert the number with str first.",
+      "spoken": "type error when joining: convert the number with S T R first."
+    },
+    "9:0": {
+      "start": 250.834,
+      "spoken_end": 253.4,
+      "end": 254.213,
+      "caption": "Let's recap, and then it's your turn.",
+      "spoken": "Let's recap, and then it's your turn."
+    },
+    "9:1": {
+      "start": 254.213,
+      "spoken_end": 263.861,
+      "end": 264.302,
+      "caption": "A path tells Python where to read and write. Text from a file needs converting before you calculate. And the mode decides whether you read or write.",
+      "spoken": "A path tells Python where to read and write. Text from a file needs converting before you calculate. And the mode decides whether you read or write."
+    },
+    "9:2": {
+      "start": 264.302,
+      "spoken_end": 274.646,
+      "end": 275.157,
+      "caption": "Exercise one: open the log, read its lines, convert and add them up in a loop with your own fresh total. You should get 20.0.",
+      "spoken": "Exercise one: open the log, read its lines, convert and add them up in a loop with your own fresh total. You should get twenty point zero."
+    },
+    "9:3": {
+      "start": 275.157,
+      "spoken_end": 285.833,
+      "end": 285.838,
+      "caption": "Exercise two: write the supplied note to fitness_exercise_note.txt in w mode, then read it back in r mode and print it.",
+      "spoken": "Exercise two: write the supplied note to fitness underscore exercise underscore note dot text in w mode, then read it back in r mode and print it."
+    }
+  }
+}

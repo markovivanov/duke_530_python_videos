@@ -1,0 +1,857 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Week 7: Save and reload a workout log</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+  --page:#e9edf1;--ink:#15212c;--muted:#56636f;--line:#c9d1d9;--accent:#1f7ea0;--chip:#dde3e9;--panel:#f6f8fa;}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--page:#0d1116;--ink:#e4e8ec;--muted:#8c98a4;--line:#27303a;--accent:#58C4DD;--chip:#161c23;--panel:#12171d;}}
+:root[data-theme="dark"]{--page:#0d1116;--ink:#e4e8ec;--muted:#8c98a4;--line:#27303a;--accent:#58C4DD;--chip:#161c23;--panel:#12171d;}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--page);color:var(--ink);font-family:"Newsreader",Georgia,"Times New Roman",serif;line-height:1.5}
+.wrap{max-width:1180px;margin:0 auto;padding:clamp(14px,3vw,36px)}
+header{margin:0 0 20px}
+.home{display:inline-block;margin:0 0 10px;color:var(--accent);font:700 12px "JetBrains Mono",ui-monospace,Menlo,monospace;letter-spacing:.08em;text-transform:uppercase;text-decoration:none}
+.home:hover{text-decoration:underline}
+h1{font-size:clamp(34px,5.2vw,58px);font-weight:600;line-height:1.05;margin:0 0 8px;letter-spacing:-.01em}
+.lede{margin:0;color:var(--muted);font-size:clamp(17px,1.9vw,21px);max-width:64ch}
+.player{background:#0e1116;border-radius:14px;overflow:hidden;box-shadow:0 20px 60px -30px rgba(0,0,0,.6);border:1px solid #1d232c}
+.stage{position:relative;aspect-ratio:16/9;width:100%;background:#0b0e12}
+.stage svg{display:block;width:100%;height:100%}
+.stage:fullscreen{aspect-ratio:auto;width:100vw;height:100vh;background:#000}
+.bigplay{position:absolute;left:50%;top:78%;transform:translate(-50%,-50%);display:flex;align-items:center;gap:12px;
+  padding:12px 24px 12px 18px;border-radius:999px;border:2px solid #58C4DD;background:rgba(14,17,22,.85);color:#e9eef2;
+  font:600 clamp(15px,2vw,21px) "Newsreader",Georgia,serif;cursor:pointer;white-space:nowrap}
+.bigplay svg{width:24px;height:24px}
+.bigplay:hover{background:rgba(88,196,221,.15)}
+.controls{display:flex;align-items:center;gap:10px;padding:10px 14px;background:#12161c;color:#c7cfd6;flex-wrap:wrap}
+.controls button{background:none;border:1px solid #2c343f;color:#dfe5ea;border-radius:8px;height:36px;min-width:40px;padding:0 10px;
+  font:inherit;font-size:15px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;white-space:nowrap}
+.controls button:hover{border-color:#58C4DD}
+.controls button[aria-pressed="true"]{border-color:#58C4DD;color:#bfeaf5}
+.controls button svg{width:16px;height:16px}
+button:focus-visible,summary:focus-visible,.scrub:focus-visible{outline:2px solid #58C4DD;outline-offset:2px}
+.scrub{flex:1 1 220px;position:relative;height:30px;cursor:pointer;touch-action:none}
+.track{position:absolute;left:0;right:0;top:13px;height:4px;background:#2a313b;border-radius:2px}
+.fill{position:absolute;left:0;top:0;bottom:0;background:#58C4DD;border-radius:2px}
+.tick{position:absolute;top:-4px;width:2px;height:12px;background:#4a5563}
+.knob{position:absolute;top:8px;width:14px;height:14px;margin-left:-7px;border-radius:50%;background:#e9eef2;box-shadow:0 0 0 3px rgba(88,196,221,.35)}
+.time{font:14px "JetBrains Mono",ui-monospace,Menlo,monospace;color:#9aa6b1;white-space:nowrap}
+.cues{margin-top:14px;background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:10px;padding:14px 18px}
+#cueNow{margin:4px 0 6px;font-size:clamp(18px,2vw,23px);line-height:1.4;max-width:70ch}
+#cueNext{margin:0;color:var(--muted);font-size:16px;max-width:80ch}
+#cueState{margin:6px 0 0;color:var(--accent);font-size:16px;min-height:1em}
+.chapters{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0 0}
+.chapters button{font:inherit;font-size:16px;background:var(--chip);color:var(--ink);border:1px solid var(--line);border-radius:999px;padding:6px 14px;cursor:pointer}
+.chapters button .n{color:var(--accent);margin-right:6px;font-style:italic}
+.chapters button[aria-current="true"]{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+@media (max-width:640px){.time{order:3}.scrub{flex-basis:100%;order:9}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="home" href="index.html">← DesignTech 530</a>
+    <h1>Save and reload a workout log</h1>
+    <p class="lede">Week 7 of Python for a fitness app, animated with optional narration: paths, with open, reading and converting text, building and writing a summary, and the error messages to watch for.</p>
+  </header>
+  <div class="player">
+    <div class="stage" id="stage">
+      <svg id="svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Animated lesson"></svg>
+      <button class="bigplay" id="bigplay"><svg viewBox="0 0 24 24"><path d="M7 4l13 8-13 8z" fill="#58C4DD"/></svg>Play</button>
+    </div>
+    <div class="controls">
+      <button id="play" aria-label="Play"></button>
+      <div class="scrub" id="scrub" tabindex="0" role="slider" aria-label="Seek" aria-valuemin="0"><div class="track"><div class="fill" id="fill"></div></div><div class="knob" id="knob"></div></div>
+      <span class="time" id="time">0:00</span>
+      <button id="speed" aria-label="Playback speed">0.5×</button>
+      <button id="narr" aria-label="Toggle AI-generated ElevenLabs narration" aria-pressed="true">Narration: on</button>
+      <button id="stopbeats" aria-pressed="false">Stop at each beat: off</button>
+      <button id="cuesBtn" aria-pressed="true">Cues: on</button>
+      <button id="fs" aria-label="Full screen, animation only"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
+    </div>
+  </div>
+  <section class="cues" id="cues" aria-live="polite">
+    <p id="cueNow"></p>
+    <p id="cueNext"></p>
+    <p id="cueState"></p>
+  </section>
+  <nav class="chapters" id="chapters" aria-label="Chapters"></nav>
+</div>
+<script src="assets/week7-narration/week7-narration-data.js"></script>
+<script>
+(function(){
+"use strict";
+const NS="http://www.w3.org/2000/svg";
+const W=1600,H=900;
+const C={bg:"#0e1116",blue:"#58C4DD",gold:"#F0AC5F",brown:"#8C6B4F",tan:"#D8C3A5",green:"#83C167",red:"#FC6255",teal:"#5CD0B3",purple:"#C792EA",yellow:"#FFE38A",white:"#ECE6DA",muted:"#9aa3ad"};
+const MONO="'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace";
+const SERIF="'Newsreader', Georgia, 'Times New Roman', serif";
+const SYN={kw:C.purple,fn:C.blue,num:C.gold,str:C.green,p:C.white,var:C.yellow,out:C.teal,err:C.red};
+/* ---------- tiny helpers ---------- */
+function el(tag,attrs,parent){const e=document.createElementNS(NS,tag);if(attrs)for(const k in attrs)e.setAttribute(k,attrs[k]);if(parent)parent.appendChild(e);return e;}
+function tx(parent,x,y,s,o){const t=el("text",Object.assign({x,y,fill:C.white,"font-family":SERIF,"font-size":32},o||{}),parent);t.textContent=s;return t;}
+const clamp=(v,a=0,b=1)=>Math.min(b,Math.max(a,v));
+const ease=x=>x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2;
+const lin=(t,a,b)=>clamp((t-a)/(b-a));
+const P=(t,a,b)=>ease(lin(t,a,b));
+const lerp=(a,b,p)=>a+(b-a)*p;
+function backOut(p){if(p<=0)return 0;if(p>=1)return 1;const c1=1.70158,c3=c1+1;return 1+c3*Math.pow(p-1,3)+c1*Math.pow(p-1,2);}
+function op(e,v){e.setAttribute("opacity",clamp(v).toFixed(3));}
+function tf(e,x,y,s,r){let str=`translate(${x.toFixed(1)},${y.toFixed(1)})`;if(s!==undefined&&s!==1)str+=` scale(${Math.max(0,s).toFixed(3)})`;if(r)str+=` rotate(${r.toFixed(1)})`;e.setAttribute("transform",str);}
+function overlap(t,runs){let s=0;runs.forEach(([a,b])=>{s+=clamp(t-a,0,b-a);});return s;}
+function inRuns(t,runs){return runs.some(([a,b])=>t>=a&&t<b);}
+
+/* ---------- drawing kit ---------- */
+function code(parent,x,y,lines,size){
+  size=size||36;const g=el("g",{},parent);const lh=size*1.45;const spans=[];let total=0;
+  lines.forEach((line,i)=>{
+    const t=el("text",{x,y:y+i*lh,"font-family":MONO,"font-size":size,style:"white-space:pre"},g);
+    line.forEach(([s,c])=>{const sp=el("tspan",{fill:SYN[c]||c},t);spans.push({sp,s,start:total});total+=s.length;});
+    total+=1;
+  });
+  return {g,total,reveal(n){n=Math.floor(n);spans.forEach(o=>{o.sp.textContent=o.s.slice(0,clamp(n-o.start,0,o.s.length));});}};
+}
+function codeLine(p,x,y,toks,fs,anchor){const t=el("text",{x,y,"font-family":MONO,"font-size":fs||30,"text-anchor":anchor||"start",style:"white-space:pre"},p);toks.forEach(([s,c])=>{const sp=el("tspan",{fill:SYN[c]||c},t);sp.textContent=s;});return t;}
+function token(parent,label,color,kind,r){
+  r=r||40;const g=el("g",{},parent);const fs=kind==="str"?r*.7:r*.85;
+  if(kind==="str"){const w=Math.max(r*2,label.length*fs*.62+36);el("rect",{x:-w/2,y:-r,width:w,height:r*2,rx:r,fill:color,"fill-opacity":.14,stroke:color,"stroke-width":3.5,filter:"url(#glow)"},g);g.halfW=w/2;}
+  else{el("circle",{r,fill:color,"fill-opacity":.14,stroke:color,"stroke-width":3.5,filter:"url(#glow)"},g);g.halfW=r;}
+  tx(g,0,2,label,{"text-anchor":"middle","dominant-baseline":"central","font-family":MONO,"font-size":fs,fill:color,"font-weight":700});
+  op(g,0);return g;
+}
+function nameTag(parent,name){
+  const g=el("g",{},parent);const fs=32;const w=name.length*fs*.62+44;
+  el("path",{d:`M0 -28 H${w} L${w+26} 0 L${w} 28 H0 Z`,fill:"#241c14",stroke:C.tan,"stroke-width":3,"stroke-linejoin":"round"},g);
+  el("circle",{cx:w+4,cy:0,r:6,fill:C.bg,stroke:C.tan,"stroke-width":2},g);
+  tx(g,w/2,2,name,{"text-anchor":"middle","dominant-baseline":"central","font-family":MONO,"font-size":fs,fill:C.yellow});
+  g.hole=w+4;op(g,0);return g;
+}
+function rope(parent){
+  const p=el("path",{fill:"none",stroke:C.tan,"stroke-width":3,"stroke-linecap":"round",pathLength:1,"stroke-dasharray":"1 1"},parent);
+  return {el:p,set(ax,ay,bx,by,draw,sag){sag=sag===undefined?40:sag;const dx=bx-ax;
+    p.setAttribute("d",`M${ax.toFixed(1)} ${ay.toFixed(1)} C${(ax+dx*.35).toFixed(1)} ${(ay+sag).toFixed(1)} ${(bx-dx*.35).toFixed(1)} ${(by+sag).toFixed(1)} ${bx.toFixed(1)} ${by.toFixed(1)}`);
+    p.setAttribute("stroke-dashoffset",(1-draw).toFixed(3));op(p,draw>0.001?1:0);}};
+}
+function cube(p,x,y,s,color){s=s||46;color=color||C.gold;const g=el("g",{},p);
+  el("rect",{x:0,y:0,width:s,height:s,rx:5,fill:color,"fill-opacity":.18,stroke:color,"stroke-width":3},g);
+  el("line",{x1:7,y1:8,x2:s-12,y2:8,stroke:color,"stroke-opacity":.6,"stroke-width":2,"stroke-linecap":"round"},g);
+  tf(g,x,y);return g;}
+function gearPath(r,n){const ri=r*.8,s=2*Math.PI/n;const pts=[];for(let i=0;i<n;i++){const a=i*s;pts.push([ri,a],[r,a+s*.15],[r,a+s*.45],[ri,a+s*.6]);}
+  return "M"+pts.map(([rr,a])=>`${(rr*Math.cos(a)).toFixed(1)} ${(rr*Math.sin(a)).toFixed(1)}`).join(" L")+" Z";}
+function gear(p,r,n,color){const g=el("g",{},p);el("path",{d:gearPath(r,n),fill:"#1c222c",stroke:color,"stroke-width":3,"stroke-linejoin":"round"},g);el("circle",{r:r*.28,fill:"none",stroke:color,"stroke-width":3},g);return g;}
+function belt(p,x1,x2,y){const g=el("g",{},p);
+  el("rect",{x:x1,y,width:x2-x1,height:16,rx:8,fill:"#1a1f27",stroke:"#3a424f","stroke-width":2},g);
+  const l=el("line",{x1:x1+8,x2:x2-8,y1:y+8,y2:y+8,stroke:"#4b5563","stroke-width":3,"stroke-dasharray":"14 12"},g);
+  return {g,update(t){l.setAttribute("stroke-dashoffset",(-t*50).toFixed(1));}};}
+function factory(p,name,param,color){
+  const g=el("g",{},p);
+  const smoke=[0,1,2,3].map(()=>el("circle",{fill:"#8a94a3"},g));
+  el("rect",{x:330,y:-118,width:44,height:90,fill:"#1a1f27",stroke:C.brown,"stroke-width":3},g);
+  let d="M0 0";for(let i=0;i<4;i++){const x=i*105;d+=` L${x} -45 L${x+105} 0`;}d+=" Z";
+  el("path",{d,fill:"#1a1f27",stroke:C.brown,"stroke-width":3,"stroke-linejoin":"round"},g);
+  el("path",{d:"M28 -122 L132 -122 L102 -30 L58 -30 Z",fill:"#20262f",stroke:color,"stroke-width":3,"stroke-linejoin":"round"},g);
+  tx(g,80,-82,param,{"text-anchor":"middle","dominant-baseline":"central","font-family":MONO,"font-size":param.length>2?24:30,fill:C.yellow});
+  el("rect",{x:0,y:0,width:420,height:260,rx:6,fill:"#151a21",stroke:C.brown,"stroke-width":4},g);
+  el("rect",{x:420,y:192,width:62,height:60,fill:"#151a21",stroke:C.brown,"stroke-width":4},g);
+  tx(g,451,180,"return",{"text-anchor":"middle","font-style":"italic","font-size":22,fill:C.muted});
+  el("rect",{x:36,y:24,width:348,height:92,rx:10,fill:"#07090c",stroke:color,"stroke-width":2},g);
+  const disp=tx(g,210,72,"",{"text-anchor":"middle","dominant-baseline":"central","font-family":MONO,"font-size":30,fill:color});
+  const g1=gear(g,48,12,color),g2=gear(g,36,9,C.gold),g3=gear(g,28,8,color);
+  const light=el("circle",{cx:394,cy:150,r:9},g);
+  return {g,update(t,running,ang,text,tc){
+    tf(g1,130,190,1,ang);tf(g2,206,190,1,-ang*48/36+10);tf(g3,264,190,1,ang*48/28);
+    light.setAttribute("fill",running?C.green:"#5a2a2a");
+    disp.textContent=text;disp.setAttribute("fill",tc||color);
+    smoke.forEach((c,i)=>{const ph=(t*.45+i/4)%1;c.setAttribute("cx",(352+14*Math.sin(ph*6+i)).toFixed(1));c.setAttribute("cy",(-128-ph*110).toFixed(1));
+      c.setAttribute("r",(9+18*ph).toFixed(1));op(c,(1-ph)*(running?.5:.25));});
+  }};
+}
+function feedPos(p,sx,sy,hx,hy){
+  if(p<.4){const q=ease(p/.4);return [lerp(sx,hx-200,q),sy,1,1];}
+  if(p<.8){const q=ease((p-.4)/.4);const x0=hx-200,y0=sy,cx=hx-120,cy=hy-170,ex=hx,ey=hy-30;
+    return [(1-q)*(1-q)*x0+2*(1-q)*q*cx+q*q*ex,(1-q)*(1-q)*y0+2*(1-q)*q*cy+q*q*ey,1,1];}
+  const q=ease((p-.8)/.2);return [hx,lerp(hy-30,hy+60,q),1-.6*q,1-q];
+}
+function chapter(g,num,name,sub){
+  const big=el("g",{},g);
+  tx(big,0,-100,num,{"text-anchor":"middle","font-size":38,"font-style":"italic",fill:C.blue});
+  const line=el("line",{y1:-70,y2:-70,stroke:C.blue,"stroke-width":2},big);
+  tx(big,0,20,name,{"text-anchor":"middle","font-size":116,"font-weight":600});
+  tx(big,0,88,sub,{"text-anchor":"middle","font-size":38,"font-style":"italic",fill:C.muted});
+  const small=el("g",{},g);
+  tx(small,70,92,num,{"font-size":34,"font-style":"italic",fill:C.blue});
+  tx(small,104,92,name,{"font-size":34,"font-style":"italic",fill:C.muted});
+  return t=>{const a=P(t,0,.8),b=P(t,2.2,3);op(big,a*(1-b));tf(big,800,430-b*60,1-.15*b);op(small,b);
+    line.setAttribute("x1",(-150*a).toFixed(1));line.setAttribute("x2",(150*a).toFixed(1));};
+}
+
+/* ---------- extra kit ---------- */
+function spanSet(parts,n){let k=0;parts.forEach(([sp,s])=>{sp.textContent=s.slice(0,clamp(n-k,0,s.length));k+=s.length;});}
+function hlRect(p,x0,y,fs,a,b,color){const cw=fs*.6;const r=el("rect",{x:x0+a*cw-4,y:y-fs*.9,width:(b-a)*cw+8,height:fs*1.25,rx:7,fill:color,"fill-opacity":.16,stroke:color,"stroke-opacity":.7,"stroke-width":1.5},p);op(r,0);return r;}
+function phone(p,title){const g=el("g",{},p);
+  el("rect",{x:0,y:0,width:380,height:600,rx:44,fill:"#0b0e12",stroke:"#3a424f","stroke-width":4},g);
+  el("rect",{x:150,y:18,width:80,height:10,rx:5,fill:"#2a313b"},g);
+  tx(g,32,82,title,{"font-size":30,"font-weight":600});
+  el("line",{x1:30,x2:350,y1:104,y2:104,stroke:"#262c35","stroke-width":2},g);return g;}
+function bubble(p,text,color){const g=el("g",{},p);const w=text.length*10.6+36;
+  el("rect",{x:0,y:-26,width:w,height:52,rx:14,fill:color,"fill-opacity":.12,stroke:color,"stroke-width":2},g);
+  tx(g,18,1,text,{"dominant-baseline":"central","font-size":23});g.w=w;op(g,0);return g;}
+function chip(p,x,y,text,color){const g=el("g",{},p);const w=text.length*14.4+32;
+  el("rect",{x,y:y-30,width:w,height:44,rx:22,fill:color,"fill-opacity":.12,stroke:color,"stroke-width":2},g);
+  tx(g,x+16,y,text,{"font-family":MONO,"font-size":24,fill:color});op(g,0);return g;}
+function blankTag(p,w){const g=el("g",{},p);
+  el("path",{d:`M0 -28 H${w} L${w+26} 0 L${w} 28 H0 Z`,fill:"#15191f",stroke:C.tan,"stroke-width":2.5,"stroke-dasharray":"8 7","stroke-linejoin":"round"},g);
+  tx(g,w/2,2,"?",{"text-anchor":"middle","dominant-baseline":"central","font-family":MONO,"font-size":32,fill:C.yellow});g.hole=w+4;return g;}
+function numberLine(p,x0,y,ppk,max){const g=el("g",{},p);
+  el("line",{x1:x0-10,x2:x0+ppk*max+20,y1:y,y2:y,stroke:C.muted,"stroke-width":2.5},g);
+  for(let k=0;k<=max;k++){el("line",{x1:x0+k*ppk,x2:x0+k*ppk,y1:y-9,y2:y+9,stroke:C.muted,"stroke-width":2},g);
+    tx(g,x0+k*ppk,y+38,String(k),{"text-anchor":"middle","font-family":MONO,"font-size":22,fill:C.muted});}
+  tx(g,x0+ppk*max+34,y+7,"km",{"font-family":MONO,"font-size":22,fill:C.muted});return g;}
+function shakeX(t,a){return t>a?10*Math.sin((t-a)*40)*(1-lin(t,a,a+.7)):0;}
+
+/* ---------- episode 2 kit ---------- */
+function machine(p,o){
+  const w=o.w||520,color=o.color||C.blue,g=el("g",{},p);
+  const smoke=[0,1,2,3].map(()=>el("circle",{fill:"#8a94a3"},g));
+  const chx=o.params.length===2?w/2-22:w-110;
+  el("rect",{x:chx,y:-118,width:44,height:90,fill:"#1a1f27",stroke:C.brown,"stroke-width":3},g);
+  const n=Math.max(2,Math.round(w/105)),tw=w/n;let d="M0 0";for(let i=0;i<n;i++){const x=i*tw;d+=` L${x.toFixed(1)} -45 L${(x+tw).toFixed(1)} 0`;}d+=" Z";
+  el("path",{d,fill:"#1a1f27",stroke:C.brown,"stroke-width":3,"stroke-linejoin":"round"},g);
+  const cxs=o.params.length===2?[w*.17,w*.77]:[w*.2];
+  const hoppers=o.params.map((pn,i)=>{const cx=cxs[i];
+    const h=el("path",{d:`M${cx-52} -122 L${cx+52} -122 L${cx+22} -30 L${cx-22} -30 Z`,fill:"#20262f",stroke:color,"stroke-width":3,"stroke-linejoin":"round"},g);
+    if(o.labels!==false)tx(g,cx,-140,pn,{"text-anchor":"middle","font-family":MONO,"font-size":o.lfs||24,fill:C.yellow});
+    return h;});
+  el("rect",{x:0,y:0,width:w,height:260,rx:6,fill:"#151a21",stroke:C.brown,"stroke-width":4},g);
+  const chute=el("rect",{x:w,y:192,width:62,height:60,fill:"#151a21",stroke:C.brown,"stroke-width":4},g);
+  tx(g,w+31,180,"return",{"text-anchor":"middle","font-style":"italic","font-size":22,fill:C.muted});
+  const dispR=el("rect",{x:36,y:24,width:w-72,height:92,rx:10,fill:"#07090c",stroke:color,"stroke-width":2},g);
+  const disp=tx(g,w/2,72,"",{"text-anchor":"middle","dominant-baseline":"central","font-family":MONO,"font-size":o.dfs||28,fill:color,style:"white-space:pre"});
+  const gg=el("g",{},g);const g1=gear(gg,48,12,color),g2=gear(gg,36,9,C.gold),g3=gear(gg,28,8,color);
+  const light=el("circle",{cx:w-26,cy:150,r:9},g);
+  return {g,hoppers,dispR,gg,chute,
+    hop(i,X,Y,s){return [X+cxs[i]*s,Y-122*s];},
+    exit(X,Y,s){return [X+(w+62)*s,Y+222*s];},
+    update(t,running,ang,text,tc){
+      tf(g1,130,190,1,ang);tf(g2,206,190,1,-ang*48/36+10);tf(g3,264,190,1,ang*48/28);
+      light.setAttribute("fill",running?C.green:"#5a2a2a");disp.textContent=text;disp.setAttribute("fill",tc||color);
+      smoke.forEach((c,i)=>{const ph=(t*.45+i/4)%1;c.setAttribute("cx",(chx+22+14*Math.sin(ph*6+i)).toFixed(1));c.setAttribute("cy",(-128-ph*110).toFixed(1));
+        c.setAttribute("r",(9+18*ph).toFixed(1));op(c,(1-ph)*(running?.5:.25));});}};
+}
+function glow(e,on,w0){e.setAttribute("filter",on?"url(#glow)":"none");e.setAttribute("stroke-width",on?6:(w0||3));}
+function arcDrop(p,sx,sy,hx,hy){
+  if(p<.8){const q=ease(p/.8);const cx=(sx+hx)/2,cy=Math.min(sy,hy)-150,ey=hy-26;
+    return [(1-q)*(1-q)*sx+2*(1-q)*q*cx+q*q*hx,(1-q)*(1-q)*sy+2*(1-q)*q*cy+q*q*ey,1,1];}
+  const q=ease((p-.8)/.2);return [hx,lerp(hy-26,hy+50,q),1-.6*q,1-q];}
+function exitArc(p,ex,ey,dx,dy){
+  if(p<.3){const q=ease(p/.3);return [lerp(ex-30,ex+50,q),ey,lerp(.6,1,q)];}
+  const q=ease((p-.3)/.7);const sx=ex+50,cx=(sx+dx)/2,cy=Math.min(ey,dy)-120;
+  return [(1-q)*(1-q)*sx+2*(1-q)*q*cx+q*q*dx,(1-q)*(1-q)*ey+2*(1-q)*q*cy+q*q*dy,1];}
+function pie(cx,cy,r,f){f=clamp(f);if(f<=0)return "M0 0";
+  if(f>=.999)return `M${cx-r} ${cy} a${r} ${r} 0 1 0 ${2*r} 0 a${r} ${r} 0 1 0 ${-2*r} 0`;
+  const a=-Math.PI/2+f*2*Math.PI;return `M${cx} ${cy} L${cx} ${cy-r} A${r} ${r} 0 ${f>.5?1:0} 1 ${(cx+r*Math.cos(a)).toFixed(1)} ${(cy+r*Math.sin(a)).toFixed(1)} Z`;}
+function bins(p,n){const g=el("g",{},p);const bw=170,gap=20,x0=800-(n*bw+(n-1)*gap)/2;const bx=[];
+  for(let i=0;i<n;i++){const x=x0+i*(bw+gap);bx.push(x);
+    el("path",{d:`M${x} 390 V710 H${x+bw} V390`,fill:"none",stroke:"#3a424f","stroke-width":3},g);
+    tx(g,x+bw/2,748,"km "+(i+1),{"text-anchor":"middle","font-family":MONO,"font-size":24,fill:C.muted});}
+  const labels=bx.map(x=>tx(g,x+bw/2,374,"",{"text-anchor":"middle","font-family":MONO,"font-size":28,fill:C.gold}));
+  return {g,bx,labels};}
+function minuteTile(p){const t=el("g",{},p);el("rect",{x:0,y:0,width:140,height:30,rx:5,fill:C.gold,"fill-opacity":.2,stroke:C.gold,"stroke-width":2},t);
+  tx(t,70,16,"1 min",{"text-anchor":"middle","dominant-baseline":"central","font-family":MONO,"font-size":16,fill:C.gold});op(t,0);return t;}
+function noneToken(p,r){const k=token(p,"None",C.muted,"str",r||34);k.firstChild.setAttribute("stroke-dasharray","8 6");k.firstChild.setAttribute("filter","none");return k;}
+function stepText(t,t0,steps,idle,idleC){for(const [a,b,s,c] of steps)if(t>=t0+a&&t<t0+b)return [s,c];return [idle,idleC];}
+
+/* ---------- episode 4 kit: terminal, tree, finder ---------- */
+const TW=14.4;
+function promptSegs(dir){return [["sam@laptop ",C.green],[dir,C.blue],[" % ",C.muted]];}
+function terminal(p,o){
+  const X=o.x,Y=o.y,W=o.w,H=o.h,max=o.max||15;const g=el("g",{},p);
+  el("rect",{x:X,y:Y,width:W,height:H,rx:14,fill:"#0a0c10",stroke:"#2c333d","stroke-width":2},g);
+  el("path",{d:`M${X} ${Y+42} H${X+W}`,stroke:"#20252d","stroke-width":2},g);
+  [C.red,C.gold,C.green].forEach((c,i)=>el("circle",{cx:X+24+i*22,cy:Y+21,r:7,fill:c,"fill-opacity":.85},g));
+  tx(g,X+W/2,Y+28,o.title||"sam — zsh",{"text-anchor":"middle","font-size":20,fill:C.muted});
+  const rows=[];for(let i=0;i<max;i++)rows.push(el("text",{x:X+24,y:Y+84+i*36,"font-family":MONO,"font-size":24,style:"white-space:pre"},g));
+  const cursor=el("rect",{width:13,height:28,fill:C.white},g);
+  let last=[];
+  return {g,rowY:i=>Y+84+i*36,x0:X+24,
+    render(t,evs,dir0){
+      let lines=[],dir=dir0,typing=false,lastCmdEnter=-99;
+      for(const ev of evs){
+        if(t<ev.t)break;
+        const td=ev.td!==undefined?ev.td:Math.max(.5,ev.cmd.length*.055);
+        let n,dur;
+        if(ev.hist){n=ev.cmd.length;dur=ev.hist;}
+        else if(ev.tab){n=t<ev.t+ev.tab[1]?Math.floor(ev.tab[0]*lin(t,ev.t,ev.t+ev.tab[1])):ev.cmd.length;dur=ev.tab[1]+.5;}
+        else{n=Math.floor(ev.cmd.length*lin(t,ev.t,ev.t+td));dur=td;}
+        const te=ev.t+dur+(ev.wait||.35);
+        lines.push(promptSegs(dir).concat([[ev.cmd.slice(0,n),C.white]]));
+        if(t<te){typing=true;break;}
+        lastCmdEnter=te;
+        if(ev.wipe)lines=[];
+        (ev.out||[]).forEach(o=>lines.push(typeof o==="string"?[[o,C.white]]:o));
+        if(ev.cd)dir=ev.cd;
+      }
+      if(!typing)lines.push(promptSegs(dir));
+      const vis=lines.slice(-max);
+      rows.forEach((r,i)=>{const segs=vis[i]||[];const key=JSON.stringify(segs);if(last[i]===key)return;last[i]=key;
+        while(r.firstChild)r.removeChild(r.firstChild);segs.forEach(([s,c])=>{const sp=el("tspan",{fill:c},r);sp.textContent=s;});});
+      const lr=vis.length-1,len=(vis[lr]||[]).reduce((a,s)=>a+s[0].length,0);
+      cursor.setAttribute("x",(X+24+len*TW+1).toFixed(1));cursor.setAttribute("y",Y+84+lr*36-22);
+      op(cursor,typing||Math.floor(t*2)%2===0?.85:0);
+      return {dir,rows:vis.length,offset:lines.length-vis.length};
+    }};
+}
+function keycap(p,label){const g=el("g",{},p);const w=Math.max(70,label.length*16+36);
+  el("rect",{x:-w/2,y:-34,width:w,height:68,rx:12,fill:"#1d232c",stroke:C.white,"stroke-width":2.5},g);
+  el("rect",{x:-w/2+5,y:-29,width:w-10,height:52,rx:9,fill:"none",stroke:"#3a424f","stroke-width":1.5},g);
+  tx(g,0,2,label,{"text-anchor":"middle","dominant-baseline":"central","font-family":MONO,"font-size":26,fill:C.white});op(g,0);return g;}
+function showKey(k,t,a,x,y){const q=lin(t,a,a+.3);tf(k,x,y,backOut(q)*(1+.1*Math.sin(Math.PI*lin(t,a+.3,a+.6))));op(k,(t>a?1:0)*(1-P(t,a+1.4,a+1.8)));}
+
+const NODES={
+  root:{l:"/",x:1230,y:205},users:{l:"Users",x:1230,y:280,p:"root"},sam:{l:"sam  (~)",x:1230,y:360,p:"users"},
+  desktop:{l:"Desktop",x:1060,y:460,p:"sam"},documents:{l:"Documents",x:1230,y:460,p:"sam"},downloads:{l:"Downloads",x:1400,y:460,p:"sam"},
+  app:{l:"workout_app",x:1230,y:565,p:"documents"},
+  readme:{l:"README.md",x:970,y:670,p:"app",k:C.muted},pace:{l:"pace.py",x:1100,y:670,p:"app",k:C.green},logrun:{l:"log_run.py",x:1230,y:670,p:"app",k:C.green},
+  data:{l:"data",x:1360,y:670,p:"app"},logs:{l:"logs",x:1490,y:670,p:"app"},
+  runs:{l:"runs.csv",x:1360,y:770,p:"data",k:C.gold},runlog:{l:"run_log.txt",x:1490,y:770,p:"logs",k:C.teal}};
+function nodeW(id){const n=NODES[id];return n.k?n.l.length*9.6+26:n.l.length*10.8+34;}
+function tree(p,reveal){
+  const g=el("g",{},p);const edges=el("g",{},g);const parts={};
+  Object.keys(NODES).forEach(id=>{const n=NODES[id];const w=nodeW(id);const ng=el("g",{},g);let box;
+    if(n.p){const pn=NODES[n.p];const e=el("path",{d:`M${pn.x} ${pn.y+18} C${pn.x} ${(pn.y+n.y)/2} ${n.x} ${(pn.y+n.y)/2} ${n.x} ${n.y-18}`,fill:"none",stroke:"#3a424f","stroke-width":2,pathLength:1,"stroke-dasharray":"1 1"},edges);parts[id+"_e"]=e;}
+    if(n.k){box=el("rect",{x:-w/2,y:-16,width:w,height:32,rx:4,fill:"#12161c",stroke:n.k,"stroke-width":2},ng);
+      el("path",{d:`M${w/2-10} -16 L${w/2} -6`,stroke:n.k,"stroke-width":2},ng);
+      tx(ng,0,1,n.l,{"text-anchor":"middle","dominant-baseline":"central","font-family":MONO,"font-size":16,fill:n.k});}
+    else{el("path",{d:`M${-w/2} -18 V-24 Q${-w/2} -27 ${-w/2+4} -27 H${-w/2+30} L${-w/2+36} -18`,fill:"#15222c",stroke:C.blue,"stroke-width":2},ng);
+      box=el("rect",{x:-w/2,y:-18,width:w,height:36,rx:7,fill:"#15222c",stroke:C.blue,"stroke-width":2},ng);
+      tx(ng,0,1,n.l,{"text-anchor":"middle","dominant-baseline":"central","font-family":MONO,"font-size":18,fill:C.blue});}
+    parts[id]={g:ng,box,col:n.k||C.blue};});
+  return {g,
+    update(t){Object.keys(NODES).forEach(id=>{const r=reveal[id];const q=r===undefined?1:lin(t,r,r+.45);const pr=parts[id];
+      tf(pr.g,NODES[id].x,NODES[id].y,backOut(q));op(pr.g,q>0?1:0);
+      if(parts[id+"_e"]){const e=parts[id+"_e"];e.setAttribute("stroke-dashoffset",(1-ease(q)).toFixed(3));op(e,q>0?1:0);}});},
+    hl(id,on,c){const b=parts[id].box;b.setAttribute("stroke",on?(c||C.yellow):parts[id].col);b.setAttribute("stroke-width",on?3.5:2);b.setAttribute("filter",on?"url(#glow)":"none");},
+    edgeHl(id,on){const e=parts[id+"_e"];if(e){e.setAttribute("stroke",on?C.yellow:"#3a424f");e.setAttribute("stroke-width",on?3.5:2);}}};
+}
+function pin(p){const g=el("g",{},p);
+  const ring=el("rect",{y:-26,height:52,rx:12,fill:"none",stroke:C.yellow,"stroke-width":3,filter:"url(#glow)"},g);
+  el("rect",{x:-58,y:-52,width:116,height:24,rx:12,fill:"#0e1116","fill-opacity":.92},g);
+  const lab=tx(g,0,-35,"you are here",{"text-anchor":"middle","font-size":20,"font-style":"italic",fill:C.yellow});
+  return {g,update(t,keys){let a=keys[0],b=keys[0],q=1;
+    for(let i=1;i<keys.length;i++){if(t>=keys[i][0]){a=keys[i-1];b=keys[i];q=P(t,b[0],b[0]+(b[2]||.7));}}
+    if(keys.length>1&&t<keys[1][0]){a=b=keys[0];q=1;}
+    const A=NODES[a[1]],B=NODES[b[1]];const x=lerp(A.x,B.x,q),y=lerp(A.y,B.y,q),w=lerp(nodeW(a[1]),nodeW(b[1]),q)+24;
+    ring.setAttribute("x",(-w/2).toFixed(1));ring.setAttribute("width",w.toFixed(1));tf(g,x,y);lab.setAttribute("x",0);
+    return b[1];}};}
+function trace(tr,t,t0,ids){ids.forEach((id,i)=>{const on=t>=t0+i*.3&&t<t0+i*.3+2.2;tr.hl(id,on);if(i>0)tr.edgeHl(id,on);});}
+function folderIcon(p,cx,cy,s){const g=el("g",{},p);tf(g,cx,cy,s||1);
+  el("path",{d:"M-32 -20 V-26 Q-32 -30 -28 -30 H-8 L-2 -22 H30 Q32 -22 32 -18 V20 Q32 24 28 24 H-28 Q-32 24 -32 20 Z",fill:C.blue,"fill-opacity":.35,stroke:C.blue,"stroke-width":2},g);return g;}
+function docIcon(p,cx,cy,c){const g=el("g",{},p);tf(g,cx,cy);
+  el("path",{d:"M-22 -30 H10 L22 -18 V30 H-22 Z",fill:"#1d232c",stroke:c,"stroke-width":2},g);el("path",{d:"M10 -30 V-18 H22",fill:"none",stroke:c,"stroke-width":2},g);
+  [-6,4,14].forEach(y=>el("line",{x1:-14,x2:12,y1:y,y2:y,stroke:c,"stroke-opacity":.5,"stroke-width":2},g));return g;}
+function finder(p,x,y,w,h,title,items){const g=el("g",{},p);
+  el("rect",{x,y,width:w,height:h,rx:14,fill:"#1b1f26",stroke:"#3a424f","stroke-width":2},g);
+  el("rect",{x:x+1,y:y+44,width:150,height:h-45,fill:"#15181e"},g);
+  el("path",{d:`M${x} ${y+44} H${x+w}`,stroke:"#2c333d","stroke-width":2},g);
+  [C.red,C.gold,C.green].forEach((c,i)=>el("circle",{cx:x+24+i*22,cy:y+22,r:7,fill:c,"fill-opacity":.85},g));
+  tx(g,x+w/2,y+29,title,{"text-anchor":"middle","font-size":22,"font-weight":600});
+  tx(g,x+20,y+84,"Favourites",{"font-size":18,fill:C.muted});
+  ["Desktop","Documents","Downloads"].forEach((s,i)=>tx(g,x+28,y+120+i*34,s,{"font-size":20,fill:i===1?C.white:C.muted}));
+  items.forEach(([n,c],i)=>{const cx=x+220+(i%4)*120,cy=y+120+Math.floor(i/4)*140;
+    if(c)docIcon(g,cx,cy,c);else folderIcon(g,cx,cy);
+    tx(g,cx,cy+58,n,{"text-anchor":"middle","font-family":MONO,"font-size":16});});
+  return g;}
+const APP_ITEMS=[["README.md",C.muted],["data",null],["log_run.py",C.green],["pace.py",C.green]];
+
+/* ---------- series kit: axes, gates, routes, lists, bar charts ---------- */
+function axis(p,o){const g=el("g",{},p);const X=v=>o.x0+(v-o.min)/(o.max-o.min)*(o.x1-o.x0);
+  el("line",{x1:o.x0-12,x2:o.x1+12,y1:o.y,y2:o.y,stroke:C.muted,"stroke-width":2.5},g);
+  (o.ticks||[]).forEach(v=>{el("line",{x1:X(v),x2:X(v),y1:o.y-9,y2:o.y+9,stroke:C.muted,"stroke-width":2},g);
+    tx(g,X(v),o.y+36,o.fmt?o.fmt(v):String(v),{"text-anchor":"middle","font-family":MONO,"font-size":o.fs||20,fill:C.muted});});
+  return {g,X};}
+function gate(p,x,y,text,o){o=o||{};const fs=o.fs||20,w=o.w||text.length*fs*.6+48;const g=el("g",{},p);
+  const r=el("rect",{x:x-w/2,y:y-30,width:w,height:60,rx:30,fill:"#141a22",stroke:C.blue,"stroke-width":2.5},g);
+  tx(g,x,y+1,text,{"text-anchor":"middle","dominant-baseline":"central","font-family":MONO,"font-size":fs,fill:C.white});
+  const vx=o.vside==="right"?x+w/2+14:x-w/2-14;
+  const v=tx(g,vx,y+1,"",{"text-anchor":o.vside==="right"?"start":"end","dominant-baseline":"central","font-family":MONO,"font-size":22,"font-weight":700});
+  return {g,w,set(s){const c=s>0?C.green:s<0?C.red:C.blue;r.setAttribute("stroke",c);r.setAttribute("stroke-width",s?4:2.5);r.setAttribute("filter",s?"url(#glow)":"none");
+    v.textContent=s>0?"True":s<0?"False":"";v.setAttribute("fill",c);}};}
+function boxNode(p,x,y,w,h,text,o){o=o||{};const g=el("g",{},p);const c=o.c||C.tan;
+  const r=el("rect",{x,y,width:w,height:h,rx:10,fill:"#12171e",stroke:c,"stroke-width":2.5},g);
+  const t=tx(g,x+w/2,y+h/2+1,text,{"text-anchor":"middle","dominant-baseline":"central","font-family":MONO,"font-size":o.fs||18,fill:o.tc||C.white,style:"white-space:pre"});
+  return {g,t,lit(on,col){r.setAttribute("stroke",on?(col||C.yellow):c);r.setAttribute("stroke-width",on?4:2.5);r.setAttribute("filter",on?"url(#glow)":"none");},
+    text(s,col){t.textContent=s;if(col)t.setAttribute("fill",col);}};}
+function track(p,d,c){return el("path",{d,fill:"none",stroke:c||"#3a424f","stroke-width":3,"stroke-linecap":"round","stroke-linejoin":"round"},p);}
+function route(tok,t,keys,s){if(t<keys[0][0]){op(tok,0);return;}op(tok,1);const L=keys[keys.length-1];let x=L[1],y=L[2];
+  for(let i=1;i<keys.length;i++){if(t<keys[i][0]){const a=keys[i-1],b=keys[i];const q=ease(lin(t,a[0],b[0]));x=lerp(a[1],b[1],q);y=lerp(a[2],b[2],q);break;}}
+  tf(tok,x,y,(s||1)*backOut(lin(t,keys[0][0],keys[0][0]+.35)));}
+function listBoxes(p,x,y,vals,o){o=o||{};const bw=o.bw||104,gap=o.gap||14,g=el("g",{},p);const bx=[],vt=[],it=[];
+  vals.forEach((v,i)=>{const X=x+i*(bw+gap);bx.push(el("rect",{x:X,y,width:bw,height:o.bh||70,rx:10,fill:"#12171e",stroke:C.blue,"stroke-width":2.5},g));
+    vt.push(tx(g,X+bw/2,y+(o.bh||70)/2+1,v,{"text-anchor":"middle","dominant-baseline":"central","font-family":MONO,"font-size":o.fs||28,fill:o.vc||C.gold}));
+    if(o.labels)tx(g,X+bw/2,y-16,o.labels[i],{"text-anchor":"middle","font-size":24,"font-style":"italic",fill:C.muted});
+    if(o.index!==false)it.push(tx(g,X+bw/2,y+(o.bh||70)+30,String(i),{"text-anchor":"middle","font-family":MONO,"font-size":20,fill:C.muted}));});
+  return {g,bx,vt,it,cx:i=>x+i*(bw+gap)+bw/2,w:vals.length*(bw+gap)-gap,
+    hl(i,c){bx.forEach((b,k)=>{const on=k===i;b.setAttribute("stroke",on?(c||C.yellow):C.blue);b.setAttribute("stroke-width",on?4:2.5);b.setAttribute("filter",on?"url(#glow)":"none");});},
+    dim(i,d){op(bx[i],d?.35:1);op(vt[i],d?.35:1);}};}
+function barChart(p,o){const g=el("g",{},p);const n=o.labels.length,slot=o.w/n,bw=slot*.6;const Y=v=>o.y+o.h-v/o.max*o.h;
+  const frame=el("g",{},g);
+  for(let v=0;v<=o.max;v+=o.step){if(v>0)el("line",{x1:o.x,x2:o.x+o.w,y1:Y(v),y2:Y(v),stroke:"#222932","stroke-width":1},frame);
+    el("line",{x1:o.x-7,x2:o.x,y1:Y(v),y2:Y(v),stroke:C.muted,"stroke-width":2},frame);
+    tx(frame,o.x-14,Y(v)+7,String(v),{"text-anchor":"end","font-family":MONO,"font-size":18,fill:C.muted});}
+  el("line",{x1:o.x,x2:o.x,y1:o.y-10,y2:o.y+o.h,stroke:C.muted,"stroke-width":2},frame);
+  el("line",{x1:o.x,x2:o.x+o.w,y1:o.y+o.h,y2:o.y+o.h,stroke:C.muted,"stroke-width":2},frame);
+  const xl=o.labels.map((l,i)=>tx(frame,o.x+slot*(i+.5),o.y+o.h+30,l,{"text-anchor":"middle","font-family":MONO,"font-size":o.lfs||20,fill:C.muted}));
+  const bars=o.labels.map((l,i)=>el("rect",{x:o.x+slot*(i+.5)-bw/2,width:bw,rx:3},g));
+  const vl=o.labels.map((l,i)=>tx(g,o.x+slot*(i+.5),0,"",{"text-anchor":"middle","font-family":MONO,"font-size":18}));
+  const title=tx(g,o.x+o.w/2,o.y-30,o.title||"",{"text-anchor":"middle","font-size":o.tfs||30,"font-weight":600});
+  const xlab=tx(g,o.x+o.w/2,o.y+o.h+70,o.xlabel||"Day",{"text-anchor":"middle","font-size":24});
+  const ylab=tx(g,0,0,o.ylabel||"Distance (km)",{"text-anchor":"middle","font-size":24,transform:`translate(${o.x-60},${o.y+o.h/2}) rotate(-90)`});
+  return {g,frame,title,xlab,ylab,xl,bars,vl,Y,slot,bx:i=>o.x+slot*(i+.5),
+    update(vals,grow,color,showVals){bars.forEach((b,i)=>{const gp=clamp(Array.isArray(grow)?grow[i]:grow);const top=Y(vals[i]*gp);
+      b.setAttribute("y",top.toFixed(1));b.setAttribute("height",Math.max(0,o.y+o.h-top).toFixed(1));b.setAttribute("fill",color||C.blue);b.setAttribute("fill-opacity",.78);
+      vl[i].setAttribute("y",(top-10).toFixed(1));vl[i].textContent=vals[i].toFixed(1);vl[i].setAttribute("fill",color||C.blue);op(vl[i],showVals?gp:0);});}};}
+function outPanel(p,x,y,w,h,title){const g=el("g",{},p);el("rect",{x,y,width:w,height:h,rx:12,fill:"#07090c",stroke:"#2a313b","stroke-width":2},g);
+  tx(g,x+20,y+34,title||"Output",{"font-size":22,"font-style":"italic",fill:C.muted});
+  return {g,line(i,s,c,fs){const t=tx(g,x+20,y+74+i*(fs||24)*1.5,s,{"font-family":MONO,"font-size":fs||24,fill:c||C.white,style:"white-space:pre"});op(t,0);return t;}};}
+function titleCard(g,wk,title,sub,fs){const ttl=el("g",{},g);op(ttl,0);
+  tx(ttl,800,330,wk,{"text-anchor":"middle","font-size":40,"font-style":"italic",fill:C.blue});
+  const rule=el("line",{y1:360,y2:360,stroke:C.blue,"stroke-width":2},ttl);
+  tx(ttl,800,462,title,{"text-anchor":"middle","font-size":fs||100,"font-weight":600});
+  const s=tx(ttl,800,532,sub,{"text-anchor":"middle","font-size":40,"font-style":"italic",fill:C.muted});
+  return t=>{const q=P(t,7.8,8.8);op(ttl,q);tf(ttl,0,20*(1-q));rule.setAttribute("x1",(800-170*q).toFixed(1));rule.setAttribute("x2",(800+170*q).toFixed(1));op(s,P(t,8.6,9.4));};}
+function exPanel(p,x,title,foot){const g=el("g",{},p);el("rect",{x,y:190,width:680,height:600,rx:18,fill:"#10141a",stroke:C.blue,"stroke-opacity":.6,"stroke-width":2},g);
+  tx(g,x+40,250,title,{"font-size":34,"font-weight":600});tx(g,x+40,752,foot,{"font-size":25,"font-style":"italic",fill:C.muted});op(g,0);return g;}
+function recapCols(g,items){const cx=[300,800,1300];return items.map(([h,subs,draw],i)=>{const c=el("g",{},g);if(draw)draw(c,cx[i]);
+  tx(c,cx[i],400,h,{"text-anchor":"middle","font-size":42,"font-weight":600});
+  subs.forEach((s,j)=>tx(c,cx[i],450+j*36,s,{"text-anchor":"middle","font-size":28,"font-style":"italic",fill:C.muted}));op(c,0);return c;});}
+function recapAnim(t,cols,e1,e2){const rout=1-P(t,9.5,10.2);cols.forEach((c,i)=>{const q=P(t,3+i*1.2,3.8+i*1.2);op(c,q*rout);tf(c,0,24*(1-q));});
+  let q=P(t,10.4,11.2);op(e1,q);tf(e1,0,20*(1-q));q=P(t,13.5,14.3);op(e2,q);tf(e2,0,20*(1-q));}
+const RECAP_BEAT=[0,"Let's recap, and then it's your turn."];
+/* ---------- episode 7 helpers ---------- */
+const LOG=["3.0","0.0","5.0","2.0","0.0","4.0","6.0"];
+function bigDoc(p,x,y,w,h,name,o){o=o||{};const g=el("g",{},p);const c=o.c||C.tan;
+  const page=el("path",{d:`M${x} ${y} H${x+w-30} L${x+w} ${y+30} V${y+h} H${x} Z`,fill:"#141920",stroke:c,"stroke-width":2.5},g);
+  el("path",{d:`M${x+w-30} ${y} V${y+30} H${x+w}`,fill:"none",stroke:c,"stroke-width":2.5},g);
+  tx(g,x+w/2,y+h+34,name,{"text-anchor":"middle","font-family":MONO,"font-size":o.nfs||20,fill:c});
+  const fs=o.fs||22,rows=[];for(let i=0;i<(o.max||8);i++)rows.push(tx(g,x+22,y+44+i*fs*1.45,"",{"font-family":MONO,"font-size":fs,style:"white-space:pre"}));
+  const status=tx(g,x+w,y-14,"",{"text-anchor":"end","font-size":22,"font-style":"italic"});
+  return {g,page,x,y,w,h,set(arr,col,a){rows.forEach((r,i)=>{r.textContent=arr[i]||"";r.setAttribute("fill",col||C.white);op(r,a===undefined?1:a);});},
+    status(s,col){status.textContent=s;status.setAttribute("fill",col||C.muted);},
+    glow(on,col){page.setAttribute("stroke",on?(col||C.yellow):c);page.setAttribute("filter",on?"url(#glow)":"none");}};}
+function nlText(p,x,y,pieces,fs,anchor){const t=el("text",{x,y,"font-family":MONO,"font-size":fs,"text-anchor":anchor||"start",style:"white-space:pre"},p);
+  pieces.forEach(([s,c])=>{const sp=el("tspan",{fill:c},t);sp.textContent=s;});return t;}
+
+/* ---------- scenes ---------- */
+const scenes=[];
+
+/* 0: cold open */
+scenes.push({name:"Cold open",dur:12,beats:[
+  [0,"Everything Python calculates lives in its memory, and that memory is wiped the moment Python stops."],
+  [3.6,"A file lives on disk. Write the weekly summary there, and it's still waiting after Python has gone."],
+  [7.6,"Week seven: saving and reloading a workout log."]
+],build(g){
+  const A=el("g",{},g);
+  const mem=el("g",{},A);el("rect",{x:180,y:230,width:500,height:340,rx:20,fill:"#10141a",stroke:C.blue,"stroke-width":2.5},mem);
+  tx(mem,210,275,"Python's memory",{"font-size":30,"font-style":"italic",fill:C.blue});
+  const k=[token(mem,"20.0",C.blue,"num",40),token(mem,"5",C.gold,"num",40),token(mem,"\"Sam\"",C.green,"str",40)];k.forEach((e,i)=>{op(e,1);tf(e,290+i*140,420);});
+  const off=tx(A,430,640,"Python stops: memory wiped",{"text-anchor":"middle","font-size":30,"font-style":"italic",fill:C.red});
+  const D=bigDoc(A,920,230,420,340,"fitness_weekly_summary.txt",{fs:26});
+  tx(A,1130,640,"",{});const still=tx(A,1130,690,"still on disk",{"text-anchor":"middle","font-size":30,"font-style":"italic",fill:C.green});
+  const fly=token(A,"\"Weekly run distance: 20.0 km\"",C.green,"str",30);
+  const title=titleCard(g,"Week 7","Save and reload a workout log","reading and writing files",86);
+  return t=>{op(A,P(t,0,.5)*(1-P(t,7,7.8)));
+    const q=P(t,1.2,2.6);tf(fly,lerp(430,1130,q),lerp(420,330,q)-Math.sin(Math.PI*q)*120,lerp(.9,.6,q));op(fly,(t>1.2?1:0)*(1-P(t,2.5,2.7)));
+    D.set(["Weekly run distance:","20.0 km"],C.white,P(t,2.6,2.9));
+    const gone=P(t,3.6,4.4);k.forEach(e=>op(e,1-gone));op(mem,1-.6*gone);op(off,P(t,3.8,4.3));D.glow(t>4.6,C.green);op(still,P(t,4.8,5.3));title(t);};
+}});
+
+/* 1: paths */
+scenes.push({name:"Find the file",dur:17,beats:[
+  [0,"Chapter one: finding the workout log."],
+  [3,"A file stores information on disk. A path is directions for finding it."],
+  [6,"This is a relative path. It starts from Python's working folder: the folder the notebook sits in."],
+  [9,"data slash means go into the data folder. Then find run_distances_km.txt."],
+  [12.5,"Inside, one distance per line, Monday to Sunday."]
+],build(g){
+  const ch=chapter(g,"1","Find the File","paths are directions");
+  const cb=code(g,110,210,[[["input_path","var"],[" = ","p"],["\"data/run_distances_km.txt\"","str"]]],28);
+  const h1=hlRect(g,110,210,28,14,19,C.yellow),h2=hlRect(g,110,210,28,19,39,C.yellow);
+  const T=el("g",{},g);
+  const e1=track(T,"M400 400 C400 470 250 470 250 520"),e2=track(T,"M400 400 C400 470 560 470 560 520"),e3=track(T,"M560 570 V660");
+  const nodes=[[folderIcon(T,400,360,1.2),"workshop folder",400,330],[docIcon(T,250,550,C.blue),"07_reading_and_writing_files.ipynb",250,610],
+    [folderIcon(T,560,550,1.1),"data/",560,600],[docIcon(T,560,710,C.gold),"run_distances_km.txt",560,770]];
+  nodes.forEach(([n,l,x,y],i)=>tx(T,x+(i===1?-40:0),y+(i===0?-50:0),l,{"text-anchor":"middle","font-family":MONO,"font-size":i===1?16:20,fill:i===3?C.gold:C.muted}));
+  const here=el("g",{},g);el("rect",{x:330,y:310,width:140,height:100,rx:16,fill:"none",stroke:C.yellow,"stroke-width":3,filter:"url(#glow)"},here);
+  tx(here,400,440,"Python's working folder",{"text-anchor":"middle","font-size":22,"font-style":"italic",fill:C.yellow});
+  const dot=el("circle",{r:10,fill:C.yellow,filter:"url(#glow)"},g);
+  const D=bigDoc(g,1000,270,360,400,"run_distances_km.txt",{fs:26,c:C.gold});
+  const rows=["Mon","Tue","Wed","Thu","Fri","Sat","Sun"].map((d,i)=>tx(g,1250,270+44+i*26*1.45,d,{"font-size":22,"font-style":"italic",fill:C.muted}));
+  return t=>{ch(t);cb.reveal(40*lin(t,3,4.2));op(T,P(t,3.2,3.8));op(here,P(t,6,6.5)*(1-P(t,9,9.4)));
+    op(h1,t>9&&t<10.8?1:0);op(h2,t>10.8&&t<12.4?1:0);
+    let x=400,y=380;if(t>9){const a=P(t,9.2,10.4);x=lerp(400,560,a);y=lerp(380,540,a);}if(t>10.8){const b=P(t,10.8,11.8);y=lerp(540,700,b);}
+    tf(dot,x,y);op(dot,t>9&&t<12.6?1:0);
+    D.set(LOG,C.white,P(t,12.5,13));op(D.g,P(t,12.3,12.8));rows.forEach((r,i)=>op(r,P(t,12.8+i*.1,13.1+i*.1)));};
+}});
+
+/* 2: with open + read */
+scenes.push({name:"Open & read",dur:24,beats:[
+  [0,"Chapter two: opening and reading the file."],
+  [3,"open opens the file. The mode r means read."],
+  [6.8,"encoding equals utf-8 is a keyword argument: the input's name is written before the equals sign. It says how to interpret the characters."],
+  [9.5,"as log_file gives the open file a name we can use inside the indented block."],
+  [11,"The read method pulls out the whole file as one long string, newlines and all."],
+  [13.5,"When the with block finishes, the file is closed automatically."],
+  [16,"Printing the string turns each newline into a line break."],
+  [19,"These digits came from a text file, so for now they're text. type confirms it: a str."]
+],build(g){
+  const ch=chapter(g,"2","Open & Read","with open(...) as a name");
+  const cb=code(g,110,200,[[["with ","kw"],["open","fn"],["(","p"],["input_path","var"],[", ","p"],["\"r\"","str"],[", ","p"],["encoding","var"],["=","p"],["\"utf-8\"","str"],[") ","p"],["as ","kw"],["log_file","var"],[":","p"]],
+    [["    log_text","var"],[" = ","p"],["log_file","var"],[".read()","fn"]],[["print","fn"],["(","p"],["log_text","var"],[")","p"]]],22);
+  const hr=hlRect(g,110,200,22,22,25,C.yellow),he=hlRect(g,110,200,22,27,43,C.yellow),ha=hlRect(g,110,200,22,45,56,C.yellow);
+  const chips=[chip(g,110,320,"\"r\" = read mode",C.yellow),chip(g,420,320,"encoding= keyword argument",C.yellow),chip(g,110,370,"as log_file = a name for the open file",C.yellow)];
+  const D=bigDoc(g,1120,260,320,330,"run_distances_km.txt",{fs:22,c:C.gold});D.set(LOG);
+  const lock=tx(g,1280,240,"",{"text-anchor":"middle","font-size":24,"font-style":"italic"});
+  const blk=el("rect",{x:1080,y:220,width:400,height:440,rx:20,fill:"none",stroke:C.purple,"stroke-width":2.5,"stroke-dasharray":"10 8"},g);
+  const bl=tx(g,1280,700,"inside the with block",{"text-anchor":"middle","font-size":24,"font-style":"italic",fill:C.purple});
+  const r1=rope(g),tg=nameTag(g,"log_file");
+  const rib=token(g,"\"3.0\\n0.0\\n5.0\\n2.0\\n0.0\\n4.0\\n6.0\\n\"",C.green,"str",30);
+  const r2=rope(g),tg2=nameTag(g,"log_text");
+  const O=outPanel(g,110,560,330,300);const ol=LOG.map((v,i)=>O.line(i,v,C.white,18));
+  const ty=codeLine(g,480,820,[["print","fn"],["(","p"],["type","fn"],["(","p"],["log_text","var"],["))","p"],["  →  ","p"],["<class 'str'>",C.teal]],24);
+  return t=>{ch(t);cb.reveal(110*lin(t,3,5));
+    op(hr,t>4&&t<6.6?1:0);op(he,t>6.8&&t<9.3?1:0);op(ha,t>9.5&&t<11?1:0);
+    const cf=1-P(t,15.6,16);op(chips[0],P(t,4.2,4.6)*cf);op(chips[1],P(t,7,7.4)*cf);op(chips[2],P(t,9.6,10)*cf);
+    op(D.g,P(t,3,3.6));const open=t>9.6&&t<13.6;lock.textContent=t<9.6?"closed":open?"open":"closed automatically";lock.setAttribute("fill",open?C.green:C.muted);op(lock,P(t,3,3.6));
+    D.glow(open,C.green);op(blk,P(t,9.4,9.9)*(1-P(t,13.5,14)));op(bl,P(t,9.6,10.1)*(1-P(t,13.5,14)));
+    const a=P(t,9.8,10.3)*(1-P(t,13.6,14));op(tg,a);tf(tg,700,420);r1.set(700+tg.hole,420,1120,430,a,20);
+    const q=P(t,11.2,12.4);tf(rib,lerp(1280,780,q),lerp(430,540,q)-Math.sin(Math.PI*q)*90,lerp(.6,1,q));op(rib,P(t,11.2,11.4));
+    const b=P(t,12.6,13);op(tg2,b);tf(tg2,520,640);r2.set(520+tg2.hole,640,640,570,b,10);
+    op(O.g,P(t,15.8,16.2));ol.forEach((e,i)=>op(e,P(t,16.2+i*.15,16.5+i*.15)));op(ty,P(t,19.2,19.7));};
+}});
+
+/* 3: float */
+scenes.push({name:"Text to number",dur:19,beats:[
+  [0,"Chapter three: turning numeric text into a number."],
+  [3,"float converts suitable text into a decimal number."],
+  [6,"In goes the text \"3.0\"; out comes the number 3.0."],
+  [10,"type now says float, and the number works in arithmetic: 3.0 plus 1.0 is 4.0."],
+  [14,"The opposite direction exists too: str turns a number back into text. We'll need that when we write a file."]
+],build(g){
+  const ch=chapter(g,"3","Text to Number","float() and str()");
+  const cb=code(g,110,200,[[["sample_distance_text","var"],[" = ","p"],["\"3.0\"","str"]],[["sample_distance_km","var"],[" = ","p"],["float","fn"],["(","p"],["sample_distance_text","var"],[")","p"]],
+    [["print","fn"],["(","p"],["type","fn"],["(","p"],["sample_distance_km","var"],["))","p"]],[["print","fn"],["(","p"],["\"Distance plus 1 km:\"","str"],[", ","p"],["sample_distance_km","var"],[" + ","p"],["1.0","num"],[")","p"]]],22);
+  const MX=640,MY=520,MS=.72;const m=machine(g,{params:["text"],color:C.blue,w:440,dfs:30,lfs:26});const [hx,hy]=m.hop(0,MX,MY,MS),[ex,ey]=m.exit(MX,MY,MS);
+  const kin=token(g,"\"3.0\"",C.green,"str",30),kout=token(g,"3.0",C.blue,"num",40);
+  const lab=el("g",{},g);tx(lab,400,600,"",{"text-anchor":"middle","font-size":26,"font-style":"italic",fill:C.green});tx(lab,1330,560,"number",{"text-anchor":"middle","font-size":26,"font-style":"italic",fill:C.blue});
+  const ty=codeLine(g,1330,700,[["<class 'float'>",C.teal]],26,"middle");
+  const ar=codeLine(g,1330,760,[["3.0","num"],[" + ","p"],["1.0","num"],["  →  ","p"],["4.0","num"]],30,"middle");
+  const rv=codeLine(g,800,850,[["str","fn"],["(","p"],["20.0","num"],[")","p"],["  →  ","p"],["\"20.0\"","str"]],32,"middle");
+  return t=>{ch(t);cb.reveal(170*lin(t,3,5.5));const q=P(t,4,5);op(m.g,q);tf(m.g,MX,MY+30*(1-q),MS);
+    const f=arcDrop(lin(t,6,7.2),400,560,hx,hy);tf(kin,f[0],f[1],backOut(lin(t,5.7,6))*f[2]);op(kin,t>5.7?f[3]:0);
+    m.update(t,t>7.2&&t<8.6,t*10+420*overlap(t,[[7.2,8.6]]),t>7.2&&t<8.8?"\"3.0\" → 3.0":"float(...)",t>7.2&&t<8.8?C.teal:"#4d6b78");
+    const o=exitArc(lin(t,8.6,9.6),ex,ey,1330,610);tf(kout,o[0],o[1],o[2]);op(kout,P(t,8.6,8.8));
+    op(lab,P(t,6,6.5));op(ty,P(t,10.2,10.6));op(ar,P(t,11.5,12));op(rv,P(t,14.3,14.8));};
+}});
+
+/* 4: readlines */
+scenes.push({name:"Read lines",dur:18,beats:[
+  [0,"Chapter four: reading a list of lines."],
+  [3,"readlines gives back a list of strings, one per line."],
+  [6,"Picture the whole file as one string, cut after every newline character."],
+  [8.5,"Seven pieces, seven list items. Each still ends with its newline, written backslash n."],
+  [12,"That's fine: float accepts the trailing newline, so every line converts cleanly."]
+],build(g){
+  const ch=chapter(g,"4","Read Lines","one string per line");
+  const cb=code(g,110,200,[[["with ","kw"],["open","fn"],["(","p"],["input_path","var"],[", ","p"],["\"r\"","str"],[", ","p"],["encoding","var"],["=","p"],["\"utf-8\"","str"],[") ","p"],["as ","kw"],["log_file","var"],[":","p"]],
+    [["    distance_lines","var"],[" = ","p"],["log_file","var"],[".readlines()","fn"]],[["print","fn"],["(","p"],["distance_lines","var"],[")","p"]]],22);
+  const fs=30,cw=fs*.6,x0=800-35*cw/2;
+  const cuts=LOG.map((v,i)=>el("line",{x1:x0+(i+1)*5*cw,x2:x0+(i+1)*5*cw,y1:390,y2:440,stroke:C.red,"stroke-width":3,"stroke-dasharray":"5 4"},g));
+  const L=listBoxes(g,800-(7*136-16)/2,520,LOG.map(()=>""),{bw:120,gap:16});
+  const pieces=LOG.map((v,i)=>nlText(g,0,0,[[v,C.green],["\\n",C.teal]],fs,"middle"));
+  const out=tx(g,110,700,"› ['3.0\\n', '0.0\\n', '5.0\\n', '2.0\\n', '0.0\\n', '4.0\\n', '6.0\\n']",{"font-family":MONO,"font-size":24,fill:C.teal});
+  const out2=tx(g,110,740,"› Days recorded: 7",{"font-family":MONO,"font-size":24,fill:C.teal});
+  const fl=codeLine(g,800,830,[["float","fn"],["(","p"],["'3.0\\n'","str"],[")","p"],["  →  ","p"],["3.0","num"]],32,"middle");
+  return t=>{ch(t);cb.reveal(150*lin(t,3,5));
+    pieces.forEach((p,i)=>{const sx=x0+(i*5+2.5)*cw,sy=430,dx=L.cx(i),dy=566;const q=P(t,8.5+i*.12,9.5+i*.12);
+      p.setAttribute("x",lerp(sx,dx,q).toFixed(1));p.setAttribute("y",lerp(sy,dy,q).toFixed(1));p.setAttribute("font-size",lerp(30,24,q));op(p,P(t,6,6.5));});
+    cuts.forEach((c,i)=>op(c,P(t,6.8+i*.15,7+i*.15)*(1-P(t,8.4,8.6))));op(L.g,P(t,8.8,9.4));
+    op(out,P(t,10,10.4));op(out2,P(t,10.4,10.8));op(fl,P(t,12.2,12.7));};
+}});
+
+/* 5: total */
+scenes.push({name:"Weekly total",dur:21,beats:[
+  [0,"Chapter five: calculating the weekly distance."],
+  [3,"Three familiar moves: loop through the lines, convert each one to a number, and add it to a running total."],
+  [6,"Text in, number out, onto the total."],
+  [17.5,"Seven lines read, converted and added: 20.0 kilometres."]
+],build(g){
+  const ch=chapter(g,"5","Weekly Total","loop, convert, accumulate");
+  const cb=code(g,110,190,[[["total_distance_km","var"],[" = ","p"],["0.0","num"]],[["for ","kw"],["distance_text","var"],[" in ","kw"],["distance_lines","var"],[":","p"]],
+    [["    distance_km","var"],[" = ","p"],["float","fn"],["(","p"],["distance_text","var"],[")","p"]],[["    total_distance_km","var"],[" = ","p"],["total_distance_km","var"],[" + ","p"],["distance_km","var"]],
+    [["print","fn"],["(","p"],["\"Weekly run distance:\"","str"],[", ","p"],["total_distance_km","var"],[", ","p"],["\"km\"","str"],[")","p"]]],22);
+  const L=listBoxes(g,110,410,LOG.map(v=>"'"+v+"\\n'"),{bw:120,gap:14,fs:20,vc:C.green});
+  const conv=boxNode(g,1100,400,420,70,"float(...)",{fs:24,c:C.blue});
+  const big=tx(g,110,610,"total_distance_km = 0.0",{"font-family":MONO,"font-size":30,fill:C.yellow});
+  const ax=axis(g,{x0:110,x1:1050,y:740,min:0,max:22,ticks:[0,5,10,15,20]});
+  const segs=LOG.map((v,i)=>el("rect",{y:710,height:22,rx:3,fill:i%2?C.teal:C.blue,"fill-opacity":.7},g));
+  const out=tx(g,110,830,"› Weekly run distance: 20.0 km",{"font-family":MONO,"font-size":26,fill:C.teal});
+  const ts=LOG.map((_,i)=>6+1.6*i);
+  return t=>{ch(t);cb.reveal(240*lin(t,3,5.5));op(L.g,P(t,3,3.5));op(conv.g,P(t,3.5,4));op(ax.g,P(t,3.5,4));
+    let s=0,k=-1;ts.forEach((st,i)=>{if(t>=st)k=i;const v=+LOG[i];const q=P(t,st+.8,st+1.4);segs[i].setAttribute("x",ax.X(s));segs[i].setAttribute("width",Math.max(0,ax.X(s+v*q)-ax.X(s)));if(t>=st+1.4)s+=v;});
+    L.hl(k>=0&&t<17.4?k:-1);conv.lit(k>=0&&t<17.4,C.blue);conv.text(k>=0&&t<17.4?"float('"+LOG[k]+"\\n')  →  "+LOG[k]:"float(...)",k>=0&&t<17.4?C.teal:C.white);
+    big.textContent="total_distance_km = "+s.toFixed(1);op(big,P(t,4.5,5));op(out,P(t,17.6,18));};
+}});
+
+/* 6: summary text */
+scenes.push({name:"Summary text",dur:19,beats:[
+  [0,"Chapter six: preparing the summary as text."],
+  [3,"A text file holds text, so first convert the total with str."],
+  [8.5,"For strings, plus joins pieces together: a label, the total, and the units, with a newline on the end."],
+  [12,"Preview it with print before saving."],
+  [14.5,"Forget str, and joining text to a number raises a TypeError."]
+],build(g){
+  const ch=chapter(g,"6","Summary Text","build the words to save");
+  const cb=code(g,110,200,[[["total_as_text","var"],[" = ","p"],["str","fn"],["(","p"],["total_distance_km","var"],[")","p"]],
+    [["summary_text","var"],[" = ","p"],["\"Weekly run distance: \"","str"],[" + ","p"],["total_as_text","var"],[" + ","p"],["\" km\\n\"","str"]],[["print","fn"],["(","p"],["summary_text","var"],[")","p"]]],24);
+  const orb=token(g,"20.0",C.blue,"num",40),pill=token(g,"\"20.0\"",C.green,"str",34);
+  const sl=tx(g,800,410,"str(...)",{"text-anchor":"middle","font-family":MONO,"font-size":28,fill:C.blue});
+  const parts=[["\"Weekly run distance: \"",400],["\" km\\n\"",1150]].map(([s,x])=>{const k=token(g,s,C.green,"str",34);return {k,x};});
+  const plus=[tx(g,690,612,"+",{"text-anchor":"middle","font-family":MONO,"font-size":40}),tx(g,960,612,"+",{"text-anchor":"middle","font-family":MONO,"font-size":40})];
+  const joined=token(g,"\"Weekly run distance: 20.0 km\\n\"",C.green,"str",36);
+  const out=tx(g,800,720,"› Weekly run distance: 20.0 km",{"text-anchor":"middle","font-family":MONO,"font-size":28,fill:C.teal});
+  const err=el("g",{},g);codeLine(err,800,800,[["\"Weekly run distance: \"","str"],[" + ","p"],["20.0","num"]],26,"middle");
+  tx(err,800,845,"TypeError: can only concatenate str (not \"float\") to str",{"text-anchor":"middle","font-family":MONO,"font-size":24,fill:C.red});
+  return t=>{ch(t);cb.reveal(130*lin(t,3,5));
+    const m=P(t,5.4,6.6);tf(orb,lerp(700,830,m),470);op(orb,P(t,4.6,5)*(1-m));op(sl,P(t,5,5.4)*(1-P(t,8,8.4)));
+    const mv=P(t,8.5,9.3);tf(pill,lerp(lerp(700,830,m),830,mv),lerp(470,600,mv));op(pill,m*(1-P(t,10.4,10.6)));
+    parts.forEach((p,i)=>{tf(p.k,lerp(p.x,i?1080:540,P(t,10,10.6)),600);op(p.k,P(t,8.6+i*.3,9+i*.3)*(1-P(t,10.4,10.6)));});
+    plus.forEach(e=>op(e,P(t,9,9.4)*(1-P(t,10,10.4))));
+    tf(joined,800,600,backOut(lin(t,10.4,11)));op(joined,t>10.4?1:0);op(out,P(t,12.2,12.6));
+    op(err,P(t,14.5,15));tf(err,shakeX(t,15.2),0);};
+}});
+
+/* 7: write + read back */
+scenes.push({name:"Save & read back",dur:26,beats:[
+  [0,"Chapter seven: saving the summary, then reading it back."],
+  [3,"Mode w means write. It creates the file, or, if the file already exists, replaces everything in it."],
+  [8.5,"The old contents are wiped first…"],
+  [10,"…then the write method puts our summary text on disk."],
+  [14,"To check, open the same path in r mode and read it back. What's on disk matches the preview."],
+  [20,"Now stop Python. The variables are gone, but the summary file is still on disk, ready for next time."]
+],build(g){
+  const ch=chapter(g,"7","Save & Read Back","write mode, then a check");
+  const cb=code(g,110,190,[[["output_path","var"],[" = ","p"],["\"fitness_weekly_summary.txt\"","str"]],
+    [["with ","kw"],["open","fn"],["(","p"],["output_path","var"],[", ","p"],["\"w\"","str"],[", ","p"],["encoding","var"],["=","p"],["\"utf-8\"","str"],[") ","p"],["as ","kw"],["summary_file","var"],[":","p"]],
+    [["    summary_file","var"],[".write(","fn"],["summary_text","var"],[")","fn"]]],22);
+  const cb2=code(g,110,330,[[["with ","kw"],["open","fn"],["(","p"],["output_path","var"],[", ","p"],["\"r\"","str"],[", ","p"],["encoding","var"],["=","p"],["\"utf-8\"","str"],[") ","p"],["as ","kw"],["summary_file","var"],[":","p"]],
+    [["    saved_summary","var"],[" = ","p"],["summary_file","var"],[".read()","fn"]],[["print","fn"],["(","p"],["saved_summary","var"],[")","p"]]],22);
+  const hw=hlRect(g,110,190+31.9,22,23,26,C.yellow),hrr=hlRect(g,110,330,22,23,26,C.yellow);
+  const D=bigDoc(g,1120,300,400,300,"fitness_weekly_summary.txt",{fs:24});
+  const wipe=el("rect",{x:1122,y:302,height:296,fill:"#141920"},g);
+  const k=token(g,"\"Weekly run distance: 20.0 km\\n\"",C.green,"str",28),k2=token(g,"\"Weekly run distance: 20.0 km\\n\"",C.green,"str",28);
+  const o1=tx(g,110,470,"› Saved summary to: fitness_weekly_summary.txt",{"font-family":MONO,"font-size":22,fill:C.teal});
+  const o2=tx(g,110,560,"› Weekly run distance: 20.0 km",{"font-family":MONO,"font-size":22,fill:C.teal});
+  const stop=el("g",{},g);el("circle",{cx:180,cy:720,r:34,fill:"none",stroke:C.red,"stroke-width":4},stop);el("line",{x1:180,x2:180,y1:690,y2:722,stroke:C.red,"stroke-width":4,"stroke-linecap":"round"},stop);
+  tx(stop,240,712,"Python stops",{"font-size":32,"fill":C.red});tx(stop,240,752,"variables gone",{"font-size":26,"font-style":"italic",fill:C.muted});
+  const still=tx(g,1320,700,"still on disk",{"text-anchor":"middle","font-size":32,"font-style":"italic",fill:C.green});
+  return t=>{ch(t);cb.reveal(150*lin(t,3,5.2));cb2.reveal(150*lin(t,14,15.6));op(hw,t>5.4&&t<9?1:0);op(hrr,t>15.6&&t<17.6?1:0);
+    op(D.g,P(t,5.5,6));const written=t>11.2;D.set(written?["Weekly run distance:","20.0 km"]:["Weekly run distance:","18.0 km","(from an earlier run)"],written?C.white:C.muted,written?P(t,11.2,11.5):1);
+    D.status(t<8.5?"already exists":t<14?"mode \"w\": replace":"",t<8.5?C.muted:C.yellow);
+    wipe.setAttribute("x",1122);wipe.setAttribute("width",t>8.5&&t<11.2?396*P(t,8.5,9.6):0);
+    const q=P(t,10,11.2);tf(k,lerp(560,1320,q),lerp(260,420,q)-Math.sin(Math.PI*q)*80,lerp(.9,.55,q));op(k,(t>10?1:0)*(1-P(t,11.1,11.3)));
+    op(o1,P(t,11.6,12));D.glow((t>10.8&&t<12)||(t>16&&t<17),C.green);
+    const r=P(t,16.2,17.4);tf(k2,lerp(1320,560,r),lerp(420,520,r),lerp(.55,.9,r));op(k2,(t>16.2?1:0)*(1-P(t,17.3,17.5)));op(o2,P(t,17.5,17.9));
+    const off=P(t,20,20.8);op(cb.g,1-.75*off);op(cb2.g,1-.75*off);op(o1,P(t,11.6,12)*(1-.75*off));op(o2,P(t,17.5,17.9)*(1-.75*off));
+    op(stop,off);op(still,P(t,21,21.5));D.glow(t>21,C.green);};
+}});
+
+/* 8: errors */
+scenes.push({name:"Error clues",dur:18,beats:[
+  [0,"Chapter eight: reading the error messages as clues."],
+  [3,"FileNotFoundError: check the working folder, the data folder and the exact filename. Here, one letter is missing."],
+  [8,"ValueError from float: a line isn't plain numeric text. This log has no units and no blank lines, and it needs to stay that way."],
+  [13,"TypeError when joining: convert the number with str first."]
+],build(g){
+  const ch=chapter(g,"8","Error Clues","what each message is telling you");
+  const E=[[3,[["open","fn"],["(","p"],["\"data/run_distance_km.txt\"","str"],[")","p"]],"FileNotFoundError: [Errno 2] No such file or directory: 'data/run_distance_km.txt'","check the folder and the exact filename",[15,24]],
+    [8,[["float","fn"],["(","p"],["\"3.0 km\"","str"],[")","p"]],"ValueError: could not convert string to float: '3.0 km'","each line must be plain numeric text",[10,13]],
+    [13,[["\"Weekly run distance: \"","str"],[" + ","p"],["20.0","num"]],"TypeError: can only concatenate str (not \"float\") to str","convert the number with str() first",[26,30]]];
+  const cards=E.map(([t0,toks,e,fix,hl],i)=>{const c=el("g",{},g);const y=200+i*215;
+    el("rect",{x:100,y,width:1400,height:180,rx:16,fill:"#10141a",stroke:C.red,"stroke-opacity":.45,"stroke-width":2},c);
+    hlRect(c,140,y+52,26,hl[0],hl[1],C.red).setAttribute("opacity",1);codeLine(c,140,y+52,toks,26);
+    tx(c,140,y+102,e,{"font-family":MONO,"font-size":20,fill:C.red});tx(c,140,y+148,"Fix: "+fix,{"font-size":26,"font-style":"italic",fill:C.green});op(c,0);c.t0=t0;return c;});
+  return t=>{ch(t);cards.forEach(c=>{const q=P(t,c.t0,c.t0+.6);op(c,q);tf(c,shakeX(t,c.t0+.6),20*(1-q));});};
+}});
+
+/* 9: recap */
+scenes.push({name:"Your turn",dur:24,beats:[
+  RECAP_BEAT,
+  [3,"A path tells Python where to read and write. Text from a file needs converting before you calculate. And the mode decides whether you read or write."],
+  [10.4,"Exercise one: open the log, read its lines, convert and add them up in a loop with your own fresh total. You should get 20.0."],
+  [13.5,"Exercise two: write the supplied note to fitness_exercise_note.txt in w mode, then read it back in r mode and print it."]
+],build(g){
+  const ch=chapter(g,"✦","Recap","and then, your turn");
+  const cols=recapCols(g,[["Paths",["directions from","the working folder"],(c,x)=>codeLine(c,x,290,[["\"data/run_distances_km.txt\"","str"]],22,"middle")],
+    ["Text → number",["convert before","you calculate"],(c,x)=>codeLine(c,x,290,[["float","fn"],["(","p"],["\"3.0\"","str"],[")","p"],["  →  ","p"],["3.0","num"]],26,"middle")],
+    ["Modes",["\"r\" reads,","\"w\" creates or replaces"],(c,x)=>{codeLine(c,x,260,[["\"r\"","str"],["  read","p"]],26,"middle");codeLine(c,x,305,[["\"w\"","str"],["  write","p"]],26,"middle");}]]);
+  const e1=exPanel(g,100,"Exercise 1: total the saved log","Read lines, loop, float(), add to a fresh total");
+  const d1=bigDoc(e1,160,300,200,330,"run_distances_km.txt",{fs:22,c:C.gold});d1.set(LOG);
+  codeLine(e1,420,470,[["total","var"],["  →  ","p"],["?","num"],[" km","p"]],32);
+  const e2=exPanel(g,820,"Exercise 2: save a workout note","Write in \"w\" mode, then read back in \"r\" mode");
+  const k=token(e2,"\"Recorded a 4.0 km run.\\n\"",C.green,"str",26);op(k,1);tf(k,1160,330);
+  const d2=bigDoc(e2,1040,400,240,200,"fitness_exercise_note.txt",{fs:22});d2.set(["?"],C.yellow);
+  el("path",{d:"M1160 360 V392",stroke:C.green,"stroke-width":3,"marker-end":"url(#arr)"},e2);
+  return t=>{ch(t);recapAnim(t,cols,e1,e2);};
+}});
+/* ---------- player ---------- */
+const svg=document.getElementById("svg");
+const defs=el("defs",{},svg);
+defs.innerHTML='<filter id="glow" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="7" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>'+
+ '<radialGradient id="vig" cx="50%" cy="45%" r="75%"><stop offset="0%" stop-color="#161b23"/><stop offset="100%" stop-color="#090b0f"/></radialGradient>'+
+ '<marker id="arrY" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#FFE38A"/></marker><pattern id="bp" width="28" height="28" patternUnits="userSpaceOnUse"><path d="M28 0H0V28" fill="none" stroke="#58C4DD" stroke-opacity=".14" stroke-width="1"/></pattern>'+
+ '<marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#58C4DD"/></marker>';
+el("rect",{width:W,height:H,fill:"url(#vig)"},svg);
+const layer=el("g",{},svg);
+
+const offs=[];let total=0;scenes.forEach(s=>{offs.push(total);total+=s.dur;});
+const bounds=[];scenes.forEach((s,i)=>s.beats.forEach(b=>{if(offs[i]+b[0]>0)bounds.push(offs[i]+b[0]);}));bounds.push(total);bounds.sort((a,b)=>a-b);
+const nextBoundary=t=>{for(const b of bounds)if(b>t+1e-4)return b;return total;};
+const narration=window.TUTORIAL_NARRATION||null;
+
+const $=id=>document.getElementById(id);
+const playBtn=$("play"),fill=$("fill"),knob=$("knob"),timeEl=$("time"),scrub=$("scrub"),bigplay=$("bigplay"),chapNav=$("chapters");
+const speedBtn=$("speed"),narrBtn=$("narr"),stopBtn=$("stopbeats"),cuesBtn=$("cuesBtn"),cuesEl=$("cues"),cueNow=$("cueNow"),cueNext=$("cueNext"),cueState=$("cueState");
+const ICON_PLAY='<svg viewBox="0 0 24 24"><path d="M7 4l13 8-13 8z" fill="currentColor"/></svg>';
+const ICON_PAUSE='<svg viewBox="0 0 24 24"><path d="M6 4h4v16H6zM14 4h4v16h-4z" fill="currentColor"/></svg>';
+const ICON_REPLAY='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M4 12a8 8 0 1 0 2.4-5.7"/><path d="M4 4v5h5"/></svg>';
+
+let now=0,playing=false,cur=-1,upd=null,beatKey=null,lastTs=null,started=false;
+let speed=.5,stopBeats=false,heldAt=-1,cuesOn=true;
+let narrate=!!narration,narrationSynced=false,narrationDriving=false,audioCueIndex=0,lastAudioTime=0;
+const speeds=[.25,.5,.75,1,1.25,1.5];
+const narrationAudio=narration?new Audio(narration.audio):null;
+if(narrationAudio)narrationAudio.preload="auto";
+if(narrationAudio)narrationAudio.addEventListener("ended",()=>{if(playing&&narrate)finishNarratedPlayback();});
+
+function sceneAt(t){for(let i=scenes.length-1;i>=0;i--)if(t>=offs[i])return i;return 0;}
+function fmt(s){s=Math.max(0,Math.floor(s));return Math.floor(s/60)+":"+String(s%60).padStart(2,"0");}
+function cueWindow(key){
+  const parts=key.split(":").map(Number),i=parts[0],k=parts[1],beats=scenes[i].beats;
+  const start=offs[i]+(k>=0?beats[k][0]:0);
+  const end=k+1<beats.length?offs[i]+beats[k+1][0]:offs[i]+scenes[i].dur;
+  return [start,end];
+}
+const narrationTimeline=[];
+if(narration)scenes.forEach((scene,i)=>scene.beats.forEach((_,k)=>{
+  const key=i+":"+k,timing=narration.cues[key];if(!timing)return;
+  const visual=cueWindow(key);narrationTimeline.push({index:narrationTimeline.length,key,playStart:timing[0],audioStart:timing[1],audioEnd:timing[2],visualStart:visual[0],visualEnd:visual[1]});
+}));
+function pauseNarration(){if(narrationAudio)narrationAudio.pause();narrationDriving=false;}
+function stopNarration(reset){pauseNarration();if(reset){narrationSynced=false;audioCueIndex=0;lastAudioTime=0;}}
+function visualEntryAt(t){for(let i=narrationTimeline.length-1;i>=0;i--)if(t>=narrationTimeline[i].visualStart-1e-4)return narrationTimeline[i];return narrationTimeline[0];}
+function audioEntryAt(t){
+  while(audioCueIndex+1<narrationTimeline.length&&t>=narrationTimeline[audioCueIndex+1].playStart)audioCueIndex++;
+  while(audioCueIndex>0&&t<narrationTimeline[audioCueIndex].playStart)audioCueIndex--;
+  return narrationTimeline[audioCueIndex];
+}
+function seekNarrationToVisual(t){
+  if(!narrationAudio||!narrationTimeline.length)return;
+  const entry=visualEntryAt(t),span=Math.max(.001,entry.visualEnd-entry.visualStart);
+  const progress=clamp((t-entry.visualStart)/span);
+  const target=progress<.0001?entry.playStart:lerp(entry.audioStart,entry.audioEnd,progress);
+  pauseNarration();try{narrationAudio.currentTime=target;}catch(_){}
+  audioCueIndex=entry.index;lastAudioTime=target;narrationSynced=true;
+}
+function playNarration(){
+  if(!narrate||!narrationAudio||!playing)return;
+  if(!narrationSynced)seekNarrationToVisual(now);
+  narrationDriving=true;const promise=narrationAudio.play();
+  if(promise)promise.catch(()=>{narrationDriving=false;});
+}
+function finishNarratedPlayback(){pauseNarration();now=total;playing=false;narrationSynced=true;render();setPlayUI();}
+function syncVisualToNarration(){
+  const current=narrationAudio.currentTime;
+  if(stopBeats){const crossed=narrationTimeline.find(entry=>entry.visualEnd<total&&entry.audioEnd>lastAudioTime+.001&&entry.audioEnd<=current&&Math.abs(entry.visualEnd-heldAt)>1e-6);
+    if(crossed){narrationAudio.pause();try{narrationAudio.currentTime=crossed.audioEnd;}catch(_){}audioCueIndex=crossed.index;lastAudioTime=crossed.audioEnd;narrationSynced=true;narrationDriving=false;now=crossed.visualEnd-.001;heldAt=crossed.visualEnd;playing=false;render();setPlayUI();return false;}}
+  const entry=audioEntryAt(current),span=Math.max(.001,entry.audioEnd-entry.audioStart);
+  const progress=clamp((current-entry.audioStart)/span);now=lerp(entry.visualStart,entry.visualEnd-.001,progress);lastAudioTime=current;
+  if(entry.index===narrationTimeline.length-1&&current>=entry.audioEnd){finishNarratedPlayback();return false;}
+  render();return true;
+}
+
+const chapBtns=scenes.map((s,i)=>{const b=document.createElement("button");b.innerHTML=`<span class="n">${i===0?"▸":i===scenes.length-1?"✦":i}</span>${s.name}`;
+  b.addEventListener("click",()=>seek(offs[i]));chapNav.appendChild(b);return b;});
+scenes.forEach((s,i)=>{if(i===0)return;const d=document.createElement("div");d.className="tick";d.style.left=(offs[i]/total*100)+"%";scrub.querySelector(".track").appendChild(d);});
+scrub.setAttribute("aria-valuemax",String(Math.round(total)));
+
+function render(){
+  const tt=Math.min(now,total-1e-4);const i=sceneAt(tt);
+  if(i!==cur){cur=i;while(layer.firstChild)layer.removeChild(layer.firstChild);const g=el("g",{},layer);upd=scenes[i].build(g);
+    chapBtns.forEach((b,j)=>b.setAttribute("aria-current",j===i?"true":"false"));}
+  const lt=tt-offs[i];upd(lt);
+  const bs=scenes[i].beats;let k=0;for(let j=0;j<bs.length;j++)if(lt>=bs[j][0])k=j;
+  const key=i+":"+k;
+  if(key!==beatKey){beatKey=key;cueNow.textContent=bs[k][1];
+    const nxt=k+1<bs.length?bs[k+1][1]:(scenes[i+1]?scenes[i+1].beats[0][1]:"End of episode.");cueNext.textContent="Next: "+nxt;}
+  const pct=now/total*100;fill.style.width=pct+"%";knob.style.left=pct+"%";
+  timeEl.textContent=fmt(now)+" / "+fmt(total);scrub.setAttribute("aria-valuenow",String(Math.round(now)));
+}
+function setState(){
+  cueState.textContent=(!playing&&stopBeats&&heldAt>0&&Math.abs(now-heldAt)<.01)?"Held at the end of this beat. Press Space to continue.":"";
+}
+function setPlayUI(){playBtn.innerHTML=playing?ICON_PAUSE:(now>=total?ICON_REPLAY:ICON_PLAY);playBtn.setAttribute("aria-label",playing?"Pause":"Play");setState();}
+function setNarrUI(){narrBtn.textContent=narrate?"Narration: on":"Narration: off";narrBtn.setAttribute("aria-pressed",String(narrate));
+  speedBtn.setAttribute("aria-label",narrate?"Animation speed when narration is off":"Animation speed");
+  speedBtn.title=narrate?"Narration is the timing master; this speed applies when narration is off.":"Animation playback speed";
+  if(!narration){narrBtn.disabled=true;narrBtn.textContent="Narration unavailable";}}
+function tick(ts){
+  if(!playing){lastTs=null;return;}
+  if(narrate&&narrationAudio&&narrationDriving){lastTs=ts;if(syncVisualToNarration()&&playing)requestAnimationFrame(tick);return;}
+  if(lastTs==null)lastTs=ts;const dt=Math.min(.1,(ts-lastTs)/1000)*speed;lastTs=ts;
+  let next=now+dt;
+  if(stopBeats){const nb=nextBoundary(now);if(next>=nb&&nb<total&&Math.abs(nb-heldAt)>1e-6){now=nb-.001;heldAt=nb;playing=false;pauseNarration();render();setPlayUI();return;}}
+  now=next;
+  if(now>=total){now=total;playing=false;stopNarration(true);setPlayUI();}
+  render();
+  if(playing)requestAnimationFrame(tick);
+}
+function play(){
+  if(!started){started=true;bigplay.style.display="none";now=0;cur=-1;beatKey=null;}
+  if(now>=total){now=0;beatKey=null;narrationSynced=false;}
+  playing=true;render();if(narrate)playNarration();setPlayUI();lastTs=null;requestAnimationFrame(tick);
+}
+function pause(){playing=false;pauseNarration();setPlayUI();}
+function seek(t){if(!started){started=true;bigplay.style.display="none";}now=clamp(t,0,total);heldAt=-1;beatKey=null;render();if(narrate){seekNarrationToVisual(now);if(playing)playNarration();}else narrationSynced=false;setPlayUI();}
+
+playBtn.addEventListener("click",()=>playing?pause():play());
+bigplay.addEventListener("click",play);
+speedBtn.addEventListener("click",()=>{speed=speeds[(speeds.indexOf(speed)+1)%speeds.length];speedBtn.textContent=speed+"×";});
+narrBtn.addEventListener("click",()=>{narrate=!narrate;if(!narrate)stopNarration(true);else{narrationSynced=false;if(playing)playNarration();}setNarrUI();});
+stopBtn.addEventListener("click",()=>{stopBeats=!stopBeats;stopBtn.setAttribute("aria-pressed",String(stopBeats));stopBtn.textContent=stopBeats?"Stop at each beat: on":"Stop at each beat: off";setState();});
+cuesBtn.addEventListener("click",()=>{cuesOn=!cuesOn;cuesBtn.setAttribute("aria-pressed",String(cuesOn));cuesBtn.textContent=cuesOn?"Cues: on":"Cues: off";cuesEl.hidden=!cuesOn;});
+$("fs").addEventListener("click",()=>{const s=$("stage");try{if(document.fullscreenElement)document.exitFullscreen();else if(s.requestFullscreen)s.requestFullscreen();}catch(e){}});
+let dragging=false;
+function fromEvent(e){const r=scrub.getBoundingClientRect();return clamp((e.clientX-r.left)/r.width)*total;}
+scrub.addEventListener("pointerdown",e=>{dragging=true;try{scrub.setPointerCapture(e.pointerId);}catch(_){}seek(fromEvent(e));});
+scrub.addEventListener("pointermove",e=>{if(dragging)seek(fromEvent(e));});
+scrub.addEventListener("pointerup",()=>{dragging=false;});
+document.addEventListener("keydown",e=>{const tag=(e.target.tagName||"").toLowerCase();if(tag==="button"||tag==="summary")return;
+  if(e.code==="Space"||e.key==="k"){e.preventDefault();playing?pause():play();}
+  else if(e.key==="ArrowRight"){e.preventDefault();seek(now+5);}else if(e.key==="ArrowLeft"){e.preventDefault();seek(now-5);}
+  else if(e.key==="Home"){e.preventDefault();seek(0);}});
+
+/* poster frame */
+now=9.6;render();now=0;cueNow.textContent=scenes[0].beats[0][1];cueNext.textContent="Next: "+scenes[0].beats[1][1];
+fill.style.width="0%";knob.style.left="0%";timeEl.textContent=fmt(0)+" / "+fmt(total);
+setPlayUI();setNarrUI();
+})();
+</script>
+</body>
+</html>
